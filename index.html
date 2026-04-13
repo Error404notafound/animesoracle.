@@ -8,81 +8,73 @@
         :root { --bg: #0f0f0f; --card: #1a1a1a; --text: #ffffff; --primary: #6200ea; --brightness: 100%; }
         body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; filter: brightness(var(--brightness)); overflow-x: hidden; }
         header { display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: #000; height: 60px; position: sticky; top: 0; z-index: 1000; }
-        .header-btn-container { width: 45px; display: flex; align-items: center; }
-        .logo { font-weight: bold; color: var(--primary); font-size: 20px; flex-grow: 1; text-align: center; }
+        .logo { font-weight: bold; color: var(--primary); font-size: 20px; flex-grow: 1; text-align: center; pointer-events: none; }
         
-        /* AJUSTE PARA O CLIQUE FUNCIONAR NOS BOTÕES VAZIOS */
-        .icon-btn { width: 45px; height: 45px; cursor: pointer; background: rgba(255,255,255,0.01); border: none; color: var(--primary); padding: 0; display: block; }
-        
+        /* BOTÕES VAZIOS COM ÁREA DE CLIQUE REAL */
+        .icon-btn { width: 50px; height: 50px; cursor: pointer; background: rgba(255,255,255,0.01); border: none; outline: none; }
+
         #searchBox { display: none; position: absolute; left: 0; top: 60px; width: 100%; padding: 10px; background: #000; box-sizing: border-box; z-index: 999; }
         #searchBox input { width: 100%; padding: 12px; border-radius: 5px; border: 1px solid var(--primary); background: #222; color: white; }
-        .abc-menu { display: flex; overflow-x: auto; background: #111; padding: 12px; gap: 20px; scrollbar-width: none; border-bottom: 1px solid #222; -webkit-overflow-scrolling: touch; }
-        .abc-menu::-webkit-scrollbar { display: none; }
-        .abc-menu span { color: var(--primary); text-decoration: none; font-weight: bold; font-size: 16px; min-width: 15px; text-align: center; cursor: pointer; }
-        .side-menu { position: fixed; left: -100%; top: 0; width: 80%; max-width: 300px; height: 100%; background: #151515; z-index: 2000; transition: 0.3s; padding: 20px; }
+        .abc-menu { display: flex; overflow-x: auto; background: #111; padding: 12px; gap: 20px; scrollbar-width: none; border-bottom: 1px solid #222; }
+        .abc-menu span { color: var(--primary); cursor: pointer; font-weight: bold; min-width: 15px; text-align: center; }
+        
+        .side-menu { position: fixed; left: -100%; top: 0; width: 280px; height: 100%; background: #151515; z-index: 2000; transition: 0.3s; padding: 20px; box-sizing: border-box; }
         .side-menu.active { left: 0; }
         .profile-area { text-align: center; padding-bottom: 20px; border-bottom: 1px solid #333; margin-bottom: 10px; }
-        .user-avatar { width: 70px; height: 70px; border-radius: 50%; background: #333; object-fit: cover; border: 2px solid var(--primary); }
-        .nav-links a { display: block; color: white; padding: 15px 0; text-decoration: none; border-bottom: 1px solid #222; font-size: 14px; }
+        .user-avatar { width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; }
+        
+        /* DESTAQUE COM ILUMINAÇÃO (GLOW) */
         .section-title { padding: 15px 10px 5px; font-size: 13px; color: #888; text-transform: uppercase; }
         .slider { display: flex; overflow-x: auto; gap: 12px; padding: 10px; scrollbar-width: none; }
-        .featured-card { min-width: 140px; background: var(--card); border-radius: 8px; overflow: hidden; border: 2px solid var(--primary); box-shadow: 0 0 10px rgba(98, 0, 234, 0.2); position: relative; }
+        .featured-card { min-width: 140px; border-radius: 8px; overflow: hidden; border: 2px solid var(--primary); box-shadow: 0 0 15px var(--primary); }
         .featured-card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
+        
         .grid-recent { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 10px; }
         .card-recent { background: var(--card); border-radius: 8px; overflow: hidden; border-bottom: 2px solid var(--primary); }
         .card-recent img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
+        
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 5000; justify-content: center; align-items: center; }
-        .modal-card { background: #1a1a1a; padding: 25px; border-radius: 15px; width: 90%; max-width: 400px; border: 1px solid var(--primary); }
-        input { width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #333; color: white; border-radius: 5px; box-sizing: border-box;}
+        .modal-card { background: #1a1a1a; padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; border: 1px solid var(--primary); }
         #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1500; }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="header-btn-container"><button class="icon-btn" onclick="toggleMenu()"></button></div>
+    <button class="icon-btn" id="mOpen"></button>
     <div class="logo">AnimesOracle</div>
-    <div class="header-btn-container" style="justify-content: flex-end; gap: 10px;">
-        <button class="icon-btn" onclick="abrirPostar()"></button>
-        <button class="icon-btn" onclick="toggleSearch()"></button>
+    <div style="display:flex; gap:10px;">
+        <button class="icon-btn" id="pOpen"></button>
+        <button class="icon-btn" id="sOpen"></button>
     </div>
     <div id="searchBox"><input type="text" id="searchInput" placeholder="Pesquisar..."></div>
 </header>
 
 <div class="abc-menu" id="abcContainer"></div>
 
-<div id="overlay" onclick="toggleMenu()"></div>
+<div id="overlay"></div>
 <div class="side-menu" id="sideMenu">
     <div class="profile-area">
-        <img src="https://flaticon.com" class="user-avatar" id="userPhoto">
+        <img src="https://flaticon.com" class="user-avatar">
         <h4 id="userNameDisplay">Visitante</h4>
-        <button id="authBtn" onclick="fazerLogin()" style="background:var(--primary); border:none; color:white; padding:8px 15px; border-radius:4px; cursor:pointer;">Entrar / Cadastro</button>
+        <button id="authBtn" style="background:var(--primary); color:white; border:none; padding:10px; border-radius:5px; width:100%; cursor:pointer;">Entrar / Cadastro</button>
     </div>
-    <nav class="nav-links">
-        <a href="#">Animes Dublados</a>
-        <a href="#">Animes Legendados</a>
-        <div id="loggedOptions" style="display:none; padding:10px;">
-            <small>Brilho:</small>
-            <input type="range" min="30" max="100" value="100" oninput="window.setBrilho(this.value)">
-        </div>
-    </nav>
 </div>
 
 <div id="postarModal" class="modal">
     <div class="modal-card">
         <h3 style="color:var(--primary); margin:0;">Postar Anime</h3>
-        <input type="text" id="pNome" placeholder="Nome do Anime">
-        <input type="text" id="pCapa" placeholder="Link da Capa (Imagem)">
-        <input type="text" id="pLink" placeholder="Link do Vídeo">
-        <button onclick="salvarPost()" style="width:100%; padding:12px; background:var(--primary); color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">PUBLICAR</button>
-        <button onclick="fecharPostar()" style="background:none; border:none; color:#666; width:100%; margin-top:10px; cursor:pointer;">Cancelar</button>
+        <input type="text" id="pNome" placeholder="Nome" style="width:100%; margin:10px 0; padding:10px; background:#222; border:1px solid #333; color:#fff;">
+        <input type="text" id="pCapa" placeholder="Link da Capa" style="width:100%; margin:10px 0; padding:10px; background:#222; border:1px solid #333; color:#fff;">
+        <input type="text" id="pLink" placeholder="Link do Vídeo" style="width:100%; margin:10px 0; padding:10px; background:#222; border:1px solid #333; color:#fff;">
+        <button id="btnSave" style="width:100%; padding:12px; background:var(--primary); color:white; border:none; border-radius:5px; cursor:pointer;">PUBLICAR</button>
     </div>
 </div>
 
 <div class="section-title">Destaques</div>
-<div class="slider" id="sliderDestaques"></div>
+<div class="slider" id="sliderDest"></div>
 <div class="section-title">Recentes</div>
-<div class="grid-recent" id="gridRecent"></div>
+<div class="grid-recent" id="gridRec"></div>
 
 <script type="module">
     import { initializeApp } from "https://gstatic.com";
@@ -102,26 +94,30 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Funções de Interface
-    window.toggleMenu = () => {
-        document.getElementById('sideMenu').classList.toggle('active');
-        document.getElementById('overlay').style.display = document.getElementById('sideMenu').classList.contains('active') ? 'block' : 'none';
+    // EVENTOS DE CLIQUE
+    document.getElementById('mOpen').onclick = () => {
+        document.getElementById('sideMenu').classList.add('active');
+        document.getElementById('overlay').style.display = 'block';
     };
-    window.toggleSearch = () => {
+    document.getElementById('overlay').onclick = () => {
+        document.getElementById('sideMenu').classList.remove('active');
+        document.getElementById('overlay').style.display = 'none';
+        document.getElementById('postarModal').style.display = 'none';
+    };
+    document.getElementById('sOpen').onclick = () => {
         const s = document.getElementById('searchBox');
-        s.style.display = (s.style.display === 'block') ? 'none' : 'block';
+        s.style.display = s.style.display === 'block' ? 'none' : 'block';
     };
-    window.setBrilho = (v) => document.documentElement.style.setProperty('--brightness', v + '%');
-    window.abrirPostar = () => {
-        if(!auth.currentUser) return alert("Faça login para postar!");
+    document.getElementById('pOpen').onclick = () => {
+        if(!auth.currentUser) return alert("Faça login!");
         document.getElementById('postarModal').style.display = 'flex';
+        document.getElementById('overlay').style.display = 'block';
     };
-    window.fecharPostar = () => document.getElementById('postarModal').style.display = 'none';
 
-    // Login Real
-    window.fazerLogin = async () => {
+    // LOGIN E POSTAGEM
+    document.getElementById('authBtn').onclick = async () => {
         if(auth.currentUser) return signOut(auth);
-        const e = prompt("E-mail:"), s = prompt("Senha (6+ dígitos):");
+        const e = prompt("E-mail:"), s = prompt("Senha:");
         if(!e || !s) return;
         try { await signInWithEmailAndPassword(auth, e, s); }
         catch {
@@ -133,27 +129,25 @@
         }
     };
 
-    // Postagem Real
-    window.salvarPost = async () => {
+    document.getElementById('btnSave').onclick = async () => {
         const n = document.getElementById('pNome').value, c = document.getElementById('pCapa').value, l = document.getElementById('pLink').value;
-        if(!n || !l) return alert("Nome e Link obrigatórios!");
-        await addDoc(collection(db, "animes"), { nome: n, capa: c || 'https://placeholder.com', link: l, data: Date.now() });
-        fecharPostar();
+        if(!n || !l) return;
+        await addDoc(collection(db, "animes"), { nome: n, capa: c, link: l, data: Date.now() });
+        document.getElementById('postarModal').style.display = 'none';
+        document.getElementById('overlay').style.display = 'none';
     };
 
-    // Monitorar Usuário
     onAuthStateChanged(auth, async (u) => {
-        const d = document.getElementById('userNameDisplay'), b = document.getElementById('authBtn'), o = document.getElementById('loggedOptions');
+        const d = document.getElementById('userNameDisplay'), b = document.getElementById('authBtn');
         if(u) {
-            const docSnap = await getDoc(doc(db, "usuarios", u.uid));
-            d.innerText = docSnap.exists() ? docSnap.data().nome : u.email;
-            b.innerText = "Sair"; o.style.display = "block";
-        } else { d.innerText = "Visitante"; b.innerText = "Entrar / Cadastro"; o.style.display = "none"; }
+            const snap = await getDoc(doc(db, "usuarios", u.uid));
+            d.innerText = snap.exists() ? snap.data().nome : u.email;
+            b.innerText = "Sair";
+        } else { d.innerText = "Visitante"; b.innerText = "Entrar / Cadastro"; }
     });
 
-    // Carregar Dados
     onSnapshot(query(collection(db, "animes"), orderBy("data", "desc")), (snap) => {
-        const g = document.getElementById('gridRecent'), s = document.getElementById('sliderDestaques');
+        const g = document.getElementById('gridRec'), s = document.getElementById('sliderDest');
         g.innerHTML = ""; s.innerHTML = "";
         snap.forEach(doc => {
             const a = doc.data();
@@ -162,12 +156,12 @@
         });
     });
 
-    // Menu A-Z e Pesquisa
-    const cont = document.getElementById('abcContainer');
+    // MENU A-Z
+    const contAZ = document.getElementById('abcContainer');
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(l => {
         const span = document.createElement('span'); span.innerText = l;
         span.onclick = () => { document.getElementById('searchInput').value = l; document.getElementById('searchInput').dispatchEvent(new Event('input')); };
-        cont.appendChild(span);
+        contAZ.appendChild(span);
     });
     document.getElementById('searchInput').oninput = (e) => {
         const t = e.target.value.toLowerCase();
