@@ -5,114 +5,80 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AnimesOracle</title>
     <style>
-        :root { --bg: #0b0b0b; --card: #161616; --text: #ffffff; --primary: #7c4dff; --brightness: 100%; }
-        body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', Roboto, sans-serif; filter: brightness(var(--brightness)); overflow-x: hidden; }
-        
-        /* HEADER E BUSCA MODERNA */
-        header { display: flex; align-items: center; padding: 0 15px; background: #000; height: 70px; position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid var(--primary); gap: 15px; }
-        .logo { font-weight: 900; color: var(--primary); font-size: 22px; text-transform: uppercase; letter-spacing: 1px; flex-shrink: 0; }
-        .search-container { flex-grow: 1; position: relative; }
-        .search-container input { width: 100%; padding: 10px 15px; border-radius: 20px; border: 1px solid #333; background: #1a1a1a; color: white; outline: none; transition: 0.3s; }
-        .search-container input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(124, 77, 255, 0.3); }
-
-        /* MENU HAMBURGUER */
-        .burger-btn { font-size: 28px; cursor: pointer; color: var(--primary); background: none; border: none; }
-
-        /* MENU A-Z ROXO */
-        .abc-menu { display: flex; overflow-x: auto; background: #000; padding: 15px; gap: 18px; scrollbar-width: none; border-bottom: 1px solid #222; }
-        .abc-menu span { color: var(--primary); cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.2s; }
-        .abc-menu span:hover { transform: scale(1.2); }
-
-        /* SLIDER COM BRILHO ROXO (GLOW) */
-        .slider { display: flex; overflow-x: auto; gap: 20px; padding: 20px 10px; scrollbar-width: none; }
-        .slider-card { 
-            min-width: 140px; background: var(--card); border-radius: 12px; 
-            border: 2px solid var(--primary); overflow: hidden; position: relative;
-            box-shadow: 0 0 15px rgba(124, 77, 255, 0.6); /* LUZ ROXA À VOLTA */
-            transition: 0.3s;
-        }
-        .slider-card:hover { transform: translateY(-5px); box-shadow: 0 0 25px rgba(124, 77, 255, 0.9); }
-        .slider-card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
-
-        /* GRID RECENTES */
-        .section-title { padding: 20px 15px 5px; font-size: 14px; color: var(--primary); font-weight: bold; text-transform: uppercase; }
-        .grid-recent { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; }
-        .card-anime { background: var(--card); border-radius: 10px; overflow: hidden; border: 1px solid #222; }
-        .card-anime img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
-        .card-info { padding: 10px; font-size: 13px; font-weight: 500; }
-
-        /* MENU LATERAL PROFISSIONAL */
-        .side-menu { position: fixed; left: -100%; top: 0; width: 300px; height: 100%; background: #0a0a0a; z-index: 2000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
+        :root { --bg: #0f0f0f; --card: #1a1a1a; --text: #ffffff; --primary: #6200ea; --brightness: 100%; }
+        body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; filter: brightness(var(--brightness)); overflow-x: hidden; }
+        header { display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: #000; height: 60px; position: sticky; top: 0; z-index: 1000; }
+        .header-btn-container { width: 45px; display: flex; align-items: center; }
+        .logo { font-weight: bold; color: var(--primary); font-size: 20px; flex-grow: 1; text-align: center; }
+        .icon-btn { width: 40px; height: 40px; cursor: pointer; background: none; border: none; color: var(--primary); padding: 0; }
+        #searchBox { display: none; position: absolute; left: 0; top: 60px; width: 100%; padding: 10px; background: #000; box-sizing: border-box; z-index: 999; }
+        #searchBox input { width: 100%; padding: 12px; border-radius: 5px; border: 1px solid var(--primary); background: #222; color: white; }
+        .abc-menu { display: flex; overflow-x: auto; background: #111; padding: 12px; gap: 20px; scrollbar-width: none; border-bottom: 1px solid #222; }
+        .abc-menu span { color: var(--primary); cursor: pointer; font-weight: bold; font-size: 16px; min-width: 15px; text-align: center; }
+        .side-menu { position: fixed; left: -100%; top: 0; width: 80%; max-width: 300px; height: 100%; background: #151515; z-index: 2000; transition: 0.3s; padding: 20px; }
         .side-menu.active { left: 0; }
-        .profile-header { padding: 40px 20px; background: linear-gradient(to bottom, #1a1a1a, #0a0a0a); text-align: center; border-bottom: 1px solid #222; }
-        .user-avatar { width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--primary); object-fit: cover; margin-bottom: 15px; box-shadow: 0 0 15px var(--primary); }
-        .menu-items { padding: 10px 0; }
-        .menu-items a { display: flex; align-items: center; padding: 15px 25px; color: #ccc; text-decoration: none; font-size: 15px; border-left: 4px solid transparent; transition: 0.2s; }
-        .menu-items a:hover { background: #161616; color: white; border-left-color: var(--primary); }
-        
+        .profile-area { text-align: center; padding-bottom: 20px; border-bottom: 1px solid #333; margin-bottom: 10px; }
+        .user-avatar { width: 70px; height: 70px; border-radius: 50%; background: #333; border: 2px solid var(--primary); object-fit: cover; }
+        .nav-links a { display: block; color: white; padding: 15px 0; text-decoration: none; border-bottom: 1px solid #222; font-size: 14px; }
+        .section-title { padding: 15px 10px 5px; font-size: 13px; color: #888; text-transform: uppercase; }
+        .slider { display: flex; overflow-x: auto; gap: 12px; padding: 10px; scrollbar-width: none; }
+        .featured-card { min-width: 140px; background: var(--card); border-radius: 8px; overflow: hidden; border: 2px solid var(--primary); box-shadow: 0 0 10px rgba(98, 0, 234, 0.2); }
+        .featured-card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
+        .grid-recent { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 10px; }
+        .card-recent { background: var(--card); border-radius: 8px; overflow: hidden; border-bottom: 2px solid var(--primary); }
+        .card-recent img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 5000; justify-content: center; align-items: center; }
         .modal-card { background: #1a1a1a; padding: 25px; border-radius: 15px; width: 90%; max-width: 400px; border: 1px solid var(--primary); }
-        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1500; backdrop-filter: blur(3px); }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #333; color: white; border-radius: 5px; box-sizing: border-box; }
+        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1500; }
     </style>
 </head>
 <body>
 
 <header>
-    <button class="burger-btn" onclick="toggleMenu()">☰</button>
+    <div class="header-btn-container"><button class="icon-btn" onclick="toggleMenu()"></button></div>
     <div class="logo">AnimesOracle</div>
-    <div class="search-container">
-        <input type="text" id="mainSearch" placeholder="O que vamos assistir?">
+    <div class="header-btn-container" style="justify-content: flex-end; gap: 10px;">
+        <button class="icon-btn" onclick="abrirPostar()"></button>
+        <button class="icon-btn" onclick="toggleSearch()"></button>
     </div>
-    <button class="icon-btn" onclick="abrirPostar()" style="color:var(--primary); font-size:24px; background:none; border:none;">+</button>
+    <div id="searchBox"><input type="text" id="searchInput" placeholder="Pesquisar..."></div>
 </header>
 
 <div class="abc-menu" id="abcContainer"></div>
 
 <div id="overlay" onclick="toggleMenu()"></div>
 <div class="side-menu" id="sideMenu">
-    <div class="profile-header">
-        <img src="https://flaticon.com" class="user-avatar" id="sideUserPic">
-        <h3 id="sideUserName" style="margin:0">Visitante</h3>
-        <button onclick="triggerLogin()" id="authBtn" style="margin-top:10px; background:var(--primary); border:none; color:white; padding:6px 12px; border-radius:20px; font-size:12px; cursor:pointer;">Entrar / Cadastro</button>
+    <div class="profile-area">
+        <img src="https://flaticon.com" class="user-avatar" id="userPhoto">
+        <h4 id="userNameDisplay">Visitante</h4>
+        <button id="authBtn" onclick="fazerLogin()" style="background:var(--primary); border:none; color:white; padding:8px 15px; border-radius:4px; cursor:pointer;">Entrar / Cadastro</button>
     </div>
-    <div class="menu-items">
-        <a href="#">📺 Animes Dublados</a>
-        <a href="#">🇯🇵 Animes Legendados</a>
-        <a href="#">🎞️ Últimos Episódios</a>
-        <a href="#">🎭 Gêneros</a>
-    </div>
-    <div id="userSettings" style="display:none; padding:20px; border-top:1px solid #222;">
-        <small style="color:var(--primary)">AJUSTES DE USUÁRIO</small>
-        <div style="margin-top:15px">
-            <small>Brilho da Tela:</small>
-            <input type="range" min="30" max="100" value="100" style="width:100%" oninput="ajustarBrilho(this.value)">
+    <nav class="nav-links">
+        <a>Animes Dublados</a>
+        <a>Animes Legendados</a>
+        <div id="loggedOptions" style="display:none; padding:10px;">
+            <small>Brilho:</small>
+            <input type="range" min="30" max="100" value="100" oninput="window.setBrilho(this.value)">
+            <label style="display:block; margin-top:10px;"><input type="checkbox" id="adultMode"> Modo Adulto (+18)</label>
         </div>
-        <label style="display:flex; align-items:center; gap:10px; margin-top:15px; font-size:14px;">
-            <input type="checkbox" id="adultMode"> Modo Adulto (+18)
-        </label>
-    </div>
+    </nav>
 </div>
 
 <div id="postarModal" class="modal">
     <div class="modal-card">
-        <h3 style="color:var(--primary); margin-top:0">Novo Anime</h3>
-        <input type="text" id="pNome" placeholder="Nome do Anime" style="width:100%; padding:10px; margin:5px 0; background:#222; border:1px solid #333; color:white;">
-        <input type="text" id="pCapa" placeholder="Link da Capa (Imagem)" style="width:100%; padding:10px; margin:5px 0; background:#222; border:1px solid #333; color:white;">
-        <input type="text" id="pLink" placeholder="Link do Player (Vídeo)" style="width:100%; padding:10px; margin:5px 0; background:#222; border:1px solid #333; color:white;">
-        <select id="pRating" style="width:100%; padding:10px; margin:5px 0; background:#222; border:1px solid #333; color:white;">
-            <option value="10">Nota 10/10</option>
-            <option value="9">Nota 9/10</option>
-            <option value="8">Nota 8/10</option>
-        </select>
-        <button onclick="salvarPost()" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; margin-top:10px; border-radius:5px; font-weight:bold;">PUBLICAR</button>
-        <button onclick="fecharPostar()" style="width:100%; background:none; border:none; color:#555; margin-top:10px;">Cancelar</button>
+        <h3 style="color:var(--primary); margin:0;">Postar Anime</h3>
+        <input type="text" id="pNome" placeholder="Nome do Anime">
+        <input type="text" id="pCapa" placeholder="Link da Imagem (Capa)">
+        <input type="text" id="pLink" placeholder="Link do Vídeo">
+        <button onclick="salvarPost()" style="width:100%; padding:12px; background:var(--primary); color:white; border:none; border-radius:5px; cursor:pointer;">PUBLICAR</button>
+        <button onclick="fecharPostar()" style="background:none; border:none; color:#666; width:100%; margin-top:10px; cursor:pointer;">Cancelar</button>
     </div>
 </div>
 
-<div class="section-title">✨ Destaques da Semana</div>
-<div class="slider" id="sliderTop"></div>
-
-<div class="section-title">📅 Adicionados Recentemente</div>
+<div class="section-title">Destaques</div>
+<div class="slider" id="sliderDestaques"></div>
+<div class="section-title">Recentes</div>
 <div class="grid-recent" id="gridRecent"></div>
 
 <script type="module">
@@ -133,100 +99,73 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Interface
     window.toggleMenu = () => {
         document.getElementById('sideMenu').classList.toggle('active');
         document.getElementById('overlay').style.display = document.getElementById('sideMenu').classList.contains('active') ? 'block' : 'none';
     };
+    window.toggleSearch = () => {
+        const s = document.getElementById('searchBox');
+        s.style.display = s.style.display === 'block' ? 'none' : 'block';
+    };
+    window.setBrilho = (v) => document.documentElement.style.setProperty('--brightness', v + '%');
     window.abrirPostar = () => {
         if(!auth.currentUser) return alert("Faça login para postar!");
         document.getElementById('postarModal').style.display = 'flex';
     };
     window.fecharPostar = () => document.getElementById('postarModal').style.display = 'none';
-    window.ajustarBrilho = (v) => document.documentElement.style.setProperty('--brightness', v + '%');
 
-    // Pesquisa e Menu A-Z
-    const inputBusca = document.getElementById('mainSearch');
-    inputBusca.addEventListener('input', (e) => {
-        const t = e.target.value.toLowerCase();
-        document.querySelectorAll('.card-anime').forEach(c => {
-            c.style.display = c.innerText.toLowerCase().includes(t) ? 'block' : 'none';
+    window.fazerLogin = async () => {
+        if(auth.currentUser) return signOut(auth);
+        const e = prompt("E-mail:"), s = prompt("Senha (6+ dígitos):");
+        if(!e || !s) return;
+        try { await signInWithEmailAndPassword(auth, e, s); }
+        catch {
+            const n = prompt("Nome para cadastro:");
+            if(n) {
+                const r = await createUserWithEmailAndPassword(auth, e, s);
+                await setDoc(doc(db, "usuarios", r.user.uid), { nome: n });
+            }
+        }
+    };
+
+    window.salvarPost = async () => {
+        const n = document.getElementById('pNome').value, c = document.getElementById('pCapa').value, l = document.getElementById('pLink').value;
+        if(!n || !l) return alert("Nome e Link são obrigatórios!");
+        await addDoc(collection(db, "animes"), { nome: n, capa: c, link: l, data: Date.now() });
+        fecharPostar();
+    };
+
+    onAuthStateChanged(auth, async (u) => {
+        const d = document.getElementById('userNameDisplay'), b = document.getElementById('authBtn'), o = document.getElementById('loggedOptions');
+        if(u) {
+            const docSnap = await getDoc(doc(db, "usuarios", u.uid));
+            d.innerText = docSnap.exists() ? docSnap.data().nome : u.email;
+            b.innerText = "Sair"; o.style.display = "block";
+        } else { d.innerText = "Visitante"; b.innerText = "Entrar / Cadastro"; o.style.display = "none"; }
+    });
+
+    onSnapshot(query(collection(db, "animes"), orderBy("data", "desc")), (snap) => {
+        const g = document.getElementById('gridRecent'), s = document.getElementById('sliderDestaques');
+        g.innerHTML = ""; s.innerHTML = "";
+        snap.forEach(doc => {
+            const a = doc.data();
+            const h = `<div class="card-recent" onclick="window.open('${a.link}','_blank')"><img src="${a.capa}"><div style="padding:8px; font-size:12px;">${a.nome}</div></div>`;
+            g.innerHTML += h;
+            if(s.children.length < 5) s.innerHTML += `<div class="featured-card" onclick="window.open('${a.link}','_blank')"><img src="${a.capa}"></div>`;
         });
     });
 
     const contAZ = document.getElementById('abcContainer');
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(l => {
-        const s = document.createElement('span');
-        s.innerText = l;
-        s.onclick = () => { inputBusca.value = l; inputBusca.dispatchEvent(new Event('input')); };
-        contAZ.appendChild(s);
+        const span = document.createElement('span'); span.innerText = l; span.style.cursor = "pointer"; span.style.color = "var(--primary)";
+        span.onclick = () => { document.getElementById('searchInput').value = l; document.getElementById('searchInput').dispatchEvent(new Event('input')); };
+        contAZ.appendChild(span);
     });
 
-    // Firebase Auth
-    window.triggerLogin = async () => {
-        if(auth.currentUser) return signOut(auth);
-        const email = prompt("E-mail:");
-        const pass = prompt("Senha:");
-        if(!email || !pass) return;
-        try {
-            await signInWithEmailAndPassword(auth, email, pass);
-        } catch (e) {
-            const nome = prompt("Conta não encontrada. Nome para cadastro:");
-            if(nome) {
-                const res = await createUserWithEmailAndPassword(auth, email, pass);
-                await setDoc(doc(db, "usuarios", res.user.uid), { nome: nome });
-            }
-        }
+    document.getElementById('searchInput').oninput = (e) => {
+        const t = e.target.value.toLowerCase();
+        document.querySelectorAll('.card-recent').forEach(c => c.style.display = c.innerText.toLowerCase().includes(t) ? 'block' : 'none');
     };
-
-    onAuthStateChanged(auth, async (u) => {
-        const btn = document.getElementById('authBtn');
-        const st = document.getElementById('userSettings');
-        if(u) {
-            const d = await getDoc(doc(db, "usuarios", u.uid));
-            document.getElementById('sideUserName').innerText = d.exists() ? d.data().nome : u.email;
-            btn.innerText = "Sair";
-            st.style.display = "block";
-        } else {
-            document.getElementById('sideUserName').innerText = "Visitante";
-            btn.innerText = "Entrar / Cadastro";
-            st.style.display = "none";
-        }
-    });
-
-    // Postar e Carregar
-    window.salvarPost = async () => {
-        const n = document.getElementById('pNome').value;
-        const l = document.getElementById('pLink').value;
-        const c = document.getElementById('pCapa').value;
-        const r = document.getElementById('pRating').value;
-        if(!n || !l) return alert("Nome e Link obrigatórios!");
-        try {
-            await addDoc(collection(db, "animes"), { nome: n, link: l, capa: c, nota: parseInt(r), data: Date.now() });
-            fecharPostar();
-        } catch(e) { alert(e.message); }
-    };
-
-    onSnapshot(query(collection(db, "animes"), orderBy("data", "desc")), (snap) => {
-        const grid = document.getElementById('gridRecent');
-        const slider = document.getElementById('sliderTop');
-        grid.innerHTML = ""; slider.innerHTML = "";
-        let lista = [];
-        snap.forEach(d => lista.push(d.data()));
-
-        lista.forEach(a => {
-            grid.innerHTML += `<div class="card-anime" onclick="window.open('${a.link}','_blank')">
-                <img src="${a.capa || 'https://placeholder.com'}">
-                <div class="card-info"><b>${a.nome}</b></div>
-            </div>`;
-        });
-
-        lista.sort((x,y) => y.nota - x.nota).slice(0,8).forEach(a => {
-            slider.innerHTML += `<div class="slider-card" onclick="window.open('${a.link}','_blank')">
-                <img src="${a.capa || 'https://placeholder.com'}">
-            </div>`;
-        });
-    });
 </script>
 </body>
 </html>
