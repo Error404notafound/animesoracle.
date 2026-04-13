@@ -6,165 +6,116 @@
     <title>AnimesOracle</title>
     <style>
         :root { --bg: #0f0f0f; --card: #1a1a1a; --text: #ffffff; --primary: #6200ea; --brightness: 100%; }
-        body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; filter: brightness(var(--brightness)); overflow-x: hidden; }
-        header { display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: #000; height: 60px; position: sticky; top: 0; z-index: 1000; }
-        .logo { font-weight: bold; color: var(--primary); font-size: 20px; flex-grow: 1; text-align: center; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; filter: brightness(var(--brightness)); overflow-x: hidden; }
         
-        /* ÁREA DE CLIQUE GARANTIDA */
-        .icon-btn { 
-            width: 55px; height: 55px; cursor: pointer; 
-            background: rgba(255, 255, 255, 0.01); /* Quase transparente, mas clicável */
-            border: none; outline: none; position: relative; z-index: 1001;
-            -webkit-tap-highlight-color: transparent;
-        }
+        header { display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: #000; height: 60px; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--primary); }
+        .logo { font-weight: bold; color: var(--primary); font-size: 20px; flex-grow: 1; text-align: center; }
+        .icon-btn { font-size: 26px; cursor: pointer; background: none; border: none; color: var(--primary); }
 
-        #searchBox { display: none; position: absolute; left: 0; top: 60px; width: 100%; padding: 10px; background: #000; box-sizing: border-box; z-index: 999; }
-        #searchBox input { width: 100%; padding: 12px; border-radius: 5px; border: 1px solid var(--primary); background: #222; color: white; }
-        .abc-menu { display: flex; overflow-x: auto; background: #111; padding: 12px; gap: 20px; scrollbar-width: none; border-bottom: 1px solid #222; }
-        .abc-menu span { color: var(--primary); cursor: pointer; font-weight: bold; font-size: 16px; min-width: 15px; text-align: center; }
-        .side-menu { position: fixed; left: -100%; top: 0; width: 280px; height: 100%; background: #151515; z-index: 2000; transition: 0.3s; padding: 20px; }
-        .side-menu.active { left: 0; }
-        .profile-area { text-align: center; padding-bottom: 20px; border-bottom: 1px solid #333; margin-bottom: 10px; }
-        .user-avatar { width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; }
-        .featured-card { min-width: 140px; border-radius: 8px; overflow: hidden; border: 2px solid var(--primary); box-shadow: 0 0 15px var(--primary); }
-        .featured-card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
+        .section-title { padding: 15px 10px 5px; font-size: 13px; color: #888; text-transform: uppercase; }
+        
+        /* GRID DE ANIMES */
         .grid-recent { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 10px; }
-        .card-recent { background: var(--card); border-radius: 8px; overflow: hidden; border-bottom: 2px solid var(--primary); }
-        .card-recent img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
+        .card-recent { background: var(--card); border-radius: 8px; overflow: hidden; border: 1px solid #333; transition: 0.3s; }
+        .card-recent:active { transform: scale(0.95); }
+        .card-recent img { width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block; }
+        .card-info { padding: 8px; font-size: 13px; text-align: center; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* MODAL */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 5000; justify-content: center; align-items: center; }
-        .modal-card { background: #1a1a1a; padding: 25px; border-radius: 15px; width: 90%; max-width: 400px; border: 1px solid var(--primary); }
+        .modal-card { background: #1a1a1a; padding: 25px; border-radius: 15px; width: 85%; max-width: 400px; border: 1px solid var(--primary); }
         input { width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #333; color: white; border-radius: 5px; box-sizing: border-box; }
-        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1500; }
+        .btn-main { width: 100%; background: var(--primary); border: none; color: white; padding: 12px; border-radius: 5px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <header>
-    <button class="icon-btn" id="mOpen"></button>
+    <button class="icon-btn" onclick="alert('Menu em breve')">☰</button>
     <div class="logo">AnimesOracle</div>
-    <div style="display:flex; gap:10px;">
-        <button class="icon-btn" id="pOpen"></button>
-        <button class="icon-btn" id="sOpen"></button>
-    </div>
-    <div id="searchBox"><input type="text" id="searchInput" placeholder="Pesquisar..."></div>
+    <button class="icon-btn" onclick="abrirPostar()">➕</button>
 </header>
 
-<div class="abc-menu" id="abcContainer"></div>
-<div id="overlay"></div>
-
-<div class="side-menu" id="sideMenu">
-    <div class="profile-area">
-        <img src="https://flaticon.com" class="user-avatar">
-        <h4 id="userNameDisplay">Visitante</h4>
-        <button id="authBtn" style="background:var(--primary); color:white; border:none; padding:10px; border-radius:5px; width:100%; cursor:pointer;">Entrar / Cadastro</button>
-    </div>
+<div class="section-title">Animes Adicionados</div>
+<div class="grid-recent" id="animeGrid">
+    <!-- Os animes aparecerão aqui -->
 </div>
 
 <div id="postarModal" class="modal">
     <div class="modal-card">
-        <h3 style="color:var(--primary); margin:0;">Postar Anime</h3>
-        <input type="text" id="pNome" placeholder="Nome">
-        <input type="text" id="pCapa" placeholder="Link da Capa">
-        <input type="text" id="pLink" placeholder="Link do Vídeo">
-        <button id="btnSave" style="width:100%; padding:12px; background:var(--primary); color:white; border:none; border-radius:5px; cursor:pointer;">PUBLICAR</button>
+        <h3 style="color:var(--primary); margin-top:0;">Postar Anime</h3>
+        <input type="text" id="pNome" placeholder="Nome do Anime (Ex: Naruto)">
+        <input type="text" id="pLink" placeholder="Link da Imagem da Capa">
+        <input type="text" id="pVideo" placeholder="ID ou Link do Vídeo">
+        <button onclick="salvarAnime()" id="btnPostar" class="btn-main">Postar Agora</button>
+        <button onclick="fecharPostar()" style="width:100%; background:transparent; border:none; color:gray; margin-top:10px;">Cancelar</button>
     </div>
 </div>
 
-<div class="section-title">Destaques</div>
-<div class="slider" id="sliderDestaques"></div>
-<div class="section-title">Recentes</div>
-<div class="grid-recent" id="gridRecent"></div>
+<!-- SCRIPTS FIREBASE -->
+<script src="https://gstatic.com"></script>
+<script src="https://gstatic.com"></script>
 
-<script type="module">
-    import { initializeApp } from "https://gstatic.com";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://gstatic.com";
-    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, setDoc, getDoc } from "https://gstatic.com";
-
+<script>
     const firebaseConfig = {
         apiKey: "AIzaSyBlhgf82RL_uSWChpBwzuUAfi_SHtQY2kw",
-        authDomain: "animesoracle-a60e9.firebaseapp.com",
+        authDomain: "://firebaseapp.com",
         projectId: "animesoracle-a60e9",
         storageBucket: "animesoracle-a60e9.firebasestorage.app",
         messagingSenderId: "751657326717",
         appId: "1:751657326717:web:67ef63d01ffa3ad044f914"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-    // FUNÇÕES DE CLIQUE "FORCE"
-    window.addEventListener('load', () => {
-        document.getElementById('mOpen').onclick = () => {
-            document.getElementById('sideMenu').classList.add('active');
-            document.getElementById('overlay').style.display = 'block';
-        };
-        document.getElementById('overlay').onclick = () => {
-            document.getElementById('sideMenu').classList.remove('active');
-            document.getElementById('overlay').style.display = 'none';
-        };
-        document.getElementById('sOpen').onclick = () => {
-            const s = document.getElementById('searchBox');
-            s.style.display = (s.style.display === 'block') ? 'none' : 'block';
-        };
-        document.getElementById('pOpen').onclick = () => {
-            if(!auth.currentUser) return alert("Faça login!");
-            document.getElementById('postarModal').style.display = 'flex';
-        };
-    });
+    function abrirPostar() { document.getElementById('postarModal').style.display = 'flex'; }
+    function fecharPostar() { document.getElementById('postarModal').style.display = 'none'; }
 
-    document.getElementById('authBtn').onclick = async () => {
-        if(auth.currentUser) return signOut(auth);
-        const e = prompt("E-mail:"), s = prompt("Senha:");
-        if(!e || !s) return;
-        try { await signInWithEmailAndPassword(auth, e, s); }
-        catch {
-            const n = prompt("Nome para cadastro:");
-            if(n) {
-                const r = await createUserWithEmailAndPassword(auth, e, s);
-                await setDoc(doc(db, "usuarios", r.user.uid), { nome: n });
-            }
+    async function salvarAnime() {
+        const nome = document.getElementById('pNome').value;
+        const capa = document.getElementById('pLink').value;
+        const video = document.getElementById('pVideo').value;
+        const btn = document.getElementById('btnPostar');
+
+        if(!nome || !capa) return alert("Preencha o nome e o link da capa!");
+
+        btn.innerText = "Enviando...";
+        btn.disabled = true;
+
+        try {
+            await db.collection("animes").add({
+                nome: nome,
+                capa: capa,
+                video: video,
+                dataPostagem: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            fecharPostar();
+            document.getElementById('pNome').value = "";
+            document.getElementById('pLink').value = "";
+            document.getElementById('pVideo').value = "";
+        } catch (e) {
+            alert("Erro ao postar! Verifique as 'Regras' no console do Firebase.");
         }
-    };
+        btn.innerText = "Postar Agora";
+        btn.disabled = false;
+    }
 
-    document.getElementById('btnSave').onclick = async () => {
-        const n = document.getElementById('pNome').value, c = document.getElementById('pCapa').value, l = document.getElementById('pLink').value;
-        if(!n || !l) return;
-        await addDoc(collection(db, "animes"), { nome: n, capa: c, link: l, data: Date.now() });
-        document.getElementById('postarModal').style.display = 'none';
-    };
-
-    onAuthStateChanged(auth, async (u) => {
-        const d = document.getElementById('userNameDisplay'), b = document.getElementById('authBtn');
-        if(u) {
-            const docSnap = await getDoc(doc(db, "usuarios", u.uid));
-            d.innerText = docSnap.exists() ? docSnap.data().nome : u.email;
-            b.innerText = "Sair";
-        } else { d.innerText = "Visitante"; b.innerText = "Login"; }
-    });
-
-    onSnapshot(query(collection(db, "animes"), orderBy("data", "desc")), (snap) => {
-        const g = document.getElementById('gridRecent'), s = document.getElementById('sliderDestaques');
-        g.innerHTML = ""; s.innerHTML = "";
-        snap.forEach(doc => {
-            const a = doc.data();
-            g.innerHTML += `<div class="card-recent" onclick="window.open('${a.link}','_blank')"><img src="${a.capa}"><div style="padding:8px">${a.nome}</div></div>`;
-            if(s.children.length < 5) s.innerHTML += `<div class="featured-card" onclick="window.open('${a.link}','_blank')"><img src="${a.capa}"></div>`;
+    // LISTAR ANIMES EM TEMPO REAL
+    db.collection("animes").orderBy("dataPostagem", "desc").onSnapshot((snapshot) => {
+        const grid = document.getElementById('animeGrid');
+        grid.innerHTML = ""; 
+        snapshot.forEach((doc) => {
+            const anime = doc.data();
+            grid.innerHTML += `
+                <div class="card-recent" onclick="alert('Player em breve para: ${anime.nome}')">
+                    <img src="${anime.capa}" onerror="this.src='https://placeholder.com'">
+                    <div class="card-info">${anime.nome}</div>
+                </div>
+            `;
         });
     });
-
-    // MENU A-Z
-    const contAZ = document.getElementById('abcContainer');
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(l => {
-        const span = document.createElement('span'); span.innerText = l;
-        span.onclick = () => { document.getElementById('searchInput').value = l; document.getElementById('searchInput').dispatchEvent(new Event('input')); };
-        contAZ.appendChild(span);
-    });
-
-    document.getElementById('searchInput').oninput = (e) => {
-        const t = e.target.value.toLowerCase();
-        document.querySelectorAll('.card-recent').forEach(c => c.style.display = c.innerText.toLowerCase().includes(t) ? 'block' : 'none');
-    };
 </script>
+
 </body>
 </html>
