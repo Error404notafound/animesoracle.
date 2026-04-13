@@ -1,160 +1,7 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
-    <!-- META TAGS PARA COMPARTILHAMENTO -->
-    <title>AnimesOracle</title>
-    <meta property="og:title" content="AnimesOracle - Portal de Animes">
-    <meta property="og:description" content="Assista, poste e avalie seus animes favoritos na nossa comunidade.">
-    <meta property="og:image" content="https://placeholder.com">
-    <meta name="theme-color" content="#6200ea">
-
-    <style>
-        :root {
-            --bg: #0f0f0f; --card: #1a1a1a; --text: #ffffff; 
-            --primary: #6200ea; --brightness: 100%;
-        }
-        body { 
-            margin: 0; padding: 0; background: var(--bg); color: var(--text);
-            font-family: 'Segoe UI', sans-serif; overflow-x: hidden;
-            filter: brightness(var(--brightness));
-        }
-
-        /* HEADER */
-        header {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 15px; background: #000; height: 60px; position: sticky; top: 0; z-index: 1000;
-        }
-        .logo { font-weight: bold; color: var(--primary); font-size: 20px; flex-grow: 1; text-align: center; }
-        .icon-btn { font-size: 26px; cursor: pointer; background: none; border: none; color: var(--primary); }
-        
-        #searchBox {
-            display: none; position: absolute; left: 0; top: 60px; width: 100%;
-            padding: 10px; background: #000; z-index: 999;
-        }
-        #searchBox input { width: 100%; padding: 12px; border-radius: 5px; border: 1px solid var(--primary); background: #222; color: white; }
-
-        /* MENUS */
-        .abc-menu {
-            display: flex; overflow-x: auto; background: #111; padding: 12px; gap: 20px;
-            scrollbar-width: none; border-bottom: 1px solid #222;
-        }
-        .abc-menu a { color: var(--primary); text-decoration: none; font-weight: bold; font-size: 16px; }
-
-        .side-menu {
-            position: fixed; left: -100%; top: 0; width: 80%; max-width: 300px;
-            height: 100%; background: #151515; z-index: 2000; transition: 0.3s; padding: 20px;
-        }
-        .side-menu.active { left: 0; }
-        .profile-area { text-align: center; padding-bottom: 20px; border-bottom: 1px solid #333; }
-        .user-avatar { width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; }
-
-        /* CARDS E SLIDERS */
-        .section-title { padding: 15px 10px 5px; font-size: 13px; color: #888; text-transform: uppercase; }
-        .slider { display: flex; overflow-x: auto; gap: 12px; padding: 10px; scrollbar-width: none; }
-        .featured-card { 
-            min-width: 140px; background: var(--card); border-radius: 8px; overflow: hidden; 
-            border: 2px solid var(--primary); box-shadow: 0 0 10px rgba(98, 0, 234, 0.2);
-        }
-        .featured-card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
-
-        .grid-recent { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 10px; }
-        .card-recent { background: var(--card); border-radius: 8px; overflow: hidden; }
-        .card-recent img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
-
-        /* PLAYER */
-        #animePlayerPage {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg); z-index: 4000; overflow-y: auto;
-        }
-        .video-container { width: 100%; aspect-ratio: 16/9; background: #000; }
-        .player-tabs { display: flex; background: #111; }
-        .tab-btn { flex: 1; padding: 15px; border: none; background: none; color: #888; font-weight: bold; }
-        .tab-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); }
-
-        /* MODAIS */
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 5000; justify-content: center; align-items: center;
-        }
-        .modal-card { background: #1a1a1a; padding: 25px; border-radius: 15px; width: 90%; max-width: 400px; border: 1px solid var(--primary); }
-        input, select { width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #333; color: white; border-radius: 5px; }
-        
-        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1500; }
-    </style>
-</head>
-<body>
-
-<header>
-    <button class="icon-btn" onclick="toggleMenu()"></button>
-    <div class="logo">AnimesOracle</div>
-    <div style="display:flex; gap:10px;">
-        <button class="icon-btn" onclick="abrirPostar()"></button>
-        <button class="icon-btn" onclick="toggleSearch()"></button>
-    </div>
-    <div id="searchBox"><input type="text" id="searchInput" placeholder="Pesquisar anime..." oninput="filtrarAnimes(this.value)"></div>
-</header>
-
-<div class="abc-menu" id="abcContainer"></div>
-
-<div id="overlay" onclick="toggleMenu()"></div>
-<div class="side-menu" id="sideMenu">
-    <div class="profile-area">
-        <img src="https://placeholder.com" class="user-avatar" id="userPhoto">
-        <h4 id="userNameDisplay">Visitante</h4>
-        <button onclick="fazerLogin()" style="background:var(--primary); border:none; color:white; padding:8px; border-radius:4px;">Login / Cadastro</button>
-    </div>
-    <nav>
-        <a href="#" style="display:block; color:white; padding:15px 0; text-decoration:none;">Animes Dublados</a>
-        <a href="#" style="display:block; color:white; padding:15px 0; text-decoration:none;">Animes Legendados</a>
-        <div id="loggedOptions" style="display:none;">
-            <small>Brilho:</small>
-            <input type="range" min="30" max="100" value="100" oninput="setBrilho(this.value)">
-            <label style="display:block; margin:10px 0;"><input type="checkbox"> Modo Adulto (+18)</label>
-        </div>
-    </nav>
-    <div id="favoritesList" style="margin-top:20px;"><small style="color:var(--primary)">MINHA LISTA</small></div>
-</div>
-
-<div id="postarModal" class="modal">
-    <div class="modal-card">
-        <h3 style="color:var(--primary); margin:0;">Postar Anime</h3>
-        <input type="text" id="pNome" placeholder="Nome do Anime">
-        <input type="text" id="pLink" placeholder="Link do V�deo (Embed)">
-        <select id="pCat"><option value="comum">Comum</option><option value="adulto">+18</option></select>
-        <button onclick="salvarPost()" style="width:100%; padding:12px; background:var(--primary); color:white; border:none; border-radius:5px;">Publicar</button>
-        <button onclick="fecharPostar()" style="background:none; border:none; color:#666; width:100%; margin-top:10px;">Cancelar</button>
-    </div>
-</div>
-
-<div id="animePlayerPage">
-    <div style="padding:10px; background:#000; display:flex; align-items:center; justify-content:space-between;">
-        <button class="icon-btn" onclick="fecharPlayer()"></button>
-        <h3 id="playerTitle" style="margin:0; font-size:16px;">Anime</h3>
-        <div></div>
-    </div>
-    <div class="video-container" id="videoArea"></div>
-    <div class="player-tabs">
-        <button class="tab-btn active">LEGENDADO</button>
-        <button class="tab-btn">DUBLADO</button>
-    </div>
-    <div style="padding:15px; display:flex; gap:10px;">
-        <button onclick="toggleFavorito()" style="flex:1; background:#222; border:1px solid var(--primary); color:white; padding:10px; border-radius:5px;"> Salvar</button>
-        <button onclick="alert('Reportado!')" style="flex:1; background:#300; border:1px solid #f00; color:#f88; padding:10px; border-radius:5px;"> Erro</button>
-    </div>
-</div>
-
-<div class="section-title">Destaques (Votados)</div>
-<div class="slider" id="destaquesSlider"></div>
-
-<div class="section-title">Adicionados Recentemente</div>
-<div class="grid-recent" id="recentesGrid"></div>
-
 <script type="module">
+    // 1. IMPORTAÇÕES (Links completos para evitar erros de comunicação)
     import { initializeApp } from "https://gstatic.com";
-    import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://gstatic.com";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://gstatic.com";
     import { getFirestore, doc, setDoc, getDoc, collection, addDoc, onSnapshot, query, orderBy } from "https://gstatic.com";
 
     const firebaseConfig = {
@@ -166,87 +13,56 @@
       appId: "1:751657326717:web:67ef63d01ffa3ad044f914"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    // 2. FUNÇÕES DE INTERFACE (FORA DO FIREBASE PARA RESPONDER NA HORA)
+    // Isso garante que o Menu e a Busca funcionem mesmo se o Firebase falhar
+    window.toggleMenu = () => {
+        const menu = document.getElementById('sideMenu');
+        const overlay = document.getElementById('overlay');
+        if(menu) menu.classList.toggle('active');
+        if(overlay) overlay.style.display = menu.classList.contains('active') ? 'block' : 'none';
+    };
 
-    // LOGIN E CADASTRO
-    window.fazerLogin = async () => {
-        const email = prompt("E-mail:");
-        const senha = prompt("Senha (m�n 6 dig):");
-        if (email && senha) {
+    window.toggleSearch = () => {
+        const box = document.getElementById('searchBox');
+        if(box) box.style.display = (box.style.display === 'block') ? 'none' : 'block';
+    };
+
+    // 3. INICIALIZAÇÃO DO FIREBASE (DENTRO DE UM TRY/CATCH PARA NÃO TRAVAR O SITE)
+    try {
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        window.fazerLogin = async () => {
+            const email = prompt("E-mail:");
+            const senha = prompt("Senha:");
+            if(!email || !senha) return;
             try {
                 await signInWithEmailAndPassword(auth, email, senha);
+                alert("Logado!");
             } catch (e) {
-                const nome = prompt("Criar conta? Digite seu Nome:");
+                const nome = prompt("Conta nova! Digite seu nome:");
                 if(nome) {
                     const res = await createUserWithEmailAndPassword(auth, email, senha);
-                    await setDoc(doc(db, "usuarios", res.user.uid), { nome: nome, favoritos: [] });
+                    await setDoc(doc(db, "usuarios", res.user.uid), { nome: nome });
+                    alert("Cadastrado!");
                 }
             }
-        }
-    };
+        };
 
-    onAuthStateChanged(auth, async (user) => {
-        const display = document.getElementById('userNameDisplay');
-        if (user) {
-            const d = await getDoc(doc(db, "usuarios", user.uid));
-            display.innerText = d.exists() ? d.data().nome : user.email;
-            document.getElementById('loggedOptions').style.display = 'block';
-        } else {
-            display.innerText = "Visitante";
-        }
-    });
-
-    // POSTAGEM REAL-TIME
-    window.salvarPost = async () => {
-        const n = document.getElementById('pNome').value;
-        const l = document.getElementById('pLink').value;
-        if(n && l && auth.currentUser) {
-            await addDoc(collection(db, "animes"), { nome: n, url: l, data: Date.now() });
-            fecharPostar();
-        } else { alert("Logue para postar!"); }
-    };
-
-    onSnapshot(query(collection(db, "animes"), orderBy("data", "desc")), (snap) => {
-        const grid = document.getElementById('recentesGrid');
-        const slider = document.getElementById('destaquesSlider');
-        grid.innerHTML = ""; slider.innerHTML = "";
-        snap.forEach(doc => {
-            const a = doc.data();
-            const html = `<div class="card-recent" onclick="abrirPlayer('${a.nome}','${a.url}')">
-                <img src="https://placeholder.com{a.nome}">
-                <p style="font-size:12px; padding:5px;">${a.nome}</p></div>`;
-            grid.innerHTML += html;
-            slider.innerHTML += html.replace('card-recent', 'featured-card');
+        onAuthStateChanged(auth, async (user) => {
+            const display = document.getElementById('userNameDisplay');
+            if (user) {
+                const d = await getDoc(doc(db, "usuarios", user.uid));
+                display.innerText = d.exists() ? d.data().nome : user.email;
+            }
         });
-    });
+    } catch (err) {
+        console.error("Erro de conexão Firebase:", err);
+    }
 
-    // INTERFACE
-    window.toggleMenu = () => {
-        document.getElementById('sideMenu').classList.toggle('active');
-        document.getElementById('overlay').style.display = document.getElementById('sideMenu').classList.contains('active') ? 'block' : 'none';
-    };
-    window.toggleSearch = () => {
-        const s = document.getElementById('searchBox');
-        s.style.display = s.style.display === 'block' ? 'none' : 'block';
-    };
-    window.abrirPlayer = (n, u) => {
-        document.getElementById('playerTitle').innerText = n;
-        document.getElementById('videoArea').innerHTML = `<iframe src="${u}" style="width:100%;height:100%;border:none;" allowfullscreen></iframe>`;
-        document.getElementById('animePlayerPage').style.display = 'block';
-    };
-    window.fecharPlayer = () => {
-        document.getElementById('animePlayerPage').style.display = 'none';
-        document.getElementById('videoArea').innerHTML = '';
-    };
+    // 4. FUNÇÕES DE PLAYER E POSTAR
     window.abrirPostar = () => document.getElementById('postarModal').style.display = 'flex';
     window.fecharPostar = () => document.getElementById('postarModal').style.display = 'none';
-    window.setBrilho = (v) => document.documentElement.style.setProperty('--brightness', v + '%');
-
-    // Menu A-Z
-    const abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-    abc.forEach(l => { document.getElementById('abcContainer').innerHTML += `<a href="#">${l}</a>`; });
+    window.fecharPlayer = () => document.getElementById('animePlayerPage').style.display = 'none';
 </script>
-</body>
-</html>
