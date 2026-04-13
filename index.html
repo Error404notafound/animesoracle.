@@ -5,62 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AnimesOracle</title>
     <style>
-        :root {
-            --bg: #0f0f0f; --card: #1a1a1a; --text: #ffffff; 
-            --primary: #6200ea; --brightness: 100%;
-        }
-        body { 
-            margin: 0; padding: 0; background: var(--bg); color: var(--text);
-            font-family: 'Segoe UI', sans-serif; overflow-x: hidden;
-            filter: brightness(var(--brightness));
-        }
-
-        header {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 15px; background: #000; height: 60px; position: sticky; top: 0; z-index: 1000;
-        }
-        .logo { font-weight: bold; color: var(--primary); font-size: 20px; flex-grow: 1; text-align: center; }
-        .icon-btn { font-size: 26px; cursor: pointer; background: none; border: none; color: var(--primary); padding: 0; }
-        
-        #searchBox {
-            display: none; position: absolute; left: 0; top: 60px; width: 100%;
-            padding: 10px; background: #000; box-sizing: border-box; z-index: 999;
-        }
+        :root { --bg: #0f0f0f; --card: #1a1a1a; --text: #ffffff; --primary: #6200ea; --brightness: 100%; }
+        body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; filter: brightness(var(--brightness)); overflow-x: hidden; }
+        header { display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: #000; height: 60px; position: sticky; top: 0; z-index: 1000; }
+        .logo { font-weight: bold; color: var(--primary); font-size: 22px; flex-grow: 1; text-align: center; }
+        .icon-btn { font-size: 24px; cursor: pointer; background: none; border: none; color: var(--primary); }
+        #searchBox { display: none; padding: 10px; background: #000; position: absolute; top: 60px; width: 100%; box-sizing: border-box; z-index: 999; }
         #searchBox input { width: 100%; padding: 12px; border-radius: 5px; border: 1px solid var(--primary); background: #222; color: white; }
-
-        .abc-menu {
-            display: flex; overflow-x: auto; background: #111; padding: 12px; gap: 20px;
-            scrollbar-width: none; border-bottom: 1px solid #222;
-        }
-        .abc-menu a { color: var(--primary); text-decoration: none; font-weight: bold; min-width: 15px; text-align: center; }
-
-        .side-menu {
-            position: fixed; left: -100%; top: 0; width: 80%; max-width: 300px;
-            height: 100%; background: #151515; z-index: 2000; transition: 0.3s; padding: 20px;
-        }
+        .abc-menu { display: flex; overflow-x: auto; background: #111; padding: 12px; gap: 20px; border-bottom: 1px solid #222; scrollbar-width: none; }
+        .abc-menu a { color: var(--primary); text-decoration: none; font-weight: bold; }
+        .side-menu { position: fixed; left: -100%; top: 0; width: 280px; height: 100%; background: #151515; z-index: 2000; transition: 0.3s; padding: 20px; }
         .side-menu.active { left: 0; }
-        .profile-area { text-align: center; padding-bottom: 20px; border-bottom: 1px solid #333; }
-        .user-avatar { width: 70px; height: 70px; border-radius: 50%; background: #333; border: 2px solid var(--primary); }
-
         .section-title { padding: 15px 10px 5px; font-size: 13px; color: #888; text-transform: uppercase; }
         .slider { display: flex; overflow-x: auto; gap: 12px; padding: 10px; scrollbar-width: none; }
-        .featured-card { 
-            min-width: 140px; background: var(--card); border-radius: 8px; overflow: hidden; 
-            border: 2px solid var(--primary); position: relative;
-        }
+        .featured-card { min-width: 140px; background: var(--card); border-radius: 8px; overflow: hidden; border: 2px solid var(--primary); }
         .featured-card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
-
         .grid-recent { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 10px; }
-        .card-recent { background: var(--card); border-radius: 8px; overflow: hidden; text-align: center; font-size: 12px;}
+        .card-recent { background: var(--card); border-radius: 8px; overflow: hidden; text-align: center; border-bottom: 2px solid var(--primary); }
         .card-recent img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
-
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 5000; justify-content: center; align-items: center;
-        }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 5000; justify-content: center; align-items: center; }
         .modal-card { background: #1a1a1a; padding: 25px; border-radius: 15px; width: 90%; max-width: 400px; border: 1px solid var(--primary); }
-        input { width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #333; color: white; border-radius: 5px; box-sizing: border-box;}
-        
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #333; color: white; border-radius: 5px; box-sizing: border-box; }
         #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1500; }
     </style>
 </head>
@@ -69,25 +34,24 @@
 <header>
     <button class="icon-btn" onclick="toggleMenu()">☰</button>
     <div class="logo">AnimesOracle</div>
-    <div style="display:flex; gap:10px;">
+    <div style="display:flex; gap:15px;">
         <button class="icon-btn" onclick="abrirPostar()">➕</button>
         <button class="icon-btn" onclick="toggleSearch()">🔍</button>
     </div>
-    <div id="searchBox"><input type="text" id="searchInput" placeholder="Pesquisar anime..."></div>
+    <div id="searchBox"><input type="text" id="searchInput" placeholder="Buscar anime..."></div>
 </header>
 
 <div class="abc-menu" id="abcContainer"></div>
 
 <div id="overlay" onclick="toggleMenu()"></div>
 <div class="side-menu" id="sideMenu">
-    <div class="profile-area">
-        <div style="margin-bottom:10px"><img src="https://flaticon.com" class="user-avatar"></div>
+    <div style="text-align:center; border-bottom:1px solid #333; padding-bottom:20px;">
         <h4 id="userNameDisplay">Visitante</h4>
-        <button id="authBtn" onclick="fazerLogin()" style="background:var(--primary); border:none; color:white; padding:8px 15px; border-radius:4px; cursor:pointer;">Entrar / Cadastro</button>
+        <button id="authBtn" onclick="fazerLogin()" style="background:var(--primary); border:none; color:white; padding:10px; border-radius:5px; width:100%; cursor:pointer;">LOGIN / CADASTRO</button>
     </div>
-    <div id="loggedOptions" style="display:none; padding:15px;">
+    <div id="loggedOptions" style="display:none; padding-top:20px;">
         <small>Brilho:</small>
-        <input type="range" min="30" max="100" value="100" oninput="setBrilho(this.value)">
+        <input type="range" min="30" max="100" value="100" oninput="window.setBrilho(this.value)">
     </div>
 </div>
 
@@ -95,266 +59,31 @@
     <div class="modal-card">
         <h3 style="color:var(--primary); margin-top:0;">Postar Anime</h3>
         <input type="text" id="pNome" placeholder="Nome do Anime">
-        <input type="text" id="pLink" placeholder="Link do Vídeo (Embed)">
-        <input type="text" id="pImg" placeholder="Link da Imagem da Capa">
+        <input type="text" id="pLink" placeholder="Link do Vídeo">
+        <input type="text" id="pCapa" placeholder="Link da Imagem (Capa)">
         <button onclick="salvarPost()" style="width:100%; padding:12px; background:var(--primary); color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">PUBLICAR</button>
-        <button onclick="fecharPostar()" style="width:100%; background:none; border:none; color:#777; margin-top:10px; cursor:pointer;">Cancelar</button>
+        <button onclick="fecharPostar()" style="width:100%; background:none; border:none; color:#666; margin-top:10px; cursor:pointer;">Cancelar</button>
     </div>
 </div>
 
-<div class="section-title">Destaques Oracle</div>
+<div class="section-title">Destaques</div>
 <div class="slider" id="destaquesSlider"></div>
 
-<div class="section-title">Adicionados Recentemente</div>
+<div class="section-title">Recém Adicionados</div>
 <div class="grid-recent" id="recentesGrid"></div>
 
 <script type="module">
     import { initializeApp } from "https://gstatic.com";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://gstatic.com";
-    import { getFirestore, doc, setDoc, getDoc, collection, addDoc, onSnapshot, query, orderBy } from "https://gstatic.com";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, getDoc, setDoc } from "https://gstatic.com";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyBlhgf82RL_uSWChpBwzuUAfi_SHtQY2kw",
-      authDomain: "://firebaseapp.com",
-      projectId: "animesoracle-a60e9",
-      storageBucket: "animesoracle-a60e9.firebasestorage.app",
-      messagingSenderId: "751657326717",
-      appId: "1:751657326717:web:67ef63d01ffa3ad044f914"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    // Interface
-    window.toggleMenu = () => {
-        const m = document.getElementById('sideMenu');
-        m.classList.toggle('active');
-        document.getElementById('overlay').style.display = m.classList.contains('active') ? 'block' : 'none';
-    };
-    window.toggleSearch = () => {
-        const s = document.getElementById('searchBox');
-        s.style.display = s.style.display === 'block' ? 'none' : 'block';
-    };
-    window.setBrilho = (v) => document.documentElement.style.setProperty('--brightness', v + '%');
-    window.abrirPostar = () => {
-        if(!auth.currentUser) return alert("Faça login para postar!");
-        document.getElementById('postarModal').style.display = 'flex';
-    };
-    window.fecharPostar = () => document.getElementById('postarModal').style.display = 'none';
-
-    // Login/Cadastro
-    window.fazerLogin = async () => {
-        if(auth.currentUser) return signOut(auth);
-        const email = prompt("E-mail:");
-        const senha = prompt("Senha (6+ dígitos):");
-        if(!email || !senha) return;
-        try {
-            await signInWithEmailAndPassword(auth, email, senha);
-        } catch (e) {
-            const nome = prompt("Conta não encontrada. Digite seu nome para criar uma:");
-            if(nome) {
-                const res = await createUserWithEmailAndPassword(auth, email, senha);
-                await setDoc(doc(db, "usuarios", res.user.uid), { nome: nome });
-            }
-        }
-    };
-
-    // Salvar no Firestore
-    window.salvarPost = async () => {
-        const n = document.getElementById('pNome').value;
-        const l = document.getElementById('pLink').value;
-        const i = document.getElementById('pImg').value || 'https://placeholder.com';
-        if(!n || !l) return alert("Preencha Nome e Link!");
-        try {
-            await addDoc(collection(db, "animes"), { nome: n, url: l, capa: i, data: Date.now() });
-            fecharPostar();
-            alert("Postado!");
-        } catch (e) { alert(e.message); }
-    };
-
-    // Monitorar Usuário
-    onAuthStateChanged(auth, async (user) => {
-        const display = document.getElementById('userNameDisplay');
-        const btn = document.getElementById('authBtn');
-        if (user) {
-            const d = await getDoc(doc(db, "usuarios", user.uid));
-            display.innerText = d.exists() ? d.data().nome : user.email;
-            document.getElementById('loggedOptions').style.display = 'block';
-            btn.innerText = "Sair";
-        } else {
-            display.innerText = "Visitante";
-            document.getElementById('loggedOptions').style.display = 'none';
-            btn.innerText = "Entrar / Cadastro";
-        }
-    });
-
-    // Carregar Animes (Slider e Grid)
-    onSnapshot(query(collection(db, "animes"), orderBy("data", "desc")), (snap) => {
-        const slider = document.getElementById('destaquesSlider');
-        const grid = document.getElementById('recentesGrid');
-        slider.innerHTML = ""; grid.innerHTML = "";
-        
-        snap.forEach(doc => {
-            const anime = doc.data();
-            const html = `
-                <div class="card-recent" onclick="window.open('${anime.url}', '_blank')">
-                    <img src="${anime.capa}">
-                    <div style="padding:5px;">${anime.nome}</div>
-                </div>`;
-            grid.innerHTML += html;
-            
-            // Coloca os 5 primeiros no slider de destaques
-            if(slider.children.length < 5) {
-                slider.innerHTML += `<div class="featured-card" onclick="window.open('${anime.url}', '_blank')"><img src="${anime.capa}"></div>`;
-            }
-        });
-    });
-
-    // Busca em tempo real
-    document.getElementById('searchInput').oninput = (e) => {
-        const termo = e.target.value.toLowerCase();
-        document.querySelectorAll('.card-recent').forEach(card => {
-            const nome = card.innerText.toLowerCase();
-            card.style.display = nome.includes(termo) ? 'block' : 'none';
-        });
-    };
-
-    // Gerar Menu A-Z
-    const abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-    const abcCont = document.getElementById('abcContainer');
-    abc.forEach(letra => {
-        abcCont.innerHTML += `<a href="#" onclick="alert('Filtrar por ${letra}')">${letra}</a>`;
-    });
-</script>
-</body>
-</html>
-
-    window.fecharPostar = () => document.getElementById('postarModal').style.display = 'none';
-    
-    window.setBrilho = (v) => {
-        document.documentElement.style.setProperty('--brightness', v + '%');
-    };
-
-    // LÓGICA DE LOGIN
-    window.fazerLogin = async () => {
-        const email = prompt("E-mail:");
-        const senha = prompt("Senha (mínimo 6 caracteres):");
-        if(!email || !senha) return;
-
-        try {
-            await signInWithEmailAndPassword(auth, email, senha);
-            alert("Bem-vindo de volta!");
-        } catch (e) {
-            if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential') {
-                const nome = prompt("Conta não encontrada ou senha incorreta. Se deseja criar uma conta, digite seu NOME:");
-                if(nome) {
-                    try {
-                        const res = await createUserWithEmailAndPassword(auth, email, senha);
-                        await setDoc(doc(db, "usuarios", res.user.uid), { nome: nome });
-                        alert("Cadastro realizado!");
-                    } catch (err) { alert("Erro: " + err.message); }
-                }
-            } else {
-                alert("Erro ao entrar: " + e.message);
-            }
-        }
-    };
-
-    // LÓGICA DE POSTAGEM
-    window.salvarPost = async () => {
-        const n = document.getElementById('pNome').value;
-        const l = document.getElementById('pLink').value;
-        if(!n || !l) return alert("Preencha todos os campos!");
-
-        try {
-            await addDoc(collection(db, "animes"), { 
-                nome: n, 
-                url: l, 
-                data: Date.now(),
-                autor: auth.currentUser.uid 
-            });
-            fecharPostar();
-            alert("Anime postado com sucesso!");
-            document.getElementById('pNome').value = "";
-            document.getElementById('pLink').value = "";
-        } catch (e) { alert("Erro ao postar: " + e.message); }
-    };
-
-    // MONITORAR USUÁRIO
-    onAuthStateChanged(auth, async (user) => {
-        const display = document.getElementById('userNameDisplay');
-        const loginBtn = document.querySelector('.side-menu button');
-        if (user) {
-            const d = await getDoc(doc(db, "usuarios", user.uid));
-            display.innerText = d.exists() ? d.data().nome : user.email;
-            document.getElementById('loggedOptions').style.display = 'block';
-            loginBtn.innerText = "LOGOUT";
-            loginBtn.onclick = () => auth.signOut();
-        } else {
-            display.innerText = "Visitante";
-            document.getElementById('loggedOptions').style.display = 'none';
-            loginBtn.innerText = "LOGIN / CADASTRO";
-            loginBtn.onclick = window.fazerLogin;
-        }
-    });
-
-    // CARREGAR LISTA DE ANIMES
-    onSnapshot(query(collection(db, "animes"), orderBy("data", "desc")), (snap) => {
-        const grid = document.getElementById('recentesGrid');
-        grid.innerHTML = "";
-        snap.forEach(doc => {
-            const anime = doc.data();
-            grid.innerHTML += `
-                <div class="card-recent" onclick="window.open('${anime.url}', '_blank')">
-                    <div style="height:150px; background:#333; display:flex; align-items:center; justify-content:center;">▶️</div>
-                    <div style="padding:8px;">${anime.nome}</div>
-                </div>
-            `;
-        });
-    });
-</script>
-</header>
-<div id="searchBox"><input type="text" placeholder="Pesquisar..."></div>
-<div class="abc-menu" id="abcContainer"></div>
-
-<div id="overlay" onclick="toggleMenu()"></div>
-<div class="side-menu" id="sideMenu">
-    <div style="text-align: center; border-bottom: 1px solid #333; padding-bottom: 20px;">
-        <h4 id="userNameDisplay">Visitante</h4>
-        <button onclick="fazerLogin()" style="background:var(--primary); border:none; color:white; padding:10px; border-radius:4px; width:100%; font-weight:bold;">LOGIN / CADASTRO</button>
-    </div>
-    <div id="loggedOptions" style="display:none; padding:15px;">
-        <small>Ajustar Brilho:</small>
-        <input type="range" min="30" max="100" value="100" oninput="setBrilho(this.value)">
-    </div>
-</div>
-
-<div id="postarModal" class="modal">
-    <div class="modal-card">
-        <h3 style="color:var(--primary); margin:0;">Postar Anime</h3>
-        <input type="text" id="pNome" placeholder="Nome do Anime">
-        <input type="text" id="pLink" placeholder="Link do Vídeo">
-        <button onclick="salvarPost()" style="width:100%; padding:12px; background:var(--primary); color:white; border:none; border-radius:5px; font-weight:bold;">PUBLICAR</button>
-        <button onclick="fecharPostar()" style="background:none; border:none; color:#666; width:100%; margin-top:10px;">Cancelar</button>
-    </div>
-</div>
-
-<div style="padding:15px;"><small style="color:var(--primary); font-weight:bold;">RECENTEMENTE ADICIONADOS</small></div>
-<div class="grid-recent" id="recentesGrid"></div>
-
-<script type="module">
-    import { initializeApp } from "https://gstatic.com";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://gstatic.com";
-    import { getFirestore, doc, setDoc, getDoc, collection, addDoc, onSnapshot, query, orderBy } from "https://gstatic.com";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBlhgf82RL_uSWChpBwzuUAfi_SHtQY2kw",
-      authDomain: "://firebaseapp.com",
-      projectId: "animesoracle-a60e9",
-      storageBucket: "animesoracle-a60e9.firebasestorage.app",
-      messagingSenderId: "751657326717",
-      appId: "1:751657326717:web:67ef63d01ffa3ad044f914"
+        apiKey: "AIzaSyBlhgf82RL_uSWChpBwzuUAfi_SHtQY2kw",
+        authDomain: "://firebaseapp.com",
+        projectId: "animesoracle-a60e9",
+        storageBucket: "animesoracle-a60e9.firebasestorage.app",
+        messagingSenderId: "751657326717",
+        appId: "1:751657326717:web:67ef63d01ffa3ad044f914"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -377,301 +106,84 @@
     window.fecharPostar = () => document.getElementById('postarModal').style.display = 'none';
     window.setBrilho = (v) => document.documentElement.style.setProperty('--brightness', v + '%');
 
-    // LÓGICA DE LOGIN
+    // LOGIN E CADASTRO
     window.fazerLogin = async () => {
+        if(auth.currentUser) return signOut(auth);
         const email = prompt("E-mail:");
-        const senha = prompt("Senha (6 dígitos):");
+        const senha = prompt("Senha (6+ dígitos):");
         if(!email || !senha) return;
         try {
             await signInWithEmailAndPassword(auth, email, senha);
-            alert("Bem-vindo de volta!");
         } catch (e) {
             const nome = prompt("Conta não encontrada. Digite seu nome para cadastrar:");
             if(nome) {
-                try {
-                    const res = await createUserWithEmailAndPassword(auth, email, senha);
-                    await setDoc(doc(db, "usuarios", res.user.uid), { nome: nome });
-                    alert("Cadastro realizado com sucesso!");
-                } catch (err) { alert("Erro no cadastro: " + err.message); }
+                const res = await createUserWithEmailAndPassword(auth, email, senha);
+                await setDoc(doc(db, "usuarios", res.user.uid), { nome: nome });
             }
         }
     };
 
-    // LÓGICA DE POSTAGEM
+    // POSTAGEM
     window.salvarPost = async () => {
         const n = document.getElementById('pNome').value;
         const l = document.getElementById('pLink').value;
-        if(!n || !l) return alert("Preencha todos os campos!");
+        const c = document.getElementById('pCapa').value || 'https://placeholder.com';
+        if(!n || !l) return alert("Preencha Nome e Link!");
         try {
-            await addDoc(collection(db, "animes"), { nome: n, url: l, data: Date.now() });
+            await addDoc(collection(db, "animes"), { nome: n, url: l, capa: c, data: Date.now() });
             fecharPostar();
-            alert("Anime postado!");
-        } catch (e) { alert("Erro ao postar: " + e.message); }
+            document.getElementById('pNome').value = "";
+            document.getElementById('pLink').value = "";
+        } catch (e) { alert("Erro: " + e.message); }
     };
 
-    // MONITORAR ESTADO DO USUÁRIO
+    // MONITORAR USUÁRIO
     onAuthStateChanged(auth, async (user) => {
         const display = document.getElementById('userNameDisplay');
+        const btn = document.getElementById('authBtn');
         if (user) {
             const d = await getDoc(doc(db, "usuarios", user.uid));
             display.innerText = d.exists() ? d.data().nome : user.email;
             document.getElementById('loggedOptions').style.display = 'block';
+            btn.innerText = "SAIR / LOGOUT";
         } else {
             display.innerText = "Visitante";
             document.getElementById('loggedOptions').style.display = 'none';
+            btn.innerText = "LOGIN / CADASTRO";
         }
     });
 
-    // CARREGAR ANIMES EM TEMPO REAL
+    // CARREGAR DADOS
     onSnapshot(query(collection(db, "animes"), orderBy("data", "desc")), (snap) => {
         const grid = document.getElementById('recentesGrid');
-        grid.innerHTML = "";
+        const slider = document.getElementById('destaquesSlider');
+        grid.innerHTML = ""; slider.innerHTML = "";
         snap.forEach(doc => {
             const a = doc.data();
-            grid.innerHTML += `<div class="card-recent"><img src="https://placeholder.com{a.nome}"><p>${a.nome}</p></div>`;
+            const card = `<div class="card-recent" onclick="window.open('${a.url}', '_blank')">
+                <img src="${a.capa}">
+                <div style="padding:8px">${a.nome}</div>
+            </div>`;
+            grid.innerHTML += card;
+            if(slider.children.length < 6) {
+                slider.innerHTML += `<div class="featured-card" onclick="window.open('${a.url}', '_blank')"><img src="${a.capa}"></div>`;
+            }
         });
     });
 
-    // GERAR MENU A-Z
-    const abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-    abc.forEach(l => { document.getElementById('abcContainer').innerHTML += `<a href="#">${l}</a>`; });
+    // PESQUISA
+    document.getElementById('searchInput').oninput = (e) => {
+        const t = e.target.value.toLowerCase();
+        document.querySelectorAll('.card-recent').forEach(c => {
+            c.style.display = c.innerText.toLowerCase().includes(t) ? 'block' : 'none';
+        });
+    };
+
+    // MENU A-Z
+    const abcCont = document.getElementById('abcContainer');
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(l => {
+        abcCont.innerHTML += `<a href="#" onclick="document.getElementById('searchInput').value='${l}'; document.getElementById('searchInput').dispatchEvent(new Event('input'))">${l}</a>`;
+    });
 </script>
 </body>
 </html>
-</header>
-<div id="searchBox"><input type="text" placeholder="Pesquisar..."></div>
-<div class="abc-menu" id="abcContainer"></div>
-
-<div id="overlay" onclick="toggleMenu()"></div>
-<div class="side-menu" id="sideMenu">
-    <div style="text-align: center; border-bottom: 1px solid #333; padding-bottom: 20px;">
-        <h4 id="userNameDisplay">Visitante</h4>
-        <button onclick="fazerLogin()" style="background:var(--primary); border:none; color:white; padding:8px; border-radius:4px; width:100%;">Login / Cadastro</button>
-    </div>
-    <div id="loggedOptions" style="display:none; padding:10px;">
-        <small>Brilho:</small>
-        <input type="range" min="30" max="100" value="100" oninput="setBrilho(this.value)">
-    </div>
-</div>
-
-<div id="postarModal" class="modal">
-    <div class="modal-card">
-        <h3 style="color:var(--primary); margin:0;">Postar Anime</h3>
-        <input type="text" id="pNome" placeholder="Nome do Anime">
-        <input type="text" id="pLink" placeholder="Link do Vídeo">
-        <button onclick="salvarPost()" style="width:100%; padding:12px; background:var(--primary); color:white; border:none; border-radius:5px;">Publicar</button>
-        <button onclick="fecharPostar()" style="background:none; border:none; color:#666; width:100%; margin-top:10px;">Cancelar</button>
-    </div>
-</div>
-
-<div style="padding:10px;"><h4>Recentemente Adicionados</h4></div>
-<div class="grid-recent" id="recentesGrid"></div>
-
-<script type="module">
-    import { initializeApp } from "https://gstatic.com";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://gstatic.com";
-    import { getFirestore, doc, setDoc, getDoc, collection, addDoc, onSnapshot, query, orderBy } from "https://gstatic.com";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBlhgf82RL_uSWChpBwzuUAfi_SHtQY2kw",
-      authDomain: "://firebaseapp.com",
-      projectId: "animesoracle-a60e9",
-      storageBucket: "animesoracle-a60e9.firebasestorage.app",
-      messagingSenderId: "751657326717",
-      appId: "1:751657326717:web:67ef63d01ffa3ad044f914"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    // Funções de Interface
-    window.toggleMenu = () => {
-        document.getElementById('sideMenu').classList.toggle('active');
-        document.getElementById('overlay').style.display = document.getElementById('sideMenu').classList.contains('active') ? 'block' : 'none';
-    };
-    window.toggleSearch = () => {
-        const s = document.getElementById('searchBox');
-        s.style.display = s.style.display === 'block' ? 'none' : 'block';
-    };
-    window.abrirPostar = () => document.getElementById('postarModal').style.display = 'flex';
-    window.fecharPostar = () => document.getElementById('postarModal').style.display = 'none';
-    window.setBrilho = (v) => document.documentElement.style.setProperty('--brightness', v + '%');
-
-    // Lógica Firebase
-    window.fazerLogin = async () => {
-        const email = prompt("E-mail:");
-        const senha = prompt("Senha (6 dígitos):");
-        if(!email || !senha) return;
-        try {
-            await signInWithEmailAndPassword(auth, email, senha);
-            alert("Bem-vindo!");
-        } catch (e) {
-            const nome = prompt("Conta não encontrada. Digite seu nome para cadastrar:");
-            if(nome) {
-                const res = await createUserWithEmailAndPassword(auth, email, senha);
-                await setDoc(doc(db, "usuarios", res.user.uid), { nome: nome });
-                alert("Cadastrado com sucesso!");
-            }
-        }
-    };
-
-    window.salvarPost = async () => {
-        const n = document.getElementById('pNome').value;
-        const l = document.getElementById('pLink').value;
-        if(!auth.currentUser) return alert("Faça login primeiro!");
-        try {
-            await addDoc(collection(db, "animes"), { nome: n, url: l, data: Date.now() });
-            fecharPostar();
-        } catch (e) { alert(e.message); }
-    };
-
-    onAuthStateChanged(auth, async (user) => {
-        const display = document.getElementById('userNameDisplay');
-        if (user) {
-            const d = await getDoc(doc(db, "usuarios", user.uid));
-            display.innerText = d.exists() ? d.data().nome : user.email;
-            document.getElementById('loggedOptions').style.display = 'block';
-        }
-    });
-
-    onSnapshot(query(collection(db, "animes"), orderBy("data", "desc")), (snap) => {
-        const grid = document.getElementById('recentesGrid');
-        grid.innerHTML = "";
-        snap.forEach(doc => {
-            const a = doc.data();
-            grid.innerHTML += `<div class="card-recent"><img src="https://placeholder.com{a.nome}"><p>${a.nome}</p></div>`;
-        });
-    });
-
-    // Gerar Letras
-    const abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-    abc.forEach(l => { document.getElementById('abcContainer').innerHTML += `<a href="#">${l}</a>`; });
-</script>
-</body>
-</html>
-        <input type="text" id="pNome" placeholder="Nome do Anime">
-        <input type="text" id="pLink" placeholder="Link do Vídeo">
-        <button onclick="salvarPost()" style="width:100%; padding:12px; background:var(--primary); color:white; border:none; border-radius:5px;">Publicar</button>
-        <button onclick="fecharPostar()" style="background:none; border:none; color:#666; width:100%; margin-top:10px;">Cancelar</button>
-    </div>
-</div>
-
-<div style="padding:10px;"><h4>Recentemente Adicionados</h4></div>
-<div class="grid-recent" id="recentesGrid"></div>
-
-<script type="module">
-    import { initializeApp } from "https://gstatic.com";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://gstatic.com";
-    import { getFirestore, doc, setDoc, getDoc, collection, addDoc, onSnapshot, query, orderBy } from "https://gstatic.com";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBlhgf82RL_uSWChpBwzuUAfi_SHtQY2kw",
-      authDomain: "://firebaseapp.com",
-      projectId: "animesoracle-a60e9",
-      storageBucket: "animesoracle-a60e9.firebasestorage.app",
-      messagingSenderId: "751657326717",
-      appId: "1:751657326717:web:67ef63d01ffa3ad044f914"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    // Funções de Interface
-    window.toggleMenu = () => {
-        document.getElementById('sideMenu').classList.toggle('active');
-        document.getElementById('overlay').style.display = document.getElementById('sideMenu').classList.contains('active') ? 'block' : 'none';
-    };
-    window.toggleSearch = () => {
-        const s = document.getElementById('searchBox');
-        s.style.display = s.style.display === 'block' ? 'none' : 'block';
-    };
-    window.abrirPostar = () => document.getElementById('postarModal').style.display = 'flex';
-    window.fecharPostar = () => document.getElementById('postarModal').style.display = 'none';
-    window.setBrilho = (v) => document.documentElement.style.setProperty('--brightness', v + '%');
-
-    // Lógica Firebase
-    window.fazerLogin = async () => {
-        const email = prompt("E-mail:");
-        const senha = prompt("Senha (6 dígitos):");
-        if(!email || !senha) return;
-        try {
-            await signInWithEmailAndPassword(auth, email, senha);
-            alert("Bem-vindo!");
-        } catch (e) {
-            const nome = prompt("Conta não encontrada. Digite seu nome para cadastrar:");
-            if(nome) {
-                const res = await createUserWithEmailAndPassword(auth, email, senha);
-                await setDoc(doc(db, "usuarios", res.user.uid), { nome: nome });
-                alert("Cadastrado com sucesso!");
-            }
-        }
-    };
-
-    window.salvarPost = async () => {
-        const n = document.getElementById('pNome').value;
-        const l = document.getElementById('pLink').value;
-        if(!auth.currentUser) return alert("Faça login primeiro!");
-        try {
-            await addDoc(collection(db, "animes"), { nome: n, url: l, data: Date.now() });
-            fecharPostar();
-        } catch (e) { alert(e.message); }
-    };
-
-    onAuthStateChanged(auth, async (user) => {
-        const display = document.getElementById('userNameDisplay');
-        if (user) {
-            const d = await getDoc(doc(db, "usuarios", user.uid));
-            display.innerText = d.exists() ? d.data().nome : user.email;
-            document.getElementById('loggedOptions').style.display = 'block';
-        }
-    });
-
-    onSnapshot(query(collection(db, "animes"), orderBy("data", "desc")), (snap) => {
-        const grid = document.getElementById('recentesGrid');
-        grid.innerHTML = "";
-        snap.forEach(doc => {
-            const a = doc.data();
-            grid.innerHTML += `<div class="card-recent"><img src="https://placeholder.com{a.nome}"><p>${a.nome}</p></div>`;
-        });
-    });
-
-    // Gerar Letras
-    const abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-    abc.forEach(l => { document.getElementById('abcContainer').innerHTML += `<a href="#">${l}</a>`; });
-</script>
-</body>
-</html>
-            const email = prompt("E-mail:");
-            const senha = prompt("Senha:");
-            if(!email || !senha) return;
-            try {
-                await signInWithEmailAndPassword(auth, email, senha);
-                alert("Logado!");
-            } catch (e) {
-                const nome = prompt("Conta nova! Digite seu nome:");
-                if(nome) {
-                    const res = await createUserWithEmailAndPassword(auth, email, senha);
-                    await setDoc(doc(db, "usuarios", res.user.uid), { nome: nome });
-                    alert("Cadastrado!");
-                }
-            }
-        };
-
-        onAuthStateChanged(auth, async (user) => {
-            const display = document.getElementById('userNameDisplay');
-            if (user) {
-                const d = await getDoc(doc(db, "usuarios", user.uid));
-                display.innerText = d.exists() ? d.data().nome : user.email;
-            }
-        });
-    } catch (err) {
-        console.error("Erro de conexão Firebase:", err);
-    }
-
-    // 4. FUNÇÕES DE PLAYER E POSTAR
-    window.abrirPostar = () => document.getElementById('postarModal').style.display = 'flex';
-    window.fecharPostar = () => document.getElementById('postarModal').style.display = 'none';
-    window.fecharPlayer = () => document.getElementById('animePlayerPage').style.display = 'none';
-</script>
