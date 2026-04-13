@@ -6,14 +6,14 @@
     <title>AnimesOracle</title>
     <style>
         :root { --bg: #0f0f0f; --card: #1a1a1a; --text: #ffffff; --primary: #6200ea; --brightness: 100%; }
-        body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; filter: brightness(var(--brightness)); }
+        body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; filter: brightness(var(--brightness)); overflow-x: hidden; }
         header { display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: #000; height: 60px; position: sticky; top: 0; z-index: 1000; }
         .logo { font-weight: bold; color: var(--primary); font-size: 20px; flex-grow: 1; text-align: center; }
         .icon-btn { font-size: 26px; cursor: pointer; background: none; border: none; color: var(--primary); }
         #searchBox { display: none; padding: 10px; background: #000; }
         #searchBox input { width: 100%; padding: 12px; border-radius: 5px; border: 1px solid var(--primary); background: #222; color: white; }
         .abc-menu { display: flex; overflow-x: auto; background: #111; padding: 12px; gap: 20px; border-bottom: 1px solid #222; }
-        .abc-menu a { color: var(--primary); text-decoration: none; font-weight: bold; }
+        .abc-menu a { color: var(--primary); text-decoration: none; font-weight: bold; min-width: 20px; text-align: center; }
         .side-menu { position: fixed; left: -100%; top: 0; width: 80%; max-width: 300px; height: 100%; background: #151515; z-index: 2000; transition: 0.3s; padding: 20px; }
         .side-menu.active { left: 0; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 5000; justify-content: center; align-items: center; }
@@ -21,7 +21,7 @@
         input, select { width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #333; color: white; border-radius: 5px; }
         #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1500; }
         .grid-recent { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 10px; }
-        .card-recent { background: var(--card); border-radius: 8px; overflow: hidden; text-align: center; font-size: 12px; }
+        .card-recent { background: var(--card); border-radius: 8px; overflow: hidden; text-align: center; font-size: 12px; border-bottom: 2px solid var(--primary); }
         .card-recent img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
     </style>
 </head>
@@ -34,6 +34,130 @@
         <button class="icon-btn" onclick="abrirPostar()">➕</button>
         <button class="icon-btn" onclick="toggleSearch()">🔍</button>
     </div>
+</header>
+<div id="searchBox"><input type="text" placeholder="Pesquisar..."></div>
+<div class="abc-menu" id="abcContainer"></div>
+
+<div id="overlay" onclick="toggleMenu()"></div>
+<div class="side-menu" id="sideMenu">
+    <div style="text-align: center; border-bottom: 1px solid #333; padding-bottom: 20px;">
+        <h4 id="userNameDisplay">Visitante</h4>
+        <button onclick="fazerLogin()" style="background:var(--primary); border:none; color:white; padding:10px; border-radius:4px; width:100%; font-weight:bold;">LOGIN / CADASTRO</button>
+    </div>
+    <div id="loggedOptions" style="display:none; padding:15px;">
+        <small>Ajustar Brilho:</small>
+        <input type="range" min="30" max="100" value="100" oninput="setBrilho(this.value)">
+    </div>
+</div>
+
+<div id="postarModal" class="modal">
+    <div class="modal-card">
+        <h3 style="color:var(--primary); margin:0;">Postar Anime</h3>
+        <input type="text" id="pNome" placeholder="Nome do Anime">
+        <input type="text" id="pLink" placeholder="Link do Vídeo">
+        <button onclick="salvarPost()" style="width:100%; padding:12px; background:var(--primary); color:white; border:none; border-radius:5px; font-weight:bold;">PUBLICAR</button>
+        <button onclick="fecharPostar()" style="background:none; border:none; color:#666; width:100%; margin-top:10px;">Cancelar</button>
+    </div>
+</div>
+
+<div style="padding:15px;"><small style="color:var(--primary); font-weight:bold;">RECENTEMENTE ADICIONADOS</small></div>
+<div class="grid-recent" id="recentesGrid"></div>
+
+<script type="module">
+    import { initializeApp } from "https://gstatic.com";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://gstatic.com";
+    import { getFirestore, doc, setDoc, getDoc, collection, addDoc, onSnapshot, query, orderBy } from "https://gstatic.com";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBlhgf82RL_uSWChpBwzuUAfi_SHtQY2kw",
+      authDomain: "://firebaseapp.com",
+      projectId: "animesoracle-a60e9",
+      storageBucket: "animesoracle-a60e9.firebasestorage.app",
+      messagingSenderId: "751657326717",
+      appId: "1:751657326717:web:67ef63d01ffa3ad044f914"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // FUNÇÕES DE INTERFACE
+    window.toggleMenu = () => {
+        document.getElementById('sideMenu').classList.toggle('active');
+        document.getElementById('overlay').style.display = document.getElementById('sideMenu').classList.contains('active') ? 'block' : 'none';
+    };
+    window.toggleSearch = () => {
+        const s = document.getElementById('searchBox');
+        s.style.display = s.style.display === 'block' ? 'none' : 'block';
+    };
+    window.abrirPostar = () => {
+        if(!auth.currentUser) return alert("Faça login para postar!");
+        document.getElementById('postarModal').style.display = 'flex';
+    };
+    window.fecharPostar = () => document.getElementById('postarModal').style.display = 'none';
+    window.setBrilho = (v) => document.documentElement.style.setProperty('--brightness', v + '%');
+
+    // LÓGICA DE LOGIN
+    window.fazerLogin = async () => {
+        const email = prompt("E-mail:");
+        const senha = prompt("Senha (6 dígitos):");
+        if(!email || !senha) return;
+        try {
+            await signInWithEmailAndPassword(auth, email, senha);
+            alert("Bem-vindo de volta!");
+        } catch (e) {
+            const nome = prompt("Conta não encontrada. Digite seu nome para cadastrar:");
+            if(nome) {
+                try {
+                    const res = await createUserWithEmailAndPassword(auth, email, senha);
+                    await setDoc(doc(db, "usuarios", res.user.uid), { nome: nome });
+                    alert("Cadastro realizado com sucesso!");
+                } catch (err) { alert("Erro no cadastro: " + err.message); }
+            }
+        }
+    };
+
+    // LÓGICA DE POSTAGEM
+    window.salvarPost = async () => {
+        const n = document.getElementById('pNome').value;
+        const l = document.getElementById('pLink').value;
+        if(!n || !l) return alert("Preencha todos os campos!");
+        try {
+            await addDoc(collection(db, "animes"), { nome: n, url: l, data: Date.now() });
+            fecharPostar();
+            alert("Anime postado!");
+        } catch (e) { alert("Erro ao postar: " + e.message); }
+    };
+
+    // MONITORAR ESTADO DO USUÁRIO
+    onAuthStateChanged(auth, async (user) => {
+        const display = document.getElementById('userNameDisplay');
+        if (user) {
+            const d = await getDoc(doc(db, "usuarios", user.uid));
+            display.innerText = d.exists() ? d.data().nome : user.email;
+            document.getElementById('loggedOptions').style.display = 'block';
+        } else {
+            display.innerText = "Visitante";
+            document.getElementById('loggedOptions').style.display = 'none';
+        }
+    });
+
+    // CARREGAR ANIMES EM TEMPO REAL
+    onSnapshot(query(collection(db, "animes"), orderBy("data", "desc")), (snap) => {
+        const grid = document.getElementById('recentesGrid');
+        grid.innerHTML = "";
+        snap.forEach(doc => {
+            const a = doc.data();
+            grid.innerHTML += `<div class="card-recent"><img src="https://placeholder.com{a.nome}"><p>${a.nome}</p></div>`;
+        });
+    });
+
+    // GERAR MENU A-Z
+    const abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+    abc.forEach(l => { document.getElementById('abcContainer').innerHTML += `<a href="#">${l}</a>`; });
+</script>
+</body>
+</html>
 </header>
 <div id="searchBox"><input type="text" placeholder="Pesquisar..."></div>
 <div class="abc-menu" id="abcContainer"></div>
