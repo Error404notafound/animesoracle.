@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AnimesOracle</title>
     
-    <!-- Bibliotecas Firebase -->
+    <!-- BIBLIOTECAS CORRIGIDAS (Versão Compat) -->
     <script src="https://gstatic.com"></script>
     <script src="https://gstatic.com"></script>
 
@@ -17,7 +17,6 @@
         body { 
             margin: 0; padding: 0; background: var(--bg); color: var(--text);
             font-family: 'Segoe UI', sans-serif; overflow-x: hidden;
-            filter: brightness(var(--brightness));
         }
 
         header {
@@ -29,10 +28,9 @@
         
         .grid-recent { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 10px; }
         .card-recent { background: var(--card); border-radius: 8px; overflow: hidden; border: 1px solid #333; }
-        .card-recent img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
+        .card-recent img { width: 100%; aspect-ratio: 2/3; object-fit: cover; cursor: pointer; }
         .card-info { padding: 8px; font-size: 13px; text-align: center; }
 
-        /* MENU LATERAL */
         .side-menu {
             position: fixed; left: -100%; top: 0; width: 80%; max-width: 300px;
             height: 100%; background: #151515; z-index: 2000; transition: 0.3s; padding: 20px;
@@ -40,7 +38,6 @@
         .side-menu.active { left: 0; }
         #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1500; }
 
-        /* MODAIS */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.9); z-index: 5000; justify-content: center; align-items: center;
@@ -83,10 +80,10 @@
 </div>
 
 <script>
-    // Configuração do seu Firebase
+    // CONFIGURAÇÃO CORRIGIDA
     const firebaseConfig = {
       apiKey: "AIzaSyBlhgf82RL_uSWChpBwzuUAfi_SHtQY2kw",
-      authDomain: "://firebaseapp.com",
+      authDomain: "animesoracle-a60e9.firebaseapp.com",
       projectId: "animesoracle-a60e9",
       storageBucket: "animesoracle-a60e9.firebasestorage.app",
       messagingSenderId: "751657326717",
@@ -117,12 +114,18 @@
             await db.collection("animes").add({ nome, capa, link, data: new Date() });
             alert("Anime postado!");
             fecharPostar();
+            // Limpa os campos após postar
+            document.getElementById('pNome').value = "";
+            document.getElementById('pCapa').value = "";
+            document.getElementById('pLink').value = "";
         } catch (e) {
-            alert("Erro: Verifique as regras do Firestore Database!");
+            console.error(e);
+            alert("Erro! Verifique se as REGRAS do Firestore estão em modo de teste (if true).");
         }
     }
 
     function carregarAnimes() {
+        // Escuta o banco de dados em tempo real
         db.collection("animes").orderBy("data", "desc").onSnapshot((querySnapshot) => {
             const grid = document.getElementById('animeGrid');
             grid.innerHTML = "";
@@ -140,4 +143,4 @@
     carregarAnimes();
 </script>
 </body>
-    </html>
+</html>
