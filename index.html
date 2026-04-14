@@ -2,54 +2,45 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AnimesOracle</title>
-    
-    <!-- BIBLIOTECAS FIREBASE -->
     <script src="https://gstatic.com"></script>
     <script src="https://gstatic.com"></script>
-
     <style>
         :root { --bg: #0f0f0f; --card: #1a1a1a; --text: #ffffff; --primary: #6200ea; }
-        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: sans-serif; }
         header { display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: #000; height: 60px; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #333; }
-        .logo { font-weight: bold; color: var(--primary); font-size: 20px; flex-grow: 1; text-align: center; }
-        .icon-btn { font-size: 24px; cursor: pointer; background: none; border: none; color: var(--primary); outline: none; }
-        .grid-recent { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 15px; }
-        .card-recent { background: var(--card); border-radius: 8px; overflow: hidden; border: 1px solid #333; text-align: center; }
-        .card-recent img { width: 100%; aspect-ratio: 2/3; object-fit: cover; cursor: pointer; display: block; }
-        .card-info { padding: 8px; font-size: 13px; font-weight: bold; }
+        .grid-recent { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; }
+        .card-recent { background: var(--card); border-radius: 8px; overflow: hidden; border: 1px solid #333; }
+        .card-recent img { width: 100%; aspect-ratio: 2/3; object-fit: cover; cursor: pointer; }
+        .card-info { padding: 8px; font-size: 13px; text-align: center; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 5000; justify-content: center; align-items: center; }
-        .modal-card { background: #1a1a1a; padding: 25px; border-radius: 15px; width: 85%; max-width: 400px; border: 1px solid var(--primary); }
-        input { width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #333; color: white; border-radius: 5px; box-sizing: border-box; }
-        .btn-post { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .modal-card { background: #1a1a1a; padding: 20px; border-radius: 10px; width: 85%; max-width: 400px; border: 1px solid var(--primary); }
+        input { width: 100%; padding: 10px; margin: 10px 0; background: #222; border: 1px solid #333; color: white; border-radius: 5px; box-sizing: border-box; }
+        .btn-post { width: 100%; padding: 10px; background: var(--primary); color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <header>
-    <button class="icon-btn" onclick="alert('Menu em breve!')">☰</button>
-    <div class="logo">AnimesOracle</div>
-    <button class="icon-btn" onclick="document.getElementById('postarModal').style.display='flex'">➕</button>
+    <div style="font-size:20px; color:var(--primary); font-weight:bold;">AnimesOracle</div>
+    <button onclick="document.getElementById('postarModal').style.display='flex'" style="background:none; border:none; color:var(--primary); font-size:25px; cursor:pointer;">➕</button>
 </header>
 
-<div class="grid-recent" id="animeGrid">
-    <!-- Os animes aparecerão aqui -->
-</div>
+<div class="grid-recent" id="animeGrid"></div>
 
 <div id="postarModal" class="modal">
     <div class="modal-card">
-        <h3 style="color:var(--primary); margin:0 0 10px 0;">Postar Anime</h3>
+        <h3 style="margin:0; color:var(--primary);">Postar Novo Anime</h3>
         <input type="text" id="pNome" placeholder="Nome do Anime">
-        <input type="text" id="pCapa" placeholder="Link da Imagem (Capa)">
-        <input type="text" id="pLink" placeholder="Link do Vídeo">
-        <button class="btn-post" onclick="salvarAnime()">PUBLICAR</button>
-        <button onclick="document.getElementById('postarModal').style.display='none'" style="background:none; color:gray; border:none; margin-top:15px; width:100%; cursor:pointer;">Cancelar</button>
+        <input type="text" id="pCapa" placeholder="Link da Imagem da Capa">
+        <input type="text" id="pLink" placeholder="Link do Vídeo/Site">
+        <button class="btn-post" onclick="salvarAnime()">PUBLICAR AGORA</button>
+        <button onclick="document.getElementById('postarModal').style.display='none'" style="background:none; color:gray; border:none; margin-top:10px; width:100%; cursor:pointer;">Fechar</button>
     </div>
 </div>
 
 <script>
-    // Configuração oficial
     const firebaseConfig = {
       apiKey: "AIzaSyBlhgf82RL_uSWChpBwzuUAfi_SHtQY2kw",
       authDomain: "://firebaseapp.com",
@@ -59,22 +50,16 @@
       appId: "1:751657326717:web:67ef63d01ffa3ad044f914"
     };
 
-    // Inicialização
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
+    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
     const db = firebase.firestore();
 
-    // Função para Salvar
+    // USANDO "animes" NO PLURAL PARA PADRONIZAR
     async function salvarAnime() {
         const nome = document.getElementById('pNome').value;
         const capa = document.getElementById('pCapa').value;
         const link = document.getElementById('pLink').value;
 
-        if (!nome || !capa) {
-            alert("Preencha pelo menos o nome e o link da imagem!");
-            return;
-        }
+        if (!nome || !capa) return alert("Preencha Nome e Capa!");
 
         try {
             await db.collection("animes").add({
@@ -83,18 +68,14 @@
                 link: link,
                 data: new Date()
             });
-            alert("Sucesso! Anime postado.");
+            alert("Postado com sucesso!");
             document.getElementById('postarModal').style.display = 'none';
-            document.getElementById('pNome').value = "";
-            document.getElementById('pCapa').value = "";
-            document.getElementById('pLink').value = "";
         } catch (e) {
-            console.error("Erro:", e);
-            alert("Erro ao postar. Verifique se as REGRAS no Firebase estão abertas.");
+            console.error(e);
+            alert("Erro de permissão! Verifique a aba REGRAS no Firebase.");
         }
     }
 
-    // Carregar dados
     db.collection("animes").orderBy("data", "desc").onSnapshot((snapshot) => {
         const grid = document.getElementById('animeGrid');
         grid.innerHTML = "";
@@ -102,12 +83,11 @@
             const anime = doc.data();
             grid.innerHTML += `
                 <div class="card-recent">
-                    <img src="${anime.capa}" onclick="window.open('${anime.link}', '_blank')" onerror="this.src='https://placeholder.com'">
+                    <img src="${anime.capa}" onclick="window.open('${anime.link}', '_blank')">
                     <div class="card-info">${anime.nome}</div>
                 </div>`;
         });
     });
 </script>
-
 </body>
 </html>
