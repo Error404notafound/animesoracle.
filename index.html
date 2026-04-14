@@ -78,7 +78,7 @@
             });
             alert("Sucesso! Anime postado.");
             document.getElementById('postarModal').style.display = 'none';
-            // Limpar campos
+            // Limpa os campos
             document.getElementById('pNome').value = "";
             document.getElementById('pCapa').value = "";
             document.getElementById('pLink').value = "";
@@ -88,7 +88,7 @@
         }
     }
 
-    // 4. CARREGAR DADOS EM TEMPO REAL
+    // 4. CARREGAR DADOS
     db.collection("animes").orderBy("data", "desc").onSnapshot((snapshot) => {
         const grid = document.getElementById('animeGrid');
         grid.innerHTML = "";
@@ -101,7 +101,7 @@
                 </div>`;
         });
     }, (error) => {
-        console.error("Erro ao ler dados:", error);
+        console.error("Erro ao ler dados: ", error);
     });
 </script>
 
