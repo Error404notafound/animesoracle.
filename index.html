@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AnimesOracle</title>
     
     <!-- BIBLIOTECAS FIREBASE -->
@@ -11,7 +11,7 @@
 
     <style>
         :root { --bg: #0f0f0f; --card: #1a1a1a; --text: #ffffff; --primary: #6200ea; }
-        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: sans-serif; }
         header { display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: #000; height: 60px; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #333; }
         .logo { font-weight: bold; color: var(--primary); font-size: 20px; flex-grow: 1; text-align: center; }
         .icon-btn { font-size: 24px; cursor: pointer; background: none; border: none; color: var(--primary); outline: none; }
@@ -28,7 +28,7 @@
 <body>
 
 <header>
-    <button class="icon-btn" onclick="alert('Menu em breve!')">☰</button>
+    <button class="icon-btn" onclick="alert('Menu v2 em breve!')">☰</button>
     <div class="logo">AnimesOracle</div>
     <button class="icon-btn" onclick="document.getElementById('postarModal').style.display='flex'">➕</button>
 </header>
@@ -47,6 +47,7 @@
 </div>
 
 <script>
+    // 1. CONFIGURAÇÃO
     const firebaseConfig = { 
       apiKey: "AIzaSyBlhgf82RL_uSWChpBwzuUAfi_SHtQY2kw", 
       authDomain: "://firebaseapp.com", 
@@ -56,11 +57,11 @@
       appId: "1:751657326717:web:67ef63d01ffa3ad044f914" 
     };
 
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
+    // 2. INICIALIZAÇÃO (FORA DAS FUNÇÕES)
+    firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
+    // 3. FUNÇÃO SALVAR
     async function salvarAnime() {
         const nome = document.getElementById('pNome').value;
         const capa = document.getElementById('pCapa').value;
@@ -78,11 +79,11 @@
             alert("Sucesso! Anime postado.");
             document.getElementById('postarModal').style.display = 'none';
         } catch (e) {
-            console.error(e);
-            alert("Erro: " + e.message);
+            alert("Erro do Firebase: " + e.message);
         }
     }
 
+    // 4. CARREGAR DADOS
     db.collection("animes").orderBy("data", "desc").onSnapshot((snapshot) => {
         const grid = document.getElementById('animeGrid');
         grid.innerHTML = "";
@@ -94,8 +95,6 @@
                     <div class="card-info">${anime.nome}</div>
                 </div>`;
         });
-    }, (error) => {
-        console.error("Erro na leitura:", error.message);
     });
 </script>
 
