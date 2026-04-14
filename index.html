@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AnimesOracle</title>
     
-    <!-- BIBLIOTECAS FIREBASE -->
+    <!-- BIBLIOTECAS FIREBASE (CORRIGIDAS) -->
     <script src="https://gstatic.com"></script>
     <script src="https://gstatic.com"></script>
 
@@ -47,17 +47,17 @@
 </div>
 
 <script>
-    // 1. CONFIGURAÇÃO
+    // 1. CONFIGURAÇÃO (CORRIGIDA)
     const firebaseConfig = { 
       apiKey: "AIzaSyBlhgf82RL_uSWChpBwzuUAfi_SHtQY2kw", 
-      authDomain: "://firebaseapp.com", 
+      authDomain: "animesoracle-a60e9.firebaseapp.com", 
       projectId: "animesoracle-a60e9", 
       storageBucket: "animesoracle-a60e9.firebasestorage.app", 
       messagingSenderId: "751657326717", 
       appId: "1:751657326717:web:67ef63d01ffa3ad044f914" 
     };
 
-    // 2. INICIALIZAÇÃO (FORA DAS FUNÇÕES)
+    // 2. INICIALIZAÇÃO
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
@@ -78,12 +78,17 @@
             });
             alert("Sucesso! Anime postado.");
             document.getElementById('postarModal').style.display = 'none';
+            // Limpar campos
+            document.getElementById('pNome').value = "";
+            document.getElementById('pCapa').value = "";
+            document.getElementById('pLink').value = "";
         } catch (e) {
+            console.error(e);
             alert("Erro do Firebase: " + e.message);
         }
     }
 
-    // 4. CARREGAR DADOS
+    // 4. CARREGAR DADOS EM TEMPO REAL
     db.collection("animes").orderBy("data", "desc").onSnapshot((snapshot) => {
         const grid = document.getElementById('animeGrid');
         grid.innerHTML = "";
@@ -95,6 +100,8 @@
                     <div class="card-info">${anime.nome}</div>
                 </div>`;
         });
+    }, (error) => {
+        console.error("Erro ao ler dados:", error);
     });
 </script>
 
