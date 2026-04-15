@@ -169,6 +169,9 @@
             background-color: #2a2a2a; /* Fundo mais escuro ao passar o mouse */
             border-radius: 5px;
         }
+        #userInfoDisplay .menu-item-white {
+            color: white;
+        }
         #userInfoDisplay .menu-item-primary {
             color: var(--primary); /* Texto roxo para "Animes Salvos" */
             font-weight: bold;
@@ -227,7 +230,7 @@
 </div>
 
 <script>
-    // 1. CONFIGURAÇÃO DO FIREBASE
+    // 1. CONFIGURAÇÃO DO FIREBASE (SEUS DADOS DE PROJETO)
     const firebaseConfig = { 
       apiKey: "AIzaSyBlhgf82RL_uSWChpBwzuUAfi_SHtQY2kw", 
       authDomain: "animesoracle-a60e9.firebaseapp.com", 
@@ -254,7 +257,10 @@
             return;
         }
 
-        if (!nome || !capa) return alert("Preencha pelo menos Nome e Capa!");
+        if (!nome || !capa) {
+            alert("Preencha pelo menos Nome e Capa!");
+            return; 
+        }
 
         try {
             await db.collection("animes").add({
@@ -270,7 +276,7 @@
             document.getElementById('pCapa').value = "";
             document.getElementById('pLink').value = "";
         } catch (e) {
-            console.error("Erro ao salvar:", e);
+            console.error("Erro ao salvar:", e); 
             alert("Erro do Firebase: " + e.message + "\n\nVerifique as 'Regras' no Firebase!");
         }
     }
@@ -287,10 +293,10 @@
 
         try {
             const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-            // Cria um documento no Firestore para o novo usuário
+            // Cria um documento no Firestore para o novo usuário com dados padrão
             await db.collection("users").doc(userCredential.user.uid).set({
                 email: email,
-                photoURL: 'https://via.placeholder.com/60?text=JP', // Imagem padrão, "JP" para João Paulo
+                photoURL: 'https://via.placeholder.com/60?text=AP', // Imagem padrão, "AP" de AnimesOracle
                 animesSalvos: [],
                 modoAdulto: false
             });
@@ -332,15 +338,4 @@
         }
     }
 
-    // 5. GERENCIAMENTO DE ESTADO DO USUÁRIO E MENU
-    auth.onAuthStateChanged(async (user) => {
-        const userInfoDisplay = document.getElementById('userInfoDisplay');
-        userInfoDisplay.innerHTML = ''; // Limpa o conteúdo anterior
-
-        if (user) {
-            // Usuário logado: Carrega dados do Firestore e exibe o menu personalizado
-            const userDocRef = db.collection("users").doc(user.uid);
-            const userDoc = await userDocRef.get();
-            let userData = userDoc.exists ? userDoc.data() : {
-                email: user.email,
-                photoURL: 'Sem resposta
+    //Sem resposta
