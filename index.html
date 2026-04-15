@@ -196,4 +196,147 @@
         <h3 style="color:var(--primary); margin:0 0 10px 0;">Postar Anime</h3>
         <input type="text" id="pNome" placeholder="Nome do Anime">
         <input type="text" id="pCapa" placeholder="Link da Imagem (Capa)">
-Sem resposta
+        <input type="text" id="pLink" placeholder="Link do Vídeo">
+        <button class="btn-post" onclick="salvarAnime()">PUBLICAR</button>
+        <button onclick="document.getElementById('postarModal').style.display='none'" style="background:none; color:gray; border:none; margin-top:15px; width:100%; cursor:pointer;">Cancelar</button>
+    </div>
+</div>
+
+<!-- Modal de Autenticação (Login/Cadastro) -->
+<div id="authModal" class="modal">
+    <div class="modal-card">
+        <h3 style="color:var(--primary); margin:0 0 10px 0;">Entrar / Cadastrar</h3>
+        <input type="email" id="authEmail" placeholder="E-mail">
+        <input type="password" id="authPassword" placeholder="Senha">
+        <button class="btn-post" onclick="cadastrarUsuario()">CADASTRAR</button>
+        <button class="btn-post" onclick="loginUsuario()" style="margin-top: 10px;">ENTRAR</button>
+        <button onclick="document.getElementById('authModal').style.display='none'" style="background:none; color:gray; border:none; margin-top:15px; width:100%; cursor:pointer;">Cancelar</button>
+    </div>
+</div>
+
+<!-- Menu do Usuário (Sidebar) -->
+<div id="userMenu" class="modal">
+    <div class="modal-card">
+        <button class="close-btn" onclick="document.getElementById('userMenu').style.display='none'">&times;</button>
+        <div id="userInfoDisplay">
+            <!-- Conteúdo do usuário será carregado aqui pelo JavaScript -->
+        </div>
+        <hr style="border-color:#333; margin:15px 0;">
+        <button onclick="logoutUsuario()" class="btn-post" style="background:#cc0000;">Sair</button>
+    </div>
+</div>
+
+<script>
+    // 1. CONFIGURAÇÃO DO FIREBASE
+    const firebaseConfig = { 
+      apiKey: "AIzaSyBlhgf82RL_uSWChpBwzuUAfi_SHtQY2kw", 
+      authDomain: "animesoracle-a60e9.firebaseapp.com", 
+      projectId: "animesoracle-a60e9", 
+      storageBucket: "animesoracle-a60e9.firebasestorage.app", 
+      messagingSenderId: "751657326717", 
+      appId: "1:751657326717:web:67ef63d01ffa3ad044f914" 
+    };
+
+    // 2. INICIALIZAÇÃO DO FIREBASE
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth(); // Inicializa o Firebase Auth
+
+    // 3. FUNÇÃO SALVAR ANIME (PARA O BOTÃO "+")
+    async function salvarAnime() {
+        const nome = document.getElementById('pNome').value;
+        const capa = document.getElementById('pCapa').value;
+        const link = document.getElementById('pLink').value;
+
+        // Se o usuário não estiver logado, impede a postagem
+        if (!auth.currentUser) {
+            alert("Você precisa estar logado para postar animes!");
+            return;
+        }
+
+        if (!nome || !capa) return alert("Preencha pelo menos Nome e Capa!");
+
+        try {
+            await db.collection("animes").add({
+                nome: nome,
+                capa: capa,
+                link: link,
+                data: firebase.firestore.FieldValue.serverTimestamp(),
+                postedBy: auth.currentUser.uid // Salva quem postou o anime
+            });
+            alert("Sucesso! Anime postado.");
+            document.getElementById('postarModal').style.display = 'none';
+            document.getElementById('pNome').value = "";
+            document.getElementById('pCapa').value = "";
+            document.getElementById('pLink').value = "";
+        } catch (e) {
+            console.error("Erro ao salvar:", e);
+            alert("Erro do Firebase: " + e.message + "\n\nVerifique as 'Regras' no Firebase!");
+        }
+    }
+
+    // 4. LÓGICA DE AUTENTICAÇÃO (LOGIN/CADASTRO/LOGOUT)
+    async function cadastrarUsuario() {
+        const email = document.getElementById('authEmail').value;
+        const password = document.getElementById('authPassword').value;
+
+        if (!email || !password) {
+            alert("Por favor, preencha E-mail e Senha para cadastro.");
+            return;
+        }
+
+        try {
+            const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+            // Cria um documento no Firestore para o novo usuário
+            await db.collection("users").doc(userCredential.user.uid).set({
+                email: email,
+                photoURL: 'https://via.placeholder.com/60?text=JP', // Imagem padrão, "JP" para João Paulo
+                animesSalvos: [],
+                modoAdulto: false
+            });
+            alert("Cadastro realizado com sucesso!");
+            document.getElementById('authModal').style.display = 'none';
+        } catch (error) {
+            console.error("Erro ao cadastrar:", error);
+            alert("Erro ao cadastrar: " + error.message);
+        }
+    }
+
+    async function loginUsuario() {
+        const email = document.getElementById('authEmail').value;
+        const password = document.getElementById('authPassword').value;
+
+        if (!email || !password) {
+            alert("Por favor, preencha E-mail e Senha para entrar.");
+            return;
+        }
+
+        try {
+            await auth.signInWithEmailAndPassword(email, password);
+            alert("Login realizado com sucesso!");
+            document.getElementById('authModal').style.display = 'none';
+        } catch (error) {
+            console.error("Erro ao fazer login:", error);
+            alert("Erro ao fazer login: " + error.message);
+        }
+    }
+
+    async function logoutUsuario() {
+        try {
+            await auth.signOut();
+            alert("Você foi desconectado.");
+            document.getElementById('userMenu').style.display = 'none'; // Fecha o menu
+        } catch (error) {
+            console.error("Erro ao fazer logout:", error);
+            alert("Erro ao fazer logout: " + error.message);
+        }
+    }
+
+    // 5. GERENCIAMENTO DE ESTADO DO USUÁRIO E MENU
+    auth.onAuthStateChanged(async (user) => {
+        const userInfoDisplay = document.getElementById('userInfoDisplay');
+        userInfoDisplay.innerHTML = ''; // Limpa o conteúdo anterior
+
+        if (user) {
+            // Usuário logado: Carrega dados do Firestore e exibe o menu personalizado
+            const userDocRef = db.collection("usersSem resposta
