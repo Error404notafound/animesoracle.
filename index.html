@@ -2,41 +2,118 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnimesOracle</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <!-- BIBLIOTECAS FIREBASE (VERSÃO ESTÁVEL 8.10.0) - CORRIGIDO -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    <!-- Se precisar de autenticação, você adicionaria também: -->
-    <!-- <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script> -->
+    <title>AnimesOracle</title>
+    <meta property="og:title" content="AnimesOracle - Assista e Poste Animes">
+    <meta property="og:description" content="A maior comunidade Oracle de animes. Assista, avalie e compartilhe seus vídeos favoritos.">
+    <meta property="og:image" content="https://placeholder.com">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#6200ea">
+
+    <!-- BIBLIOTECAS FIREBASE (VERSÃO ESTÁVEL 8.10.0) -->
+    <script src="https://gstatic.com"></script>
+    <script src="https://gstatic.com"></script>
 
     <style>
-        :root { --bg: #0f0f0f; --card: #1a1a1a; --text: #ffffff; --primary: #6200ea; }
-        body { margin: 0; background: var(--bg); color: var(--text); font-family: sans-serif; }
-        header { display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: #000; height: 60px; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #333; }
+        :root {
+            --bg: #0f0f0f; 
+            --card: #1a1a1a; 
+            --text: #ffffff; 
+            --primary: #6200ea; 
+            --brightness: 100%;
+        }
+        body { 
+            margin: 0; padding: 0; background: var(--bg); color: var(--text);
+            font-family: 'Segoe UI', sans-serif; overflow-x: hidden;
+            filter: brightness(var(--brightness));
+        }
+
+        header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 15px; background: #000; height: 60px; position: sticky; top: 0; z-index: 1000;
+        }
+        .header-btn-container { width: 45px; display: flex; align-items: center; }
         .logo { font-weight: bold; color: var(--primary); font-size: 20px; flex-grow: 1; text-align: center; }
-        .icon-btn { font-size: 24px; cursor: pointer; background: none; border: none; color: var(--primary); outline: none; }
+        .icon-btn { font-size: 26px; cursor: pointer; background: none; border: none; color: var(--primary); padding: 0; }
+        
+        #searchBox {
+            display: none; position: absolute; left: 0; top: 60px; width: 100%;
+            padding: 10px; background: #000; box-sizing: border-box; z-index: 999;
+        }
+        #searchBox input { width: 100%; padding: 12px; border-radius: 5px; border: 1px solid var(--primary); background: #222; color: white; }
+
+        .abc-menu {
+            display: flex; overflow-x: auto; background: #111; padding: 12px; gap: 20px;
+            scrollbar-width: none; border-bottom: 1px solid #222; -webkit-overflow-scrolling: touch;
+        }
+        .abc-menu a { color: var(--primary); text-decoration: none; font-weight: bold; font-size: 16px; min-width: 15px; text-align: center; }
+
+        .side-menu {
+            position: fixed; left: -100%; top: 0; width: 80%; max-width: 300px;
+            height: 100%; background: #151515; z-index: 2000; transition: 0.3s; padding: 20px;
+        }
+        .side-menu.active { left: 0; }
+        .profile-area { text-align: center; padding-bottom: 20px; border-bottom: 1px solid #333; margin-bottom: 10px; }
+        .user-avatar { width: 70px; height: 70px; border-radius: 50%; background: #333; object-fit: cover; border: 2px solid var(--primary); }
+
         .grid-recent { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 15px; }
         .card-recent { background: var(--card); border-radius: 8px; overflow: hidden; border: 1px solid #333; text-align: center; }
         .card-recent img { width: 100%; aspect-ratio: 2/3; object-fit: cover; cursor: pointer; display: block; }
         .card-info { padding: 8px; font-size: 13px; font-weight: bold; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 5000; justify-content: center; align-items: center; }
-        .modal-card { background: #1a1a1a; padding: 25px; border-radius: 15px; width: 85%; max-width: 400px; border: 1px solid var(--primary); }
-        input { width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #333; color: white; border-radius: 5px; box-sizing: border-box; }
+
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 5000; justify-content: center; align-items: center;
+        }
+        .modal-card { background: #1a1a1a; padding: 25px; border-radius: 15px; width: 90%; max-width: 400px; border: 1px solid var(--primary); }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #333; color: white; border-radius: 5px; box-sizing: border-box;}
         .btn-post { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        
+        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1500; }
     </style>
 </head>
 <body>
 
 <header>
-    <button class="icon-btn" onclick="alert('Menu em breve!')">☰</button>
+    <div class="header-btn-container"><button class="icon-btn" onclick="toggleMenu()">☰</button></div>
     <div class="logo">AnimesOracle</div>
-    <button class="icon-btn" onclick="document.getElementById('postarModal').style.display='flex'">➕</button>
+    <div class="header-btn-container" style="justify-content: flex-end; gap: 10px;">
+        <button class="icon-btn" onclick="document.getElementById('postarModal').style.display='flex'">➕</button>
+        <button class="icon-btn" onclick="toggleSearch()">🔍</button>
+    </div>
+    <div id="searchBox"><input type="text" placeholder="Pesquisar..."></div>
 </header>
 
+<div class="abc-menu" id="abcContainer">
+    <!-- Menu Alfabético Simples -->
+    <script>
+        const abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        abc.split('').forEach(letra => {
+            document.write(`<a href="#">${letra}</a>`);
+        });
+    </script>
+</div>
+
+<div id="overlay" onclick="toggleMenu()"></div>
+<div class="side-menu" id="sideMenu">
+    <div class="profile-area">
+        <img src="https://placeholder.com" class="user-avatar">
+        <h4 style="margin: 10px 0;">Visitante</h4>
+    </div>
+    <nav class="nav-links">
+        <p style="padding: 10px; color: #888;">Configurações:</p>
+        <div style="padding: 0 15px;">
+            <small>Brilho:</small>
+            <input type="range" min="30" max="100" value="100" oninput="document.body.style.setProperty('--brightness', this.value + '%')">
+        </div>
+    </nav>
+</div>
+
+<!-- GRID ONDE OS ANIMES VÃO APARECER -->
 <div class="grid-recent" id="animeGrid"></div>
 
+<!-- MODAL DE POSTAGEM -->
 <div id="postarModal" class="modal">
     <div class="modal-card">
         <h3 style="color:var(--primary); margin:0 0 10px 0;">Postar Anime</h3>
@@ -49,27 +126,38 @@
 </div>
 
 <script>
-    // 1. CONFIGURAÇÃO (ATUALIZADA)
+    // 1. CONFIGURAÇÃO FIREBASE
     const firebaseConfig = { 
       apiKey: "AIzaSyBlhgf82RL_uSWChpBwzuUAfi_SHtQY2kw", 
-      authDomain: "animesoracle-a60e9.firebaseapp.com", 
+      authDomain: "://firebaseapp.com", 
       projectId: "animesoracle-a60e9", 
       storageBucket: "animesoracle-a60e9.firebasestorage.app", 
       messagingSenderId: "751657326717", 
       appId: "1:751657326717:web:67ef63d01ffa3ad044f914" 
     };
 
-    // 2. INICIALIZAÇÃO
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // 3. FUNÇÃO SALVAR
+    // Funções de Interface
+    function toggleMenu() {
+        document.getElementById('sideMenu').classList.toggle('active');
+        const overlay = document.getElementById('overlay');
+        overlay.style.display = overlay.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function toggleSearch() {
+        const box = document.getElementById('searchBox');
+        box.style.display = box.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // 2. FUNÇÃO SALVAR NO FIREBASE
     async function salvarAnime() {
         const nome = document.getElementById('pNome').value;
         const capa = document.getElementById('pCapa').value;
         const link = document.getElementById('pLink').value;
 
-        if (!nome || !capa) return alert("Preencha pelo menos Nome e Capa!");
+        if (!nome || !capa) return alert("Preencha Nome e Capa!");
 
         try {
             await db.collection("animes").add({
@@ -84,12 +172,11 @@
             document.getElementById('pCapa').value = "";
             document.getElementById('pLink').value = "";
         } catch (e) {
-            console.error("Erro ao salvar:", e);
-            alert("Erro do Firebase: " + e.message + "\n\nVerifique se as 'Regras' no Firebase estão públicas!");
+            alert("Erro ao salvar: " + e.message);
         }
     }
 
-    // 4. CARREGAR DADOS EM TEMPO REAL
+    // 3. CARREGAR ANIMES DO FIREBASE
     db.collection("animes").orderBy("data", "desc").onSnapshot((snapshot) => {
         const grid = document.getElementById('animeGrid');
         grid.innerHTML = "";
@@ -101,8 +188,6 @@
                     <div class="card-info">${anime.nome}</div>
                 </div>`;
         });
-    }, (error) => {
-        console.error("Erro ao ler dados: ", error);
     });
 </script>
 
