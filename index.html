@@ -5,51 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AnimesOracle</title>
     
-    <!-- SCRIPTS VIA CDN ALTERNATIVO (MAIS RÁPIDO PARA CELULAR) -->
+    <!-- CARREGAMENTO PRIORITÁRIO -->
     <script src="https://gstatic.com"></script>
     <script src="https://gstatic.com"></script>
     <script src="https://gstatic.com"></script>
 
     <style>
         :root { --bg: #0f0f0f; --text: #ffffff; --primary: #6200ea; }
-        body { margin: 0; background: var(--bg); color: var(--text); font-family: sans-serif; text-align: center; }
-        header { display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: #000; height: 60px; border-bottom: 2px solid #222; }
-        .loading-screen { padding: 50px; color: var(--primary); font-weight: bold; }
-        .side-menu { position: fixed; left: -100%; top: 0; width: 280px; height: 100%; background: #111; z-index: 2000; transition: 0.4s; padding: 20px; border-right: 2px solid var(--primary); text-align: left; }
-        .side-menu.active { left: 0; }
-        input { width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #333; color: white; border-radius: 5px; box-sizing: border-box; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: sans-serif; }
+        header { display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: #000; height: 60px; border-bottom: 2px solid #333; }
         .btn { background: var(--primary); color: white; border: none; padding: 12px; width: 100%; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #333; color: white; border-radius: 5px; box-sizing: border-box; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; }
-        .card { background: #1a1a1a; border: 1px solid var(--primary); border-radius: 8px; overflow: hidden; }
+        .card { background: #1a1a1a; border: 1px solid var(--primary); border-radius: 8px; overflow: hidden; text-align: center; }
         .card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
+        #loadingOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background:#000; display:flex; align-items:center; justify-content:center; z-index:9999; }
     </style>
 </head>
 <body>
 
-<div id="statusLoad" class="loading-screen">Carregando AnimesOracle...</div>
+<div id="loadingOverlay">Carregando Firebase...</div>
 
-<div id="mainContent" style="display:none;">
-    <header>
-        <button onclick="document.getElementById('sideMenu').classList.toggle('active')" style="color:white; background:none; border:none; font-size:24px;">☰</button>
-        <div style="color:var(--primary); font-weight:bold; font-size:20px;">AnimesOracle</div>
-        <button onclick="fazerPostar()" style="color:white; background:none; border:none; font-size:24px;">➕</button>
-    </header>
+<header>
+    <button onclick="document.getElementById('sideMenu').style.display='block'" style="color:white; background:none; border:none; font-size:24px;">☰</button>
+    <div style="color:var(--primary); font-weight:bold; font-size:20px;">AnimesOracle</div>
+    <button onclick="fazerPostar()" style="color:white; background:none; border:none; font-size:24px;">➕</button>
+</header>
 
-    <div class="side-menu" id="sideMenu">
-        <div id="authBox">
-            <h3>Entrar / Cadastrar</h3>
-            <input type="email" id="email" placeholder="E-mail">
-            <input type="password" id="pass" placeholder="Senha (6+ dígitos)">
-            <button class="btn" onclick="executarLogin()">LOGAR / CRIAR CONTA</button>
-        </div>
-        <div id="userBox" style="display:none">
-            <p id="uEmail" style="color:var(--primary); font-weight:bold;"></p>
-            <button onclick="firebase.auth().signOut().then(()=>location.reload())" style="color:red; background:none; border:none;">Sair</button>
-        </div>
+<div id="sideMenu" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:5000; padding:20px; box-sizing:border-box;">
+    <button onclick="document.getElementById('sideMenu').style.display='none'" style="float:right; color:white; background:none; border:none; font-size:30px;">×</button>
+    <div id="authBox">
+        <h3>Login / Cadastro</h3>
+        <input type="email" id="email" placeholder="E-mail">
+        <input type="password" id="pass" placeholder="Senha (6+ dígitos)">
+        <button class="btn" onclick="executarLogin()">LOGAR / CRIAR CONTA</button>
     </div>
-
-    <div class="grid" id="grid"></div>
+    <div id="userBox" style="display:none">
+        <p id="uEmail" style="color:var(--primary); font-weight:bold;"></p>
+        <button class="btn" style="background:red;" onclick="firebase.auth().signOut().then(()=>location.reload())">Sair</button>
+    </div>
 </div>
+
+<div class="grid" id="grid"></div>
 
 <script>
     const firebaseConfig = { 
@@ -60,54 +57,49 @@
         appId: "1:751657326717:web:67ef63d01ffa3ad044f914" 
     };
 
-    // TENTATIVA DE INICIALIZAR
-    try {
-        firebase.initializeApp(firebaseConfig);
-        document.getElementById('statusLoad').style.display = 'none';
-        document.getElementById('mainContent').style.display = 'block';
-        iniciarApp();
-    } catch (e) {
-        document.getElementById('statusLoad').innerText = "Erro ao conectar com o Google. Recarregue a página.";
-        console.error(e);
-    }
+    function inicializar() {
+        if (typeof firebase !== 'undefined') {
+            firebase.initializeApp(firebaseConfig);
+            document.getElementById('loadingOverlay').style.display = 'none';
+            
+            const auth = firebase.auth();
+            const db = firebase.firestore();
 
-    function iniciarApp() {
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-
-        auth.onAuthStateChanged(user => {
-            if(user) {
-                document.getElementById('authBox').style.display = 'none';
-                document.getElementById('userBox').style.display = 'block';
-                document.getElementById('uEmail').innerText = user.email;
-            }
-        });
-
-        db.collection("animes").orderBy("data", "desc").onSnapshot(snap => {
-            const g = document.getElementById('grid'); g.innerHTML = "";
-            snap.forEach(doc => {
-                const a = doc.data();
-                g.innerHTML += `<div class="card"><img src="${a.capa}"><div>${a.nome}</div></div>`;
+            auth.onAuthStateChanged(user => {
+                if(user) {
+                    document.getElementById('authBox').style.display = 'none';
+                    document.getElementById('userBox').style.display = 'block';
+                    document.getElementById('uEmail').innerText = user.email;
+                }
             });
-        });
+
+            db.collection("animes").orderBy("data", "desc").onSnapshot(snap => {
+                const g = document.getElementById('grid'); g.innerHTML = "";
+                snap.forEach(doc => {
+                    const a = doc.data();
+                    g.innerHTML += `<div class="card"><img src="${a.capa}"><div>${a.nome}</div></div>`;
+                });
+            });
+        } else {
+            setTimeout(inicializar, 1000);
+        }
     }
 
     async function executarLogin() {
         const e = document.getElementById('email').value.trim();
         const s = document.getElementById('pass').value;
-        if(!e || s.length < 6) return alert("Verifique e-mail e senha (min. 6 dígitos)");
+        if(!e || s.length < 6) return alert("Verifique e-mail e senha!");
 
         try {
             await firebase.auth().signInWithEmailAndPassword(e, s);
             alert("Sucesso!");
+            document.getElementById('sideMenu').style.display = 'none';
         } catch (error) {
-            if (error.code === 'auth/user-not-found') {
+            if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
                 firebase.auth().createUserWithEmailAndPassword(e, s)
                     .then(() => alert("Conta criada!"))
                     .catch(err => alert("Erro: " + err.message));
-            } else {
-                alert("Erro: " + error.message);
-            }
+            } else { alert("Erro: " + error.message); }
         }
     }
 
@@ -120,6 +112,8 @@
             }).then(() => alert("Postado!"));
         }
     }
+
+    window.onload = inicializar;
 </script>
 </body>
 </html>
