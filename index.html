@@ -339,4 +339,8 @@
 
         if (user) {
             // Usuário logado: Carrega dados do Firestore e exibe o menu personalizado
-            const userDocRef = db.collection("usersSem resposta
+            const userDocRef = db.collection("users").doc(user.uid);
+            const userDoc = await userDocRef.get();
+            let userData = userDoc.exists ? userDoc.data() : {
+                email: user.email,
+                photoURL: 'Sem resposta
