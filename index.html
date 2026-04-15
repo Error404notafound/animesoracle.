@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AnimesOracle</title>
     
     <!-- BIBLIOTECAS (CARREGAMENTO FORÇADO) -->
@@ -11,101 +11,111 @@
     <script src="https://gstatic.com"></script>
 
     <style>
-        body { margin: 0; background: #0b0b0b; color: white; font-family: sans-serif; text-align: center; }
-        header { background: #000; padding: 15px; border-bottom: 2px solid #6200ea; display: flex; justify-content: space-between; align-items: center; }
-        .btn { background: #6200ea; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .container { padding: 20px; }
-        input { width: 90%; padding: 12px; margin: 10px 0; background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 5px; font-size: 16px; }
+        :root { --bg: #0f0f0f; --text: #ffffff; --primary: #6200ea; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: sans-serif; text-align: center; }
+        header { background: #000; padding: 15px; border-bottom: 2px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
+        .btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 80%; }
+        input { width: 85%; padding: 12px; margin: 10px 0; background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 5px; font-size: 16px; }
         #grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; }
-        .card { background: #151515; border: 1px solid #6200ea; border-radius: 8px; overflow: hidden; padding-bottom: 5px; }
+        .card { background: #151515; border: 1px solid var(--primary); border-radius: 8px; overflow: hidden; }
         .card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="color:#6200ea; font-weight:bold; font-size: 20px;">AnimesOracle</div>
-    <button class="btn" id="btnPostar" onclick="abrirPostagem()" style="display:none;">POSTAR</button>
+    <div style="color:var(--primary); font-weight:bold; font-size: 20px;">AnimesOracle</div>
+    <button onclick="fazerPostar()" style="color:white; background:none; border:none; font-size:24px;">➕</button>
 </header>
 
-<div class="container" id="areaLogin">
-    <h3>Login / Cadastro</h3>
-    <p style="font-size: 12px; color: #888;">Digite e-mail e senha para começar.</p>
-    <input type="email" id="email" placeholder="E-mail">
-    <input type="password" id="pass" placeholder="Senha (mín. 6 dígitos)">
+<div id="statusLoad" style="padding: 10px; color: yellow; font-size: 12px;">Conectando...</div>
+
+<div id="areaLogin" style="padding: 20px;">
+    <h3>Acesse sua Conta</h3>
+    <input type="email" id="email" placeholder="Seu e-mail">
+    <input type="password" id="pass" placeholder="Sua senha">
     <br>
-    <button class="btn" id="btnAcessar">ENTRAR OU CADASTRAR</button>
+    <button class="btn" id="btnAcao">ENTRAR / CADASTRAR</button>
 </div>
 
-<div id="statusUsuario" style="padding: 10px; color: #6200ea; font-weight: bold;"></div>
+<div id="areaPerfil" style="display:none; padding: 20px;">
+    <p id="txtUsuario" style="color:var(--primary)"></p>
+    <button onclick="firebase.auth().signOut().then(()=>location.reload())" style="color:red; background:none; border:none;">Sair</button>
+</div>
 
 <div id="grid">Carregando animes...</div>
 
 <script>
-    // CONFIGURAÇÃO
     const firebaseConfig = { 
         apiKey: "AIzaSyBlhgf82RL_uSWChpBwzuUAfi_SHtQY2kw", 
-        authDomain: "://firebaseapp.com", 
+        authDomain: "animesoracle-a60e9.firebaseapp.com", 
         projectId: "animesoracle-a60e9", 
         storageBucket: "animesoracle-a60e9.firebasestorage.app", 
         appId: "1:751657326717:web:67ef63d01ffa3ad044f914" 
     };
 
-    // INICIALIZAÇÃO
-    firebase.initializeApp(firebaseConfig);
+    // 1. INICIALIZAÇÃO SEGURA
+    try {
+        firebase.initializeApp(firebaseConfig);
+        document.getElementById('statusLoad').innerText = "Conectado ao Oracle!";
+    } catch(e) {
+        document.getElementById('statusLoad').innerText = "Erro Crítico: " + e.message;
+    }
+
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // BOTÃO DE LOGIN
-    document.getElementById('btnAcessar').onclick = function() {
+    // 2. BOTÃO DE LOGIN REFORÇADO
+    document.getElementById('btnAcao').onclick = function() {
         const e = document.getElementById('email').value.trim();
         const s = document.getElementById('pass').value;
 
         if(!e || s.length < 6) return alert("E-mail inválido ou senha menor que 6 dígitos!");
 
+        // ALERTA DE TESTE - PRECISA APARECER
+        alert("Enviando dados para o Google...");
+
         auth.signInWithEmailAndPassword(e, s)
-            .then(() => alert("Logado!"))
+            .then(() => alert("Logado com sucesso!"))
             .catch(error => {
                 if (error.code === 'auth/user-not-found') {
+                    // SE NÃO EXISTE, CRIA
                     auth.createUserWithEmailAndPassword(e, s)
-                        .then(() => alert("Conta criada!"))
-                        .catch(err => alert("Erro: " + err.message));
+                        .then(() => alert("Sua conta foi criada!"))
+                        .catch(err => alert("Erro no Cadastro: " + err.message));
                 } else {
                     alert("Erro do Google: " + error.message);
                 }
             });
     };
 
-    // MONITORAR LOGIN
+    // 3. MONITORAR USUÁRIO
     auth.onAuthStateChanged(user => {
         if(user) {
             document.getElementById('areaLogin').style.display = 'none';
-            document.getElementById('btnPostar').style.display = 'block';
-            document.getElementById('statusUsuario').innerText = "Bem-vindo: " + user.email;
+            document.getElementById('areaPerfil').style.display = 'block';
+            document.getElementById('txtUsuario').innerText = "Bem-vindo: " + user.email;
         }
     });
 
-    // CARREGAR ANIMES
+    // 4. CARREGAR ANIMES
     db.collection("animes").orderBy("data", "desc").onSnapshot(snap => {
-        const g = document.getElementById('grid');
-        g.innerHTML = "";
+        const g = document.getElementById('grid'); g.innerHTML = "";
         snap.forEach(doc => {
             const a = doc.data();
             g.innerHTML += `<div class="card"><img src="${a.capa}"><div>${a.nome}</div></div>`;
         });
+    }, err => {
+        document.getElementById('grid').innerText = "Erro ao carregar: " + err.message;
     });
 
-    // POSTAGEM VIA PROMPT (MAIS FÁCIL PARA CELULAR)
-    function abrirPostagem() {
-        const nome = prompt("Nome do Anime:");
-        const capa = prompt("Link da Imagem:");
-        const link = prompt("Link do Vídeo:");
-        
-        if(nome && capa && link) {
+    function fazerPostar() {
+        if(!auth.currentUser) return alert("Faça login primeiro!");
+        const n = prompt("Nome:"); const c = prompt("Link Capa:"); const l = prompt("Link Vídeo:");
+        if(n && c && l) {
             db.collection("animes").add({
-                nome: nome, capa: capa, link: link,
-                data: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => alert("Postado com sucesso!"));
+                nome: n, capa: c, link: l, data: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => alert("Postado!"));
         }
     }
 </script>
