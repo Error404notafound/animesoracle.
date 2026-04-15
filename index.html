@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AnimesOracle</title>
     
-    <!-- BIBLIOTECAS FIREBASE -->
+    <!-- BIBLIOTECAS FIREBASE (OBRIGATÓRIO TER AS 3) -->
     <script src="https://gstatic.com"></script>
     <script src="https://gstatic.com"></script>
     <script src="https://gstatic.com"></script>
@@ -22,7 +22,7 @@
             filter: brightness(var(--brightness)); transition: 0.3s;
         }
 
-        /* HEADER */
+        /* HEADER CENTRALIZADO */
         header {
             display: flex; align-items: center; justify-content: space-between;
             padding: 0 15px; background: #000; height: 60px; position: sticky; top: 0; z-index: 1000;
@@ -31,7 +31,7 @@
         .logo { font-weight: bold; color: var(--primary); font-size: 22px; flex-grow: 1; text-align: center; text-shadow: 0 0 10px var(--primary); }
         .icon-btn { font-size: 26px; cursor: pointer; background: none; border: none; color: var(--primary); outline: none; }
         
-        /* BUSCA */
+        /* BUSCA COM LUZ ROXA */
         #searchBox { display: none; padding: 10px; background: #000; }
         #searchBox input { 
             width: 100%; padding: 12px; border-radius: 5px; border: 2px solid var(--primary); 
@@ -56,7 +56,7 @@
         .menu-item { display: block; color: white; padding: 15px 0; text-decoration: none; border-bottom: 1px solid #222; }
         .list-title { color: var(--primary); margin-top: 20px; font-weight: bold; }
 
-        /* GRID ANIMES */
+        /* CARDS DE ANIMES */
         .grid-animes { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 15px; }
         .card { 
             background: var(--card); border-radius: 10px; overflow: hidden; 
@@ -99,16 +99,18 @@
 
 <div id="overlay" onclick="toggleMenu()"></div>
 <div class="side-menu" id="sideMenu">
+    <!-- ÁREA DE LOGIN / CADASTRO -->
     <div id="authSection">
         <h3 style="color:var(--primary); margin-top:0;">Login / Cadastro</h3>
-        <input type="email" id="email" placeholder="Seu e-mail">
-        <input type="password" id="password" placeholder="Sua senha">
+        <input type="email" id="email" placeholder="E-mail">
+        <input type="password" id="password" placeholder="Senha (mín. 6 dígitos)">
         <button class="btn-purple" onclick="logarOuCadastrar()">ENTRAR / CADASTRAR</button>
-        <p style="font-size: 10px; color: #888;">*Se não tiver conta, ela será criada agora.</p>
+        <p style="font-size: 10px; color: #888; margin-top:10px;">Se você não tem conta, ela será criada automaticamente ao clicar.</p>
     </div>
 
+    <!-- ÁREA DO USUÁRIO LOGADO -->
     <div id="userProfile" style="display:none; text-align:center;">
-        <div style="color:var(--primary); font-weight:bold; margin-bottom:15px;" id="userName"></div>
+        <div style="color:var(--primary); font-weight:bold; margin-bottom:15px;" id="userNameDisplay"></div>
         
         <div style="background:#222; padding:15px; border-radius:8px; text-align:left;">
             <small>Brilho do Site:</small>
@@ -130,6 +132,7 @@
 
 <div class="grid-animes" id="animeGrid"></div>
 
+<!-- MODAL DE POSTAGEM -->
 <div id="postarModal" class="modal">
     <div class="modal-card">
         <h3 style="color:var(--primary); margin:0;">Postar Anime</h3>
@@ -146,7 +149,7 @@
 </div>
 
 <script>
-    // CONFIGURAÇÃO DO SEU FIREBASE
+    // 1. CONFIGURAÇÃO
     const firebaseConfig = { 
         apiKey: "AIzaSyBlhgf82RL_uSWChpBwzuUAfi_SHtQY2kw", 
         authDomain: "://firebaseapp.com", 
@@ -159,18 +162,18 @@
     const db = firebase.firestore();
     const auth = firebase.auth();
 
-    // MENU ABC
+    // 2. MENU ABC
     const letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
     letras.forEach(l => { document.getElementById('abcRow').innerHTML += `<a href="#">${l}</a>`; });
 
-    // FUNÇÕES DE INTERFACE
+    // 3. FUNÇÕES DE INTERFACE
     function toggleMenu() {
         document.getElementById('sideMenu').classList.toggle('active');
         document.getElementById('overlay').style.display = document.getElementById('sideMenu').classList.contains('active') ? 'block' : 'none';
     }
     function toggleSearch() {
         const s = document.getElementById('searchBox');
-        s.style.display = s.style.display === 'block' ? 'none' : 'block';
+        s.style.display = (s.style.display === 'block') ? 'none' : 'block';
     }
     function abrirPostar() {
         if(!auth.currentUser) return alert("Acesse sua conta para poder postar!");
@@ -178,32 +181,39 @@
     }
     function fecharPostar() { document.getElementById('postarModal').style.display = 'none'; }
 
-    // LOGIN E CADASTRO
+    // 4. LOGIN E CADASTRO (COM ALERTA DE ERRO)
     function logarOuCadastrar() {
         const e = document.getElementById('email').value;
         const s = document.getElementById('password').value;
-        if(!e || s.length < 6) return alert("E-mail inválido ou senha muito curta (mínimo 6 dígitos).");
+        
+        if(!e || s.length < 6) return alert("Digite um e-mail válido e uma senha de no mínimo 6 caracteres.");
 
-        auth.signInWithEmailAndPassword(e, s).catch(error => {
-            if (error.code === 'auth/user-not-found') {
-                return auth.createUserWithEmailAndPassword(e, s)
-                    .then(() => alert("Conta criada com sucesso!"))
-                    .catch(err => alert("Erro ao criar conta: " + err.message));
-            }
-            alert("Erro: " + error.message);
-        });
+        auth.signInWithEmailAndPassword(e, s)
+            .then(() => { alert("Login realizado com sucesso!"); })
+            .catch(error => {
+                if (error.code === 'auth/user-not-found') {
+                    // Se usuário não existe, tenta cadastrar
+                    auth.createUserWithEmailAndPassword(e, s)
+                        .then(() => alert("Conta criada com sucesso!"))
+                        .catch(err => alert("ERRO NO CADASTRO: " + err.message));
+                } else {
+                    alert("ERRO DO FIREBASE: " + error.message);
+                }
+            });
     }
+
     function deslogar() { auth.signOut(); location.reload(); }
 
+    // OBSERVAR LOGIN
     auth.onAuthStateChanged(user => {
         if(user) {
             document.getElementById('authSection').style.display = 'none';
             document.getElementById('userProfile').style.display = 'block';
-            document.getElementById('userName').innerText = user.email;
+            document.getElementById('userNameDisplay').innerText = user.email;
         }
     });
 
-    // POSTAR ANIME
+    // 5. POSTAR ANIME
     async function publicarAnime() {
         const nome = document.getElementById('pNome').value;
         const capa = document.getElementById('pCapa').value;
@@ -218,12 +228,12 @@
                 autor: auth.currentUser.email,
                 data: firebase.firestore.FieldValue.serverTimestamp()
             });
-            alert("Sucesso! O anime foi postado.");
+            alert("Sucesso! Anime postado.");
             fecharPostar();
         } catch(e) { alert("Erro ao salvar: " + e.message); }
     }
 
-    // CARREGAR ANIMES (SISTEMA DE PLAYERS)
+    // 6. CARREGAR E AGRUPAR PLAYERS
     db.collection("animes").orderBy("data", "desc").onSnapshot(snap => {
         const grid = document.getElementById('animeGrid');
         grid.innerHTML = "";
@@ -237,10 +247,10 @@
 
         for (let nome in grupos) {
             const lista = grupos[nome];
-            const info = lista[0];
+            const primeiro = lista[0];
             grid.innerHTML += `
                 <div class="card">
-                    <img src="${info.capa}" onclick="window.open('${info.link}')">
+                    <img src="${primeiro.capa}" onclick="window.open('${primeiro.link}')">
                     <div class="card-info">${nome}</div>
                     <div style="text-align:center; padding-bottom:10px;">
                         ${lista.map((v, i) => `<button class="player-btn" onclick="window.open('${v.link}')">Player ${i+1}</button>`).join("")}
