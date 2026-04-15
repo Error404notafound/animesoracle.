@@ -5,42 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AnimesOracle</title>
     
-    <!-- BIBLIOTECAS -->
+    <!-- BIBLIOTECAS (CARREGAMENTO FORÇADO) -->
     <script src="https://gstatic.com"></script>
     <script src="https://gstatic.com"></script>
     <script src="https://gstatic.com"></script>
 
     <style>
-        body { margin: 0; background: #0f0f0f; color: white; font-family: sans-serif; text-align: center; }
+        body { margin: 0; background: #0b0b0b; color: white; font-family: sans-serif; text-align: center; }
         header { background: #000; padding: 15px; border-bottom: 2px solid #6200ea; display: flex; justify-content: space-between; align-items: center; }
-        .btn { background: #6200ea; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        input { width: 80%; padding: 10px; margin: 10px 0; background: #222; border: 1px solid #333; color: white; border-radius: 5px; }
+        .btn { background: #6200ea; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .container { padding: 20px; }
+        input { width: 90%; padding: 12px; margin: 10px 0; background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 5px; font-size: 16px; }
         #grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; }
-        .card { background: #1a1a1a; border: 1px solid #6200ea; border-radius: 8px; padding-bottom: 5px; overflow: hidden; }
+        .card { background: #151515; border: 1px solid #6200ea; border-radius: 8px; overflow: hidden; padding-bottom: 5px; }
         .card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="color:#6200ea; font-weight:bold;">AnimesOracle</div>
-    <button class="btn" onclick="document.getElementById('modalAuth').style.display='block'">LOGIN</button>
+    <div style="color:#6200ea; font-weight:bold; font-size: 20px;">AnimesOracle</div>
+    <button class="btn" id="btnPostar" onclick="abrirPostagem()" style="display:none;">POSTAR</button>
 </header>
 
-<!-- ÁREA DE LOGIN -->
-<div id="modalAuth" style="display:none; padding: 20px; background: #111; border-bottom: 2px solid #6200ea;">
-    <h3>Entrar ou Cadastrar</h3>
+<div class="container" id="areaLogin">
+    <h3>Login / Cadastro</h3>
+    <p style="font-size: 12px; color: #888;">Digite e-mail e senha para começar.</p>
     <input type="email" id="email" placeholder="E-mail">
-    <input type="password" id="pass" placeholder="Senha (6+ dígitos)">
+    <input type="password" id="pass" placeholder="Senha (mín. 6 dígitos)">
     <br>
-    <button class="btn" onclick="fazerLogin()">ACESSAR</button>
-    <button onclick="document.getElementById('modalAuth').style.display='none'" style="background:none; color:gray; border:none; margin-left:10px;">Fechar</button>
-    <p id="uStatus" style="color:#6200ea; font-size:12px;"></p>
+    <button class="btn" id="btnAcessar">ENTRAR OU CADASTRAR</button>
 </div>
+
+<div id="statusUsuario" style="padding: 10px; color: #6200ea; font-weight: bold;"></div>
 
 <div id="grid">Carregando animes...</div>
 
 <script>
+    // CONFIGURAÇÃO
     const firebaseConfig = { 
         apiKey: "AIzaSyBlhgf82RL_uSWChpBwzuUAfi_SHtQY2kw", 
         authDomain: "://firebaseapp.com", 
@@ -49,51 +51,62 @@
         appId: "1:751657326717:web:67ef63d01ffa3ad044f914" 
     };
 
-    // TENTA INICIAR O SITE
-    try {
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const auth = firebase.auth();
+    // INICIALIZAÇÃO
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-        // MOSTRAR ANIMES
-        db.collection("animes").orderBy("data", "desc").onSnapshot(snap => {
-            const g = document.getElementById('grid');
-            g.innerHTML = "";
-            snap.forEach(doc => {
-                const a = doc.data();
-                g.innerHTML += `<div class="card"><img src="${a.capa}"><div>${a.nome}</div></div>`;
-            });
-        });
-
-        // MONITORAR USUÁRIO
-        auth.onAuthStateChanged(user => {
-            if(user) {
-                document.getElementById('uStatus').innerText = "Logado como: " + user.email;
-                document.getElementById('modalAuth').style.display = 'none';
-            }
-        });
-
-    } catch (e) {
-        alert("Erro ao conectar. Tente usar os dados móveis (4G).");
-    }
-
-    async function fazerLogin() {
+    // BOTÃO DE LOGIN
+    document.getElementById('btnAcessar').onclick = function() {
         const e = document.getElementById('email').value.trim();
         const s = document.getElementById('pass').value;
 
-        if(!e || s.length < 6) return alert("E-mail ou senha (min. 6) inválidos!");
+        if(!e || s.length < 6) return alert("E-mail inválido ou senha menor que 6 dígitos!");
 
-        firebase.auth().signInWithEmailAndPassword(e, s)
+        auth.signInWithEmailAndPassword(e, s)
             .then(() => alert("Logado!"))
-            .catch(err => {
-                if(err.code === 'auth/user-not-found') {
-                    firebase.auth().createUserWithEmailAndPassword(e, s)
+            .catch(error => {
+                if (error.code === 'auth/user-not-found') {
+                    auth.createUserWithEmailAndPassword(e, s)
                         .then(() => alert("Conta criada!"))
-                        .catch(e2 => alert("Erro: " + e2.message));
+                        .catch(err => alert("Erro: " + err.message));
                 } else {
-                    alert("Erro: " + err.message);
+                    alert("Erro do Google: " + error.message);
                 }
             });
+    };
+
+    // MONITORAR LOGIN
+    auth.onAuthStateChanged(user => {
+        if(user) {
+            document.getElementById('areaLogin').style.display = 'none';
+            document.getElementById('btnPostar').style.display = 'block';
+            document.getElementById('statusUsuario').innerText = "Bem-vindo: " + user.email;
+        }
+    });
+
+    // CARREGAR ANIMES
+    db.collection("animes").orderBy("data", "desc").onSnapshot(snap => {
+        const g = document.getElementById('grid');
+        g.innerHTML = "";
+        snap.forEach(doc => {
+            const a = doc.data();
+            g.innerHTML += `<div class="card"><img src="${a.capa}"><div>${a.nome}</div></div>`;
+        });
+    });
+
+    // POSTAGEM VIA PROMPT (MAIS FÁCIL PARA CELULAR)
+    function abrirPostagem() {
+        const nome = prompt("Nome do Anime:");
+        const capa = prompt("Link da Imagem:");
+        const link = prompt("Link do Vídeo:");
+        
+        if(nome && capa && link) {
+            db.collection("animes").add({
+                nome: nome, capa: capa, link: link,
+                data: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => alert("Postado com sucesso!"));
+        }
     }
 </script>
 </body>
