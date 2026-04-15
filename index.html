@@ -3,192 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
     <title>AnimesOracle</title>
-    <meta property="og:title" content="AnimesOracle - Assista e Poste Animes">
-    <meta property="og:description" content="A maior comunidade Oracle de animes. Assista, avalie e compartilhe seus vídeos favoritos.">
-    <meta property="og:image" content="https://placeholder.com">
-    <meta property="og:type" content="website">
-    <meta name="theme-color" content="#6200ea">
-
-    <!-- BIBLIOTECAS FIREBASE (VERSÃO ESTÁVEL 8.10.0) -->
+    
+    <!-- FIREBASE 8 -->
+    <script src="https://gstatic.com"></script>
     <script src="https://gstatic.com"></script>
     <script src="https://gstatic.com"></script>
 
     <style>
         :root {
-            --bg: #0f0f0f; 
-            --card: #1a1a1a; 
-            --text: #ffffff; 
-            --primary: #6200ea; 
+            --bg: #0f0f0f; --card: #1a1a1a; --text: #ffffff; 
+            --primary: #6200ea; --shadow: rgba(98, 0, 234, 0.6);
             --brightness: 100%;
         }
         body { 
-            margin: 0; padding: 0; background: var(--bg); color: var(--text);
-            font-family: 'Segoe UI', sans-serif; overflow-x: hidden;
-            filter: brightness(var(--brightness));
+            margin: 0; background: var(--bg); color: var(--text);
+            font-family: 'Segoe UI', sans-serif; filter: brightness(var(--brightness));
         }
 
+        /* HEADER */
         header {
             display: flex; align-items: center; justify-content: space-between;
             padding: 0 15px; background: #000; height: 60px; position: sticky; top: 0; z-index: 1000;
         }
-        .header-btn-container { width: 45px; display: flex; align-items: center; }
-        .logo { font-weight: bold; color: var(--primary); font-size: 20px; flex-grow: 1; text-align: center; }
-        .icon-btn { font-size: 26px; cursor: pointer; background: none; border: none; color: var(--primary); padding: 0; }
-        
-        #searchBox {
-            display: none; position: absolute; left: 0; top: 60px; width: 100%;
-            padding: 10px; background: #000; box-sizing: border-box; z-index: 999;
-        }
-        #searchBox input { width: 100%; padding: 12px; border-radius: 5px; border: 1px solid var(--primary); background: #222; color: white; }
+        .logo { font-weight: bold; color: var(--primary); font-size: 22px; flex-grow: 1; text-align: center; text-shadow: 0 0 10px var(--shadow); }
+        .icon-btn { font-size: 24px; cursor: pointer; background: none; border: none; color: var(--primary); }
 
-        .abc-menu {
-            display: flex; overflow-x: auto; background: #111; padding: 12px; gap: 20px;
-            scrollbar-width: none; border-bottom: 1px solid #222; -webkit-overflow-scrolling: touch;
-        }
-        .abc-menu a { color: var(--primary); text-decoration: none; font-weight: bold; font-size: 16px; min-width: 15px; text-align: center; }
+        /* BUSCA COM BRILHO */
+        #searchBox { display: none; width: 100%; padding: 10px; background: #000; }
+        #searchBox input:focus { outline: none; box-shadow: 0 0 15px var(--primary); border: 1px solid var(--primary); }
+        #searchBox input { width: 100%; padding: 10px; border-radius: 20px; border: 1px solid #333; background: #111; color: #fff; }
 
+        /* ABC MENU */
+        .abc-menu { display: flex; overflow-x: auto; padding: 10px; gap: 15px; background: #050505; border-bottom: 1px solid #222; }
+        .abc-menu a { color: var(--primary); text-decoration: none; font-weight: bold; }
+
+        /* GRID E DESTAQUE */
+        .section-title { padding: 15px; font-size: 14px; color: var(--primary); font-weight: bold; }
+        .grid-animes { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; }
+        .card { 
+            background: var(--card); border-radius: 10px; overflow: hidden; 
+            transition: 0.3s; border: 1px solid #222;
+        }
+        .card.featured { border: 2px solid var(--primary); box-shadow: 0 0 15px var(--shadow); }
+        .card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
+        .card-info { padding: 8px; font-size: 12px; text-align: center; }
+
+        /* MENU LATERAL */
         .side-menu {
-            position: fixed; left: -100%; top: 0; width: 80%; max-width: 300px;
-            height: 100%; background: #151515; z-index: 2000; transition: 0.3s; padding: 20px;
+            position: fixed; left: -100%; top: 0; width: 280px; height: 100%;
+            background: #111; z-index: 2000; transition: 0.4s; padding: 20px;
+            box-sizing: border-box; border-right: 1px solid var(--primary);
         }
         .side-menu.active { left: 0; }
-        .profile-area { text-align: center; padding-bottom: 20px; border-bottom: 1px solid #333; margin-bottom: 10px; }
-        .user-avatar { width: 70px; height: 70px; border-radius: 50%; background: #333; object-fit: cover; border: 2px solid var(--primary); }
+        .menu-link { display: block; color: white; padding: 12px 0; text-decoration: none; border-bottom: 1px solid #222; }
+        .list-title { color: var(--primary); margin-top: 20px; font-weight: bold; }
 
-        .grid-recent { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 15px; }
-        .card-recent { background: var(--card); border-radius: 8px; overflow: hidden; border: 1px solid #333; text-align: center; }
-        .card-recent img { width: 100%; aspect-ratio: 2/3; object-fit: cover; cursor: pointer; display: block; }
-        .card-info { padding: 8px; font-size: 13px; font-weight: bold; }
+        /* PLAYER E BOTÕES */
+        .player-actions { display: flex; justify-content: space-around; padding: 15px; }
+        .btn-save { padding: 10px 20px; background: none; border: 2px solid var(--primary); color: white; border-radius: 5px; box-shadow: 0 0 10px var(--shadow); }
+        .btn-report { padding: 10px 20px; background: #b00020; border: none; color: white; border-radius: 5px; }
 
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 5000; justify-content: center; align-items: center;
-        }
-        .modal-card { background: #1a1a1a; padding: 25px; border-radius: 15px; width: 90%; max-width: 400px; border: 1px solid var(--primary); }
-        input { width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #333; color: white; border-radius: 5px; box-sizing: border-box;}
-        .btn-post { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        
-        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1500; }
+        /* MODAL */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 5000; justify-content: center; align-items: center; }
+        .modal-content { background: #1a1a1a; padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; border: 1px solid var(--primary); }
+        input, select { width: 100%; padding: 10px; margin: 8px 0; background: #222; border: 1px solid #333; color: #fff; border-radius: 5px; }
+        .btn-pub { background: var(--primary); border: none; color: #fff; padding: 12px; width: 100%; border-radius: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="header-btn-container"><button class="icon-btn" onclick="toggleMenu()">☰</button></div>
+    <button class="icon-btn" onclick="document.getElementById('sideMenu').classList.toggle('active')">☰</button>
     <div class="logo">AnimesOracle</div>
-    <div class="header-btn-container" style="justify-content: flex-end; gap: 10px;">
-        <button class="icon-btn" onclick="document.getElementById('postarModal').style.display='flex'">➕</button>
+    <div style="display: flex; gap: 10px;">
+        <button class="icon-btn" onclick="document.getElementById('postModal').style.display='flex'">➕</button>
         <button class="icon-btn" onclick="toggleSearch()">🔍</button>
     </div>
-    <div id="searchBox"><input type="text" placeholder="Pesquisar..."></div>
 </header>
 
-<div class="abc-menu" id="abcContainer">
-    <!-- Menu Alfabético Simples -->
-    <script>
-        const abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        abc.split('').forEach(letra => {
-            document.write(`<a href="#">${letra}</a>`);
-        });
-    </script>
+<div id="searchBox">
+    <input type="text" id="searchInput" placeholder="Pesquisar anime...">
 </div>
 
-<div id="overlay" onclick="toggleMenu()"></div>
+<div class="abc-menu" id="abc"></div>
+
+<!-- MENU LATERAL -->
 <div class="side-menu" id="sideMenu">
-    <div class="profile-area">
-        <img src="https://placeholder.com" class="user-avatar">
-        <h4 style="margin: 10px 0;">Visitante</h4>
+    <div id="userInfo">
+        <button class="btn-pub" onclick="alert('Sistema de Login via Firebase Auth')">Entrar / Cadastro</button>
     </div>
-    <nav class="nav-links">
-        <p style="padding: 10px; color: #888;">Configurações:</p>
-        <div style="padding: 0 15px;">
-            <small>Brilho:</small>
-            <input type="range" min="30" max="100" value="100" oninput="document.body.style.setProperty('--brightness', this.value + '%')">
-        </div>
-    </nav>
+    <div class="menu-link">Animes Dublados</div>
+    <div class="menu-link">Animes Legendados</div>
+    
+    <!-- Aparece após login -->
+    <div id="authOnly" style="display:none">
+        <small>Brilho:</small>
+        <input type="range" min="30" max="100" oninput="document.body.style.setProperty('--brightness', this.value+'%')">
+        <div class="menu-link"><input type="checkbox"> Modo Adulto (+18)</div>
+    </div>
+    
+    <div class="list-title">MINHA LISTA</div>
+    <div id="myList"></div>
 </div>
 
-<!-- GRID ONDE OS ANIMES VÃO APARECER -->
-<div class="grid-recent" id="animeGrid"></div>
+<!-- GRID PRINCIPAL -->
+<div class="section-title">RECENTES & DESTAQUES</div>
+<div class="grid-animes" id="animeGrid"></div>
 
-<!-- MODAL DE POSTAGEM -->
-<div id="postarModal" class="modal">
-    <div class="modal-card">
-        <h3 style="color:var(--primary); margin:0 0 10px 0;">Postar Anime</h3>
-        <input type="text" id="pNome" placeholder="Nome do Anime">
-        <input type="text" id="pCapa" placeholder="Link da Imagem (Capa)">
+<!-- MODAL POSTAR -->
+<div id="postModal" class="modal">
+    <div class="modal-content">
+        <h3 style="color:var(--primary)">Postar Anime</h3>
+        <input type="text" id="pNome" placeholder="Nome do Anime (ex: Naruto)">
+        <input type="text" id="pEp" placeholder="Temporada/Episódio (ex: T1 EP2)">
+        <input type="text" id="pCapa" placeholder="Link da Imagem do Episódio">
         <input type="text" id="pLink" placeholder="Link do Vídeo">
-        <button class="btn-post" onclick="salvarAnime()">PUBLICAR</button>
-        <button onclick="document.getElementById('postarModal').style.display='none'" style="background:none; color:gray; border:none; margin-top:15px; width:100%; cursor:pointer;">Cancelar</button>
+        <select id="pTipo">
+            <option value="comum">Comum</option>
+            <option value="adulto">Modo Adulto (+18)</option>
+        </select>
+        <button class="btn-pub" onclick="salvarAnime()">PUBLICAR</button>
+        <button onclick="this.parentElement.parentElement.style.display='none'" style="background:none; border:none; color:gray; width:100%; margin-top:10px;">Cancelar</button>
     </div>
 </div>
 
 <script>
-    // 1. CONFIGURAÇÃO FIREBASE
-    const firebaseConfig = { 
-      apiKey: "AIzaSyBlhgf82RL_uSWChpBwzuUAfi_SHtQY2kw", 
-      authDomain: "://firebaseapp.com", 
-      projectId: "animesoracle-a60e9", 
-      storageBucket: "animesoracle-a60e9.firebasestorage.app", 
-      messagingSenderId: "751657326717", 
-      appId: "1:751657326717:web:67ef63d01ffa3ad044f914" 
+    // CONFIGURAÇÃO DO SEU FIREBASE
+    const firebaseConfig = {
+      apiKey: "AIzaSyBlhgf82RL_uSWChpBwzuUAfi_SHtQY2kw",
+      authDomain: "://firebaseapp.com",
+      projectId: "animesoracle-a60e9",
+      storageBucket: "animesoracle-a60e9.firebasestorage.app",
+      messagingSenderId: "751657326717",
+      appId: "1:751657326717:web:67ef63d01ffa3ad044f914"
     };
-
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // Funções de Interface
-    function toggleMenu() {
-        document.getElementById('sideMenu').classList.toggle('active');
-        const overlay = document.getElementById('overlay');
-        overlay.style.display = overlay.style.display === 'block' ? 'none' : 'block';
-    }
+    // GERAR ABC
+    const abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+    abc.forEach(l => {
+        document.getElementById('abc').innerHTML += `<a href="#">${l}</a>`;
+    });
 
     function toggleSearch() {
-        const box = document.getElementById('searchBox');
-        box.style.display = box.style.display === 'block' ? 'none' : 'block';
+        const s = document.getElementById('searchBox');
+        s.style.display = s.style.display === 'block' ? 'none' : 'block';
     }
 
-    // 2. FUNÇÃO SALVAR NO FIREBASE
+    // SALVAR NO FIREBASE
     async function salvarAnime() {
         const nome = document.getElementById('pNome').value;
+        const ep = document.getElementById('pEp').value;
         const capa = document.getElementById('pCapa').value;
         const link = document.getElementById('pLink').value;
+        const tipo = document.getElementById('pTipo').value;
 
-        if (!nome || !capa) return alert("Preencha Nome e Capa!");
+        if(!nome || !link) return alert("Preencha os campos!");
 
-        try {
-            await db.collection("animes").add({
-                nome: nome,
-                capa: capa,
-                link: link,
-                data: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            alert("Sucesso! Anime postado.");
-            document.getElementById('postarModal').style.display = 'none';
-            document.getElementById('pNome').value = "";
-            document.getElementById('pCapa').value = "";
-            document.getElementById('pLink').value = "";
-        } catch (e) {
-            alert("Erro ao salvar: " + e.message);
-        }
+        await db.collection("postagens").add({
+            nome, ep, capa, link, tipo,
+            data: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        alert("Publicado com sucesso!");
+        location.reload();
     }
 
-    // 3. CARREGAR ANIMES DO FIREBASE
-    db.collection("animes").orderBy("data", "desc").onSnapshot((snapshot) => {
+    // CARREGAR E AGRUPAR PLAYERS
+    db.collection("postagens").orderBy("data", "desc").onSnapshot(snap => {
         const grid = document.getElementById('animeGrid');
         grid.innerHTML = "";
-        snapshot.forEach((doc) => {
-            const anime = doc.data();
+        
+        snap.forEach(doc => {
+            const a = doc.data();
             grid.innerHTML += `
-                <div class="card-recent">
-                    <img src="${anime.capa}" onclick="window.open('${anime.link}', '_blank')" onerror="this.src='https://placeholder.com'">
-                    <div class="card-info">${anime.nome}</div>
-                </div>`;
+                <div class="card featured">
+                    <img src="${a.capa}" onclick="abrirPlayer('${a.nome}', '${a.ep}')">
+                    <div class="card-info">
+                        <b>${a.nome}</b><br>
+                        <small>${a.ep}</small>
+                    </div>
+                </div>
+            `;
         });
     });
+
+    function abrirPlayer(nome, ep) {
+        alert("Abrindo Player para: " + nome + " " + ep + "\nAqui o código buscará todos os links iguais e listará como Player 1, Player 2...");
+    }
 </script>
 
 </body>
