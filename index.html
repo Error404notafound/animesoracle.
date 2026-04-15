@@ -2,122 +2,198 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AnimesOracle</title>
     
-    <!-- BIBLIOTECAS (CARREGAMENTO FORÇADO) -->
-    <script src="https://gstatic.com"></script>
-    <script src="https://gstatic.com"></script>
-    <script src="https://gstatic.com"></script>
+    <!-- BIBLIOTECAS FIREBASE (VERSÃO ESTÁVEL 8.10.0) -->
+    <!-- Essencial para o Firebase funcionar -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <!-- Para o banco de dados Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <!-- Para autenticação de usuários (e-mail/senha) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 
     <style>
-        :root { --bg: #0f0f0f; --text: #ffffff; --primary: #6200ea; }
-        body { margin: 0; background: var(--bg); color: var(--text); font-family: sans-serif; text-align: center; }
-        header { background: #000; padding: 15px; border-bottom: 2px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
-        .btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 80%; }
-        input { width: 85%; padding: 12px; margin: 10px 0; background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 5px; font-size: 16px; }
-        #grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; }
-        .card { background: #151515; border: 1px solid var(--primary); border-radius: 8px; overflow: hidden; }
-        .card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
+        /* Estilos Globais e do Tema */
+        :root { --bg: #0f0f0f; --card: #1a1a1a; --text: #ffffff; --primary: #6200ea; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: sans-serif; }
+
+        /* Estilos do Header */
+        header { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 0 15px; 
+            background: #000; 
+            height: 60px; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            border-bottom: 1px solid #333; 
+        }
+        .logo { 
+            font-weight: bold; 
+            color: var(--primary); 
+            font-size: 20px; 
+            flex-grow: 1; 
+            text-align: center; 
+        }
+        .icon-btn { 
+            font-size: 24px; 
+            cursor: pointer; 
+            background: none; 
+            border: none; 
+            color: var(--primary); 
+            outline: none; 
+            padding: 0 5px; /* Adicionado para melhor toque */
+        }
+
+        /* Estilos da Grade de Animes */
+        .grid-recent { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 12px; 
+            padding: 15px; 
+        }
+        .card-recent { 
+            background: var(--card); 
+            border-radius: 8px; 
+            overflow: hidden; 
+            border: 1px solid #333; 
+            text-align: center; 
+        }
+        .card-recent img { 
+            width: 100%; 
+            aspect-ratio: 2/3; 
+            object-fit: cover; 
+            cursor: pointer; 
+            display: block; 
+        }
+        .card-info { 
+            padding: 8px; 
+            font-size: 13px; 
+            font-weight: bold; 
+        }
+
+        /* Estilos Comuns para Modais (pop-ups) */
+        .modal { 
+            display: none; /* Escondido por padrão */
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0,0,0,0.9); 
+            z-index: 5000; 
+            justify-content: center; 
+            align-items: center; 
+        }
+        .modal-card { 
+            background: #1a1a1a; 
+            padding: 25px; 
+            border-radius: 15px; 
+            width: 85%; 
+            max-width: 400px; 
+            border: 1px solid var(--primary); 
+        }
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            margin: 10px 0; 
+            background: #222; 
+            border: 1px solid #333; 
+            color: white; 
+            border-radius: 5px; 
+            box-sizing: border-box; 
+        }
+        .btn-post { 
+            width: 100%; 
+            padding: 12px; 
+            background: var(--primary); 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            margin-top: 10px; 
+        }
+
+        /* Estilos Específicos para o Menu do Usuário (Sidebar) */
+        #userMenu {
+            justify-content: flex-start; /* Alinha o menu à esquerda da tela */
+            align-items: stretch; /* Ocupa toda a altura */
+            background: rgba(0,0,0,0.7); /* Fundo um pouco mais transparente para o menu */
+        }
+        #userMenu .modal-card {
+            width: 280px; /* Largura da sidebar */
+            max-width: 80%; /* Para telas menores, não ultrapassa 80% da largura */
+            height: 100%; /* Ocupa a altura total da tela */
+            border-radius: 0 15px 15px 0; /* Bordas arredondadas apenas na direita */
+            padding: 20px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.5); /* Sombra para dar profundidade */
+            display: flex;
+            flex-direction: column; /* Organiza os itens verticalmente */
+            overflow-y: auto; /* Adiciona rolagem se o conteúdo for muito grande */
+            position: relative; /* Para posicionar o botão de fechar */
+        }
+        #userMenu .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            position: absolute; /* Posição absoluta dentro do modal-card */
+            right: 15px;
+            top: 10px;
+            z-index: 5001; /* Garante que o botão esteja acima de outros elementos */
+        }
+        #userInfoDisplay {
+            text-align: center; 
+            margin-top: 30px; /* Espaço para o botão de fechar */
+        }
+        #userInfoDisplay img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            object-fit: cover;
+            border: 2px solid var(--primary); /* Borda roxa ao redor da foto */
+        }
+        #userInfoDisplay p {
+            margin: 8px 0;
+            padding: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s ease; /* Efeito suave ao passar o mouse */
+        }
+        #userInfoDisplay p:hover {
+            background-color: #2a2a2a; /* Fundo mais escuro ao passar o mouse */
+            border-radius: 5px;
+        }
+        #userInfoDisplay .menu-item-primary {
+            color: var(--primary); /* Texto roxo para "Animes Salvos" */
+            font-weight: bold;
+        }
+        #userInfoDisplay .menu-item-adult {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="color:var(--primary); font-weight:bold; font-size: 20px;">AnimesOracle</div>
-    <button onclick="fazerPostar()" style="color:white; background:none; border:none; font-size:24px;">➕</button>
+    <!-- Botão do hambúrguer que agora abre o menu do usuário -->
+    <button class="icon-btn" onclick="abrirMenuUsuario()">☰</button>
+    <div class="logo">AnimesOracle</div>
+    <!-- Botão de adicionar anime (permanece o mesmo) -->
+    <button class="icon-btn" onclick="document.getElementById('postarModal').style.display='flex'">➕</button>
 </header>
 
-<div id="statusLoad" style="padding: 10px; color: yellow; font-size: 12px;">Conectando...</div>
+<div class="grid-recent" id="animeGrid"></div>
 
-<div id="areaLogin" style="padding: 20px;">
-    <h3>Acesse sua Conta</h3>
-    <input type="email" id="email" placeholder="Seu e-mail">
-    <input type="password" id="pass" placeholder="Sua senha">
-    <br>
-    <button class="btn" id="btnAcao">ENTRAR / CADASTRAR</button>
-</div>
-
-<div id="areaPerfil" style="display:none; padding: 20px;">
-    <p id="txtUsuario" style="color:var(--primary)"></p>
-    <button onclick="firebase.auth().signOut().then(()=>location.reload())" style="color:red; background:none; border:none;">Sair</button>
-</div>
-
-<div id="grid">Carregando animes...</div>
-
-<script>
-    const firebaseConfig = { 
-        apiKey: "AIzaSyBlhgf82RL_uSWChpBwzuUAfi_SHtQY2kw", 
-        authDomain: "animesoracle-a60e9.firebaseapp.com", 
-        projectId: "animesoracle-a60e9", 
-        storageBucket: "animesoracle-a60e9.firebasestorage.app", 
-        appId: "1:751657326717:web:67ef63d01ffa3ad044f914" 
-    };
-
-    // 1. INICIALIZAÇÃO SEGURA
-    try {
-        firebase.initializeApp(firebaseConfig);
-        document.getElementById('statusLoad').innerText = "Conectado ao Oracle!";
-    } catch(e) {
-        document.getElementById('statusLoad').innerText = "Erro Crítico: " + e.message;
-    }
-
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-
-    // 2. BOTÃO DE LOGIN REFORÇADO
-    document.getElementById('btnAcao').onclick = function() {
-        const e = document.getElementById('email').value.trim();
-        const s = document.getElementById('pass').value;
-
-        if(!e || s.length < 6) return alert("E-mail inválido ou senha menor que 6 dígitos!");
-
-        // ALERTA DE TESTE - PRECISA APARECER
-        alert("Enviando dados para o Google...");
-
-        auth.signInWithEmailAndPassword(e, s)
-            .then(() => alert("Logado com sucesso!"))
-            .catch(error => {
-                if (error.code === 'auth/user-not-found') {
-                    // SE NÃO EXISTE, CRIA
-                    auth.createUserWithEmailAndPassword(e, s)
-                        .then(() => alert("Sua conta foi criada!"))
-                        .catch(err => alert("Erro no Cadastro: " + err.message));
-                } else {
-                    alert("Erro do Google: " + error.message);
-                }
-            });
-    };
-
-    // 3. MONITORAR USUÁRIO
-    auth.onAuthStateChanged(user => {
-        if(user) {
-            document.getElementById('areaLogin').style.display = 'none';
-            document.getElementById('areaPerfil').style.display = 'block';
-            document.getElementById('txtUsuario').innerText = "Bem-vindo: " + user.email;
-        }
-    });
-
-    // 4. CARREGAR ANIMES
-    db.collection("animes").orderBy("data", "desc").onSnapshot(snap => {
-        const g = document.getElementById('grid'); g.innerHTML = "";
-        snap.forEach(doc => {
-            const a = doc.data();
-            g.innerHTML += `<div class="card"><img src="${a.capa}"><div>${a.nome}</div></div>`;
-        });
-    }, err => {
-        document.getElementById('grid').innerText = "Erro ao carregar: " + err.message;
-    });
-
-    function fazerPostar() {
-        if(!auth.currentUser) return alert("Faça login primeiro!");
-        const n = prompt("Nome:"); const c = prompt("Link Capa:"); const l = prompt("Link Vídeo:");
-        if(n && c && l) {
-            db.collection("animes").add({
-                nome: n, capa: c, link: l, data: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => alert("Postado!"));
-        }
-    }
-</script>
-</body>
-</html>
+<!-- Modal para Postar Anime (EXISTENTE) -->
+<div id="postarModal" class="modal">
+    <div class="modal-card">
+        <h3 style="color:var(--primary); margin:0 0 10px 0;">Postar Anime</h3>
+        <input type="text" id="pNome" placeholder="Nome do Anime">
+        <input type="text" id="pCapa" placeholder="Link da Imagem (Capa)">
+Sem resposta
