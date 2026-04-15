@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AnimesOracle</title>
     
-    <!-- BIBLIOTECAS FIREBASE (CORRIGIDAS) -->
+    <!-- BIBLIOTECAS FIREBASE (VERSÃO ESTÁVEL 8.10.0) -->
     <script src="https://gstatic.com"></script>
     <script src="https://gstatic.com"></script>
 
@@ -47,7 +47,7 @@
 </div>
 
 <script>
-    // 1. CONFIGURAÇÃO (CORRIGIDA)
+    // 1. CONFIGURAÇÃO (ATUALIZADA)
     const firebaseConfig = { 
       apiKey: "AIzaSyBlhgf82RL_uSWChpBwzuUAfi_SHtQY2kw", 
       authDomain: "animesoracle-a60e9.firebaseapp.com", 
@@ -67,7 +67,7 @@
         const capa = document.getElementById('pCapa').value;
         const link = document.getElementById('pLink').value;
 
-        if (!nome || !capa) return alert("Preencha Nome e Capa!");
+        if (!nome || !capa) return alert("Preencha pelo menos Nome e Capa!");
 
         try {
             await db.collection("animes").add({
@@ -82,12 +82,12 @@
             document.getElementById('pCapa').value = "";
             document.getElementById('pLink').value = "";
         } catch (e) {
-            console.error("Erro detalhado:", e);
-            alert("Erro ao salvar: " + e.message);
+            console.error("Erro ao salvar:", e);
+            alert("Erro do Firebase: " + e.message + "\n\nVerifique se as 'Regras' no Firebase estão públicas!");
         }
     }
 
-    // 4. CARREGAR DADOS
+    // 4. CARREGAR DADOS EM TEMPO REAL
     db.collection("animes").orderBy("data", "desc").onSnapshot((snapshot) => {
         const grid = document.getElementById('animeGrid');
         grid.innerHTML = "";
