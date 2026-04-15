@@ -2,43 +2,85 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AnimesOracle</title>
     
+    <!-- BIBLIOTECAS FIREBASE -->
     <script src="https://gstatic.com"></script>
     <script src="https://gstatic.com"></script>
     <script src="https://gstatic.com"></script>
 
     <style>
-        :root { --bg: #0f0f0f; --card: #1a1a1a; --text: #ffffff; --primary: #6200ea; --shadow: rgba(98, 0, 234, 0.8); --brightness: 100%; }
-        body { margin: 0; background: var(--bg); color: var(--text); font-family: sans-serif; filter: brightness(var(--brightness)); transition: 0.3s; }
-        
-        header { display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: #000; height: 60px; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #333; }
+        :root {
+            --bg: #0f0f0f; --card: #1a1a1a; --text: #ffffff; 
+            --primary: #6200ea; --shadow: rgba(98, 0, 234, 0.8);
+            --brightness: 100%;
+        }
+        body { 
+            margin: 0; background: var(--bg); color: var(--text);
+            font-family: 'Segoe UI', sans-serif; overflow-x: hidden;
+            filter: brightness(var(--brightness)); transition: 0.3s;
+        }
+
+        /* HEADER */
+        header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 15px; background: #000; height: 60px; position: sticky; top: 0; z-index: 1000;
+            border-bottom: 1px solid #222;
+        }
         .logo { font-weight: bold; color: var(--primary); font-size: 22px; flex-grow: 1; text-align: center; text-shadow: 0 0 10px var(--primary); }
-        .icon-btn { font-size: 26px; cursor: pointer; background: none; border: none; color: var(--primary); }
-
+        .icon-btn { font-size: 26px; cursor: pointer; background: none; border: none; color: var(--primary); outline: none; }
+        
+        /* BUSCA */
         #searchBox { display: none; padding: 10px; background: #000; }
-        #searchBox input { width: 100%; padding: 12px; border-radius: 5px; border: 2px solid var(--primary); background: #111; color: white; box-shadow: 0 0 15px var(--primary); outline: none; }
+        #searchBox input { 
+            width: 100%; padding: 12px; border-radius: 5px; border: 2px solid var(--primary); 
+            background: #111; color: white; box-shadow: 0 0 15px var(--primary); outline: none; 
+        }
 
-        .abc-menu { display: flex; overflow-x: auto; background: #050505; padding: 12px; gap: 15px; border-bottom: 1px solid #222; scrollbar-width: none; }
-        .abc-menu a { color: var(--primary); text-decoration: none; font-weight: bold; }
+        /* MENU ABC */
+        .abc-menu {
+            display: flex; overflow-x: auto; background: #050505; padding: 12px; gap: 15px;
+            scrollbar-width: none; border-bottom: 1px solid #222;
+        }
+        .abc-menu::-webkit-scrollbar { display: none; }
+        .abc-menu a { color: var(--primary); text-decoration: none; font-weight: bold; font-size: 16px; }
 
-        .grid-animes { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 15px; }
-        .card { background: var(--card); border-radius: 8px; overflow: hidden; border: 2px solid var(--primary); box-shadow: 0 0 15px var(--shadow); position: relative; }
-        .card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
-        .card-info { padding: 8px; font-size: 13px; font-weight: bold; text-align: center; }
-
-        .side-menu { position: fixed; left: -100%; top: 0; width: 280px; height: 100%; background: #111; z-index: 2000; transition: 0.3s; padding: 20px; border-right: 2px solid var(--primary); box-sizing: border-box; overflow-y: auto; }
+        /* MENU LATERAL */
+        .side-menu {
+            position: fixed; left: -100%; top: 0; width: 280px; height: 100%;
+            background: #111; z-index: 2000; transition: 0.4s; padding: 20px;
+            box-sizing: border-box; border-right: 2px solid var(--primary); overflow-y: auto;
+        }
         .side-menu.active { left: 0; }
         .menu-item { display: block; color: white; padding: 15px 0; text-decoration: none; border-bottom: 1px solid #222; }
         .list-title { color: var(--primary); margin-top: 20px; font-weight: bold; }
 
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 5000; justify-content: center; align-items: center; }
+        /* GRID ANIMES */
+        .grid-animes { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 15px; }
+        .card { 
+            background: var(--card); border-radius: 10px; overflow: hidden; 
+            border: 2px solid var(--primary); box-shadow: 0 0 12px var(--shadow);
+            position: relative; transition: 0.3s;
+        }
+        .card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; cursor: pointer; }
+        .card-info { padding: 8px; font-size: 13px; font-weight: bold; text-align: center; }
+        
+        .player-btn { 
+            background: var(--primary); color: white; border: none; padding: 6px 10px; 
+            border-radius: 4px; margin: 3px; font-size: 11px; cursor: pointer;
+        }
+
+        /* MODAL POSTAR */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 5000; justify-content: center; align-items: center;
+        }
         .modal-card { background: #1a1a1a; padding: 25px; border-radius: 15px; width: 90%; max-width: 400px; border: 1px solid var(--primary); }
         input, select { width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #333; color: white; border-radius: 5px; box-sizing: border-box; }
-        .btn-purple { background: var(--primary); color: white; border: none; padding: 12px; width: 100%; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        
-        .player-badge { background: var(--primary); color: white; border: none; padding: 5px 10px; border-radius: 4px; margin: 2px; font-size: 10px; cursor: pointer; }
+        .btn-purple { background: var(--primary); color: white; border: none; padding: 12px; width: 100%; border-radius: 5px; font-weight: bold; cursor: pointer; }
+
+        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1500; }
     </style>
 </head>
 <body>
@@ -52,37 +94,36 @@
     </div>
 </header>
 
-<div id="searchBox"><input type="text" placeholder="Pesquisar anime..."></div>
+<div id="searchBox"><input type="text" id="inputBusca" placeholder="Pesquisar anime..."></div>
 <div class="abc-menu" id="abcRow"></div>
 
+<div id="overlay" onclick="toggleMenu()"></div>
 <div class="side-menu" id="sideMenu">
-    <div id="loginSection">
-        <h3 style="color:var(--primary)">Login / Cadastro</h3>
-        <input type="email" id="email" placeholder="E-mail">
-        <input type="password" id="password" placeholder="Senha">
-        <button class="btn-purple" onclick="logar()">Entrar ou Criar Conta</button>
-    </div>
-    
-    <div id="userProfile" style="display:none">
-        <div style="text-align:center; margin-bottom:20px;">
-            <img src="https://placeholder.com" style="border-radius:50%; border:2px solid var(--primary)">
-            <p id="userMail" style="font-size:12px;"></p>
-        </div>
-        
-        <div style="background:#222; padding:10px; border-radius:8px;">
-            <small>Luminosidade:</small>
-            <input type="range" min="30" max="100" value="100" oninput="document.body.style.setProperty('--brightness', this.value+'%')">
-            
-            <label style="display:flex; align-items:center; gap:10px; margin-top:10px;">
-                <input type="checkbox" id="adultMode"> Modo Adulto (+18)
-            </label>
-        </div>
-        
-        <button onclick="deslogar()" style="color:red; background:none; border:none; width:100%; margin-top:20px; cursor:pointer;">Sair da Conta</button>
+    <div id="authSection">
+        <h3 style="color:var(--primary); margin-top:0;">Login / Cadastro</h3>
+        <input type="email" id="email" placeholder="Seu e-mail">
+        <input type="password" id="password" placeholder="Sua senha">
+        <button class="btn-purple" onclick="logarOuCadastrar()">ENTRAR / CADASTRAR</button>
+        <p style="font-size: 10px; color: #888;">*Se não tiver conta, ela será criada agora.</p>
     </div>
 
-    <a href="#" class="menu-item">Animes Dublados</a>
-    <a href="#" class="menu-item">Animes Legendados</a>
+    <div id="userProfile" style="display:none; text-align:center;">
+        <div style="color:var(--primary); font-weight:bold; margin-bottom:15px;" id="userName"></div>
+        
+        <div style="background:#222; padding:15px; border-radius:8px; text-align:left;">
+            <small>Brilho do Site:</small>
+            <input type="range" min="30" max="100" value="100" oninput="document.body.style.setProperty('--brightness', this.value+'%')">
+            
+            <label style="display:flex; align-items:center; gap:10px; margin-top:10px; font-size:14px;">
+                <input type="checkbox" id="adultCheck"> Modo Adulto (+18)
+            </label>
+        </div>
+
+        <button onclick="deslogar()" style="background:none; border:none; color:red; margin-top:20px; cursor:pointer;">Sair da conta</button>
+    </div>
+
+    <div class="menu-item">Animes Dublados</div>
+    <div class="menu-item">Animes Legendados</div>
     <div class="list-title">MINHA LISTA</div>
     <div id="minhaLista"></div>
 </div>
@@ -91,20 +132,21 @@
 
 <div id="postarModal" class="modal">
     <div class="modal-card">
-        <h3 style="color:var(--primary)">Postar Anime</h3>
+        <h3 style="color:var(--primary); margin:0;">Postar Anime</h3>
         <input type="text" id="pNome" placeholder="Nome do Anime">
         <input type="text" id="pCapa" placeholder="Link da Imagem (Capa)">
         <input type="text" id="pLink" placeholder="Link do Vídeo">
         <select id="pTipo">
-            <option value="comum">Conteúdo Comum</option>
-            <option value="adulto">Modo Adulto (+18)</option>
+            <option value="comum">Animes Comuns</option>
+            <option value="adulto">Conteúdo +18</option>
         </select>
-        <button class="btn-purple" onclick="publicar()">PUBLICAR</button>
-        <button onclick="fecharPostar()" style="background:none; border:none; color:gray; width:100%; margin-top:10px;">Cancelar</button>
+        <button class="btn-purple" onclick="publicarAnime()">PUBLICAR AGORA</button>
+        <button onclick="fecharPostar()" style="background:none; border:none; color:gray; width:100%; margin-top:15px;">Cancelar</button>
     </div>
 </div>
 
 <script>
+    // CONFIGURAÇÃO DO SEU FIREBASE
     const firebaseConfig = { 
         apiKey: "AIzaSyBlhgf82RL_uSWChpBwzuUAfi_SHtQY2kw", 
         authDomain: "://firebaseapp.com", 
@@ -117,37 +159,52 @@
     const db = firebase.firestore();
     const auth = firebase.auth();
 
+    // MENU ABC
     const letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
     letras.forEach(l => { document.getElementById('abcRow').innerHTML += `<a href="#">${l}</a>`; });
 
-    function toggleMenu() { document.getElementById('sideMenu').classList.toggle('active'); }
-    function toggleSearch() { 
+    // FUNÇÕES DE INTERFACE
+    function toggleMenu() {
+        document.getElementById('sideMenu').classList.toggle('active');
+        document.getElementById('overlay').style.display = document.getElementById('sideMenu').classList.contains('active') ? 'block' : 'none';
+    }
+    function toggleSearch() {
         const s = document.getElementById('searchBox');
         s.style.display = s.style.display === 'block' ? 'none' : 'block';
     }
-    function abrirPostar() { 
-        if(!auth.currentUser) return alert("Você precisa estar logado para postar!");
-        document.getElementById('postarModal').style.display = 'flex'; 
+    function abrirPostar() {
+        if(!auth.currentUser) return alert("Acesse sua conta para poder postar!");
+        document.getElementById('postarModal').style.display = 'flex';
     }
     function fecharPostar() { document.getElementById('postarModal').style.display = 'none'; }
 
-    function logar() {
+    // LOGIN E CADASTRO
+    function logarOuCadastrar() {
         const e = document.getElementById('email').value;
         const s = document.getElementById('password').value;
-        if(!e || !s) return alert("Preencha e-mail e senha!");
-        auth.signInWithEmailAndPassword(e, s).catch(() => {
-            auth.createUserWithEmailAndPassword(e, s).then(() => alert("Conta criada!"));
+        if(!e || s.length < 6) return alert("E-mail inválido ou senha muito curta (mínimo 6 dígitos).");
+
+        auth.signInWithEmailAndPassword(e, s).catch(error => {
+            if (error.code === 'auth/user-not-found') {
+                return auth.createUserWithEmailAndPassword(e, s)
+                    .then(() => alert("Conta criada com sucesso!"))
+                    .catch(err => alert("Erro ao criar conta: " + err.message));
+            }
+            alert("Erro: " + error.message);
         });
     }
-    function deslogar() { auth.signOut(); }
+    function deslogar() { auth.signOut(); location.reload(); }
 
     auth.onAuthStateChanged(user => {
-        document.getElementById('loginSection').style.display = user ? 'none' : 'block';
-        document.getElementById('userProfile').style.display = user ? 'block' : 'none';
-        if(user) document.getElementById('userMail').innerText = user.email;
+        if(user) {
+            document.getElementById('authSection').style.display = 'none';
+            document.getElementById('userProfile').style.display = 'block';
+            document.getElementById('userName').innerText = user.email;
+        }
     });
 
-    async function publicar() {
+    // POSTAR ANIME
+    async function publicarAnime() {
         const nome = document.getElementById('pNome').value;
         const capa = document.getElementById('pCapa').value;
         const link = document.getElementById('pLink').value;
@@ -157,35 +214,36 @@
 
         try {
             await db.collection("animes").add({
-                nome, capa, link, tipo,
+                nome: nome, capa: capa, link: link, tipo: tipo,
                 autor: auth.currentUser.email,
                 data: firebase.firestore.FieldValue.serverTimestamp()
             });
-            alert("Sucesso! Anime postado.");
+            alert("Sucesso! O anime foi postado.");
             fecharPostar();
-        } catch(e) { alert("Erro ao postar: " + e.message); }
+        } catch(e) { alert("Erro ao salvar: " + e.message); }
     }
 
+    // CARREGAR ANIMES (SISTEMA DE PLAYERS)
     db.collection("animes").orderBy("data", "desc").onSnapshot(snap => {
         const grid = document.getElementById('animeGrid');
         grid.innerHTML = "";
-        let agrupado = {};
+        let grupos = {};
 
         snap.forEach(doc => {
-            const data = doc.data();
-            if(!agrupado[data.nome]) agrupado[data.nome] = [];
-            agrupado[data.nome].push(data);
+            const anime = doc.data();
+            if(!grupos[anime.nome]) grupos[anime.nome] = [];
+            grupos[anime.nome].push(anime);
         });
 
-        for (let nome in agrupado) {
-            const lista = agrupado[nome];
-            const primeiro = lista[0];
+        for (let nome in grupos) {
+            const lista = grupos[nome];
+            const info = lista[0];
             grid.innerHTML += `
                 <div class="card">
-                    <img src="${primeiro.capa}">
+                    <img src="${info.capa}" onclick="window.open('${info.link}')">
                     <div class="card-info">${nome}</div>
                     <div style="text-align:center; padding-bottom:10px;">
-                        ${lista.map((it, idx) => `<button class="player-badge" onclick="window.open('${it.link}')">Player ${idx+1}</button>`).join("")}
+                        ${lista.map((v, i) => `<button class="player-btn" onclick="window.open('${v.link}')">Player ${i+1}</button>`).join("")}
                     </div>
                 </div>`;
         }
