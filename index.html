@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AnimesOracle</title>
     
-    <!-- BIBLIOTECAS FIREBASE (VERSÃO ESTÁVEL 8.10.0) -->
+    <!-- BIBLIOTECAS FIREBASE (CORRIGIDAS) -->
     <script src="https://gstatic.com"></script>
     <script src="https://gstatic.com"></script>
 
@@ -50,7 +50,7 @@
     // 1. CONFIGURAÇÃO (CORRIGIDA)
     const firebaseConfig = { 
       apiKey: "AIzaSyBlhgf82RL_uSWChpBwzuUAfi_SHtQY2kw", 
-      authDomain: "://firebaseapp.com", 
+      authDomain: "animesoracle-a60e9.firebaseapp.com", 
       projectId: "animesoracle-a60e9", 
       storageBucket: "animesoracle-a60e9.firebasestorage.app", 
       messagingSenderId: "751657326717", 
@@ -78,17 +78,16 @@
             });
             alert("Sucesso! Anime postado.");
             document.getElementById('postarModal').style.display = 'none';
-            // Limpa os campos após postar
             document.getElementById('pNome').value = "";
             document.getElementById('pCapa').value = "";
             document.getElementById('pLink').value = "";
         } catch (e) {
-            console.error(e);
-            alert("Erro do Firebase: " + e.message);
+            console.error("Erro detalhado:", e);
+            alert("Erro ao salvar: " + e.message);
         }
     }
 
-    // 4. CARREGAR DADOS EM TEMPO REAL
+    // 4. CARREGAR DADOS
     db.collection("animes").orderBy("data", "desc").onSnapshot((snapshot) => {
         const grid = document.getElementById('animeGrid');
         grid.innerHTML = "";
