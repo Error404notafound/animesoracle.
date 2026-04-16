@@ -383,6 +383,7 @@
     let currentUserData = null; // Para armazenar os dados do usuário logado e seus settings
     let currentFilter = 'recentes'; // Filtro de animes atual (recentes, legendados, dublados, salvos)
     let currentPlayingAnime = null; // Armazena o ID do anime atualmente no player
+let currentAnimeOwnerId = null; // NOVO: Armazena o ID do usuário que postou o anime
 
     // Helper para exibir mensagens de erro/sucesso
     function showMessage(message, type = 'alert') {
