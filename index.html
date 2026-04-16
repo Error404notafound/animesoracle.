@@ -461,6 +461,15 @@ function prepararEdicaoAnime() {
     document.getElementById('postarModal').style.display = 'flex'; // Abre o modal de postagem/edição
 }
 
+// NOVO: Função para confirmar e excluir um anime
+async function excluirAnimeConfirm() {
+    if (!currentPlayingAnime) {
+        showMessage("Nenhum anime selecionado para exclusão.");
+        return;
+    }
+
+    const confirmacao = confirm(Sem resposta
+
 
     // 4. LÓGICA DE AUTENTICAÇÃO (LOGIN/CADASTRO/LOGOUT)
     async function cadastrarUsuario() {
