@@ -351,45 +351,32 @@
     let currentUserData = null; // Para armazenar os dados do usuário logado e seus settings
     let currentFilter = 'recentes'; // Filtro de animes atual (recentes, legendados, dublados, salvos)
     let currentPlayingAnime = null; // Armazena o ID do anime atualmente no player
-let currentAnimeOwnerId = null; // NOVO: Armazena o ID do usuário que postou o anime
-
 
     // Helper para exibir mensagens de erro/sucesso
     function showMessage(message, type = 'alert') {
         alert(message); // Por simplicidade, usando alert. Em uma app real, use um modal/toast.
     }
 
-    // NOVO: Função para salvar ou atualizar um anime
-async function salvarOuAtualizarAnime() {
-    const animeId = document.getElementById('pAnimeId').value; // Pegamos o ID, se existir
-    const nome = document.getElementById('pNome').value;
-    const capa = document.getElementById('pCapa').value;
-    const link = document.getElementById('pLink').value;
-    const isAdult = document.getElementById('pIsAdult').checked;
-    const type = document.getElementById('pType').value;
+    // 3. FUNÇÃO SALVAR ANIME (PARA O BOTÃO "+")
+        // 3. FUNÇÃO SALVAR ANIME (PARA O BOTÃO "+")
+    async function salvarAnime() {
+        const nome = document.getElementById('pNome').value;
+        const capa = document.getElementById('pCapa').value;
+        const link = document.getElementById('pLink').value;
+        const isAdult = document.getElementById('pIsAdult').checked;
+        const type = document.getElementById('pType').value;
 
-    if (!auth.currentUser) {
-        showMessage("Você precisa estar logado para postar/editar animes!");
-        return;
-    }
+        if (!auth.currentUser) {
+            showMessage("Você precisa estar logado para postar animes!");
+            return;
+        }
 
-    if (!nome || !capa || !link) {
-        showMessage("Preencha todos os campos (Nome, Capa e Link do Vídeo)!");
-        return; 
-    }
+        if (!nome || !capa || !link) {
+            showMessage("Preencha todos os campos (Nome, Capa e Link do Vídeo)!");
+            return; 
+        }
 
-    try {
-        if (animeId) { // Se pAnimeId tem um valor, estamos EDITANDO
-            await db.collection("animes").doc(animeId).update({
-                nome: nome,
-                capa: capa,
-                link: link,
-                isAdult: isAdult,
-                type: type,
-                // Não alteramos 'data' nem 'postedBy' na edição
-            });
-            showMessage("Sucesso! Anime atualizado.");
-        } else { // Caso contrário, estamos CRIANDO um NOVO anime
+        try {
             await db.collection("animes").add({
                 nome: nome,
                 capa: capa,
@@ -400,59 +387,18 @@ async function salvarOuAtualizarAnime() {
                 type: type
             });
             showMessage("Sucesso! Anime postado.");
+            document.getElementById('postarModal').style.display = 'none';
+            document.getElementById('pNome').value = "";
+            document.getElementById('pCapa').value = "";
+            document.getElementById('pLink').value = "";
+            document.getElementById('pIsAdult').checked = false;
+            document.getElementById('pType').value = 'legendado';
+            carregarAnimes(currentFilter); // Recarrega a lista para mostrar o novo anime
+        } catch (e) {
+            console.error("Erro ao salvar:", e); 
+            showMessage("Erro do Firebase: " + e.message + "\n\nVerifique as 'Regras' no Firebase!");
         }
-        fecharPostarModal(); // Fecha o modal após a operação
-        carregarAnimes(currentFilter); // Recarrega a lista
-    } catch (e) {
-        console.error("Erro ao salvar/atualizar:", e); 
-        showMessage("Erro do Firebase: " + e.message + "\n\nVerifique as 'Regras' no Firebase!");
     }
-}
-
-// NOVO: Função para confirmar e excluir um anime
-async function excluirAnimeConfirm() {
-    if (!currentPlayingAnime) {
-        showMessage("Nenhum anime selecionado para exclusão.");
-        return;
-    }
-
-    const confirmacao = confirm(Sem resposta
-
-
-// NOVO: Função para fechar o modal de postagem/edição e limpar o formulário
-function fecharPostarModal() {
-    document.getElementById('postarModal').style.display = 'none';
-    // Limpa todos os campos
-    document.getElementById('pAnimeId').value = "";
-    document.getElementById('pNome').value = "";
-    document.getElementById('pCapa').value = "";
-    document.getElementById('pLink').value = "";
-    document.getElementById('pIsAdult').checked = false;
-    document.getElementById('pType').value = 'legendado';
-    document.getElementById('btnSalvarOuAtualizar').textContent = "PUBLICAR"; // Restaura o texto original do botão
-}
-
-
-// NOVO: Função para preparar o modal de postagem para edição
-function prepararEdicaoAnime() {
-    if (!currentPlayingAnime) {
-        showMessage("Nenhum anime selecionado para edição.");
-        return;
-    }
-
-    document.getElementById('pAnimeId').value = currentPlayingAnime.id;
-    document.getElementById('pNome').value = currentPlayingAnime.nome;
-    document.getElementById('pCapa').value = currentPlayingAnime.capa;
-    document.getElementById('pLink').value = currentPlayingAnime.link;
-    document.getElementById('pIsAdult').checked = currentPlayingAnime.isAdult || false;
-    document.getElementById('pType').value = currentPlayingAnime.type || 'legendado';
-
-    // Altera o texto do botão para "ATUALIZAR"
-    document.getElementById('btnSalvarOuAtualizar').textContent = "ATUALIZAR";
-    
-    document.getElementById('videoModal').style.display = 'none'; // Fecha o modal de vídeo
-    document.getElementById('postarModal').style.display = 'flex'; // Abre o modal de postagem/edição
-}
 
 
     // 4. LÓGICA DE AUTENTICAÇÃO (LOGIN/CADASTRO/LOGOUT)
@@ -704,28 +650,13 @@ function prepararEdicaoAnime() {
 
     // Funções do Modal de Vídeo
     function abrirVideoModal(anime) {
-    currentPlayingAnime = anime; // Armazena o anime que está sendo reproduzido
-    currentAnimeOwnerId = anime.postedBy; // NOVO: Armazena o ID do autor do anime
-    const videoModal = document.getElementById('videoModal');
-    const videoFrame = document.getElementById('videoFrame');
-    const videoModalTitle = document.getElementById('videoModalTitle');
-    const btnSalvarAnime = document.getElementById('btnSalvarAnime');
-    const ownerActions = document.getElementById('ownerActions'); // NOVO: Referência à div dos botões
+        currentPlayingAnime = anime; // Armazena o anime que está sendo reproduzido
+        const videoModal = document.getElementById('videoModal');
+        const videoFrame = document.getElementById('videoFrame');
+        const videoModalTitle = document.getElementById('videoModalTitle');
+        const btnSalvarAnime = document.getElementById('btnSalvarAnime');
 
-    videoModalTitle.textContent = anime.nome;
-    
-    // ... (resto do código da função, que permanece o mesmo) ...
-
-    // NOVO: Lógica para mostrar/esconder botões de edição/exclusão
-    if (auth.currentUser && auth.currentUser.uid === currentAnimeOwnerId) {
-        ownerActions.style.display = 'flex'; // Mostra os botões
-    } else {
-        ownerActions.style.display = 'none'; // Esconde os botões
-    }
-
-    videoModal.style.display = 'flex';
-}
-
+        videoModalTitle.textContent = anime.nome;
         
         // Converte o link para formato embed do YouTube/Drive se necessário
         let embedLink = anime.link;
