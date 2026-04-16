@@ -46,19 +46,60 @@
             --secondary-bg: #e0e0e0;
         }
 
-        /* Estilos do Header */
-        header { 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            padding: 0 15px; 
-            background: #000; 
-            height: 60px; 
-            position: sticky; 
-            top: 0; 
-            z-index: 1000; 
-            border-bottom: 1px solid #333; 
+                /* Responsividade Básica */
+        @media (max-width: 768px) {
+            .grid-recent {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 8px;
+                padding: 10px;
+            }
+            .card-recent .card-info {
+                font-size: 11px;
+            }
+            .modal-card {
+                width: 95%;
+                padding: 15px;
+            }
+            #userMenu .modal-card {
+                width: 70%; /* Aumenta a largura do menu lateral em telas menores */
+            }
+            #videoPlayerModal iframe {
+                height: 250px; /* Reduz a altura do player de vídeo em telas menores */
+            }
+            .video-player-controls button {
+                padding: 8px 12px;
+                font-size: 16px;
+            }
+            .video-player-sub-nav button {
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+            .comment-input-area textarea, .comment-input-area button {
+                font-size: 14px;
+                padding: 8px;
+            }
         }
+        @media (max-width: 480px) {
+            .grid-recent {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+            header {
+                height: 50px;
+            }
+            .logo {
+                font-size: 18px;
+            }
+            .icon-btn {
+                font-size: 20px;
+            }
+            #userMenu .modal-card {
+                width: 85%;
+            }
+            #videoPlayerModal iframe {
+                height: 180px;
+            }
+        }
+
         .logo { 
             font-weight: bold; 
             color: var(--primary); 
