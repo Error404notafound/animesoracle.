@@ -5,38 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AnimesOracle</title>
     
-        <!-- BIBLIOTECAS FIREBASE (VERSÃO MODULAR 9+) -->
+    <!-- BIBLIOTECAS FIREBASE (VERSÃO ESTÁVEL 8.10.0) -->
     <!-- Essencial para o Firebase funcionar -->
-    <script type="module" src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <!-- Para o banco de dados Firestore -->
-    <script type="module" src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <!-- Para autenticação de usuários (e-mail/senha) -->
-    <script type="module" src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
-    <!-- Para Firebase Storage (necessário se for permitir upload de imagens, aqui usaremos apenas para links diretos) -->
-    <script type="module" src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js"></script>
-
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 
     <style>
-                /* Estilos Globais e do Tema */
+        /* Estilos Globais e do Tema */
         :root { 
             --bg: #0f0f0f; 
             --card: #1a1a1a; 
             --text: #ffffff; 
             --primary: #6200ea; 
             --secondary-bg: #222;
-            --highlight-light: #8a2be250; /* Luz roxa suave para destaque */
-            --highlight-dark: #8a2be280;  /* Luz roxa mais intensa para foco/borda */
-            --brightness-filter: brightness(100%); /* Controle de luminosidade */
         }
         body { 
             margin: 0; 
             background: var(--bg); 
             color: var(--text); 
             font-family: sans-serif; 
-            transition: background-color 0.3s, color 0.3s, filter 0.3s; /* Adicionado filter para transição suave */
-            filter: var(--brightness-filter); /* Aplica o filtro de luminosidade */
+            transition: background-color 0.3s, color 0.3s;
         }
-
 
         /* Modo Escuro/Claro */
         body.light-mode {
@@ -46,44 +38,7 @@
             --secondary-bg: #e0e0e0;
         }
 
-                /* Responsividade Básica */
-        @media (max-width: 768px) {
-            .grid-recent {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-                gap: 8px;
-                padding: 10px;
-            }
-            .card-recent .card-info {
-                font-size: 11px;
-            }
-            .modal-card {
-                width: 95%;
-                padding: 15px;
-            }
-            #userMenu .modal-card {
-                width: 70%; /* Aumenta a largura do menu lateral em telas menores */
-            }
-            #videoPlayerModal iframe {
-                height: 250px; /* Reduz a altura do player de vídeo em telas menores */
-            }
-            .video-player-controls button {
-                padding: 8px 12px;
-                font-size: 16px;
-            }
-            .video-player-sub-nav button {
-                font-size: 12px;
-                padding: 6px 10px;
-            }
-            .comment-input-area textarea, .comment-input-area button {
-                font-size: 14px;
-                padding: 8px;
-            }
-        }
-        @media (max-width: 480px) {
-            .grid-recent {
-                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            }
-                    /* Estilos do Header */
+        /* Estilos do Header */
         header { 
             display: flex; 
             align-items: center; 
@@ -95,179 +50,7 @@
             top: 0; 
             z-index: 1000; 
             border-bottom: 1px solid #333; 
-            /* Adicionado para posicionamento da barra de pesquisa */
-            position: relative; 
         }
-
-        /* Barra de Pesquisa Dinâmica */
-        #searchContainer {
-            position: absolute; /* Posiciona absolutamente dentro do header */
-            right: 15px; /* Alinha à direita */
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            align-items: center;
-            z-index: 1001; /* Garante que fique acima de outros elementos */
-        }
-        #searchContainer.active .search-bar {
-            display: block; /* Mostra a barra quando ativa */
-            box-shadow: 0 0 10px var(--highlight-dark); /* Luz roxa na barra */
-            width: 200px; /* Largura total quando ativa */
-            opacity: 1;
-            pointer-events: auto;
-        }
-        .search-icon-btn {
-            font-size: 24px; 
-            cursor: pointer;Sem resposta
-
-                    .search-bar {
-            display: none; /* Escondida por padrão */
-            width: 0; /* Largura inicial zero */
-            padding: 8px 0px; /* Padding inicial zero */
-            border-radius: 5px;
-            border: 1px solid var(--primary);
-            background: var(--secondary-bg);
-            color: var(--text);
-            margin-left: 5px;
-            transition: all 0.3s ease; /* Transição suave para aparecer/desaparecer */
-
-                                .search-bar {
-            display: none; /* Escondida por padrão */
-            width: 0; /* Largura inicial zero */
-            padding: 8px 0px; /* Padding inicial zero */
-            border-radius: 5px;
-            border: 1px solid var(--primary);
-            background: var(--secondary-bg);
-            color: var(--text);
-            margin-left: 5px;
-            transition: all 0.3s ease; /* Transição suave para aparecer/desaparecer */
-            opacity: 0; /* Inicia transparente */
-            pointer-events: none; /* Desabilita interações quando escondida */
-        }
-        .search-bar:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 15px var(--primary);
-        }
-        .search-bar::placeholder {
-            color: #aaa;
-        }
-
-        /* Menu Alfabético */
-        #alphabetMenu {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            padding: 8px 0;
-            background: #000;
-            border-bottom: 1px solid #333;
-            margin-bottom: 15px;
-        }
-        #alphabetMenu button {
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 14px;
-            padding: 5px 8px;
-            cursor: pointer;
-            transition: color 0.2s, background-color 0.2s;
-            border-radius: 4px;
-        }
-        #alphabetMenu button:hover, #alphabetMenu button.active {
-            color: var(--primary);
-            background-color: var(--secondary-bg);
-        }
-
-        /* Estilos para Destaque de Animes (Mais Votados / Mais Recentes) */
-        .card-recent.highlight {
-            border: 2px solid var(--primary); /* Borda roxa */
-            box-shadow: 0 0 10px var(--highlight-light); /* Brilho roxo */
-            position: relative; /* Para posicionar o texto de destaque */
-        }
-        .card-recent .highlight-label {
-            position: absolute;
-            top: 5px;
-            left: 5px;
-            background-color: var(--primary);
-            color: white;
-            padding: 2px 5px;
-            border-radius: 3px;
-            font-size: 10px;
-            font-weight: bold;
-            z-index: 10;
-        }
-
-        /* Estilos do Modal de Vídeo (Player) */
-        #videoModal .modal-card {
-            max-width: 90vw; /* Ocupa mais largura em telas grandes */
-            width: auto; /* Ajusta largura automaticamente */
-            padding: 15px;
-        }
-        #videoPlayerModal iframe {
-            width: 100%;
-            height: 500px; /* Altura padrão para o iframe do vídeo */
-            max-width: 800px; /* Limite de largura para o player */
-            margin: 15px auto; /* Centraliza */
-            display: block;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid var(--primary);
-        }
-        #videoPlayerModal .anime-title {
-            color: var(--primary);
-            margin-bottom: 10px;
-            text-align: center;
-            font-size: 24px;
-        }
-        #videoPlayerModal .episode-title {
-            color: var(--text);
-            text-align: center;
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-        .close-video-btn {
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 30px;
-            cursor: pointer;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 5001;
-        }
-
-        /* Controles do Player de Vídeo */
-        .video-player-controls {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 15px;
-            margin-bottom: 15px;
-        }
-        .video-player-controls button {
-            background: var(--secondary-bg);
-            color: var(--primary);
-            border: 1px solid var(--primary);
-            padding: 10px 15px;
-            border-radius: 5px;
-            font-size: 18px;
-            cursor: pointer;
-            transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .video-player-controls button:hover {
-            background-color: var(--primary);
-            color: white;
-            box-shadow: 0 0 10px var(--primary);
-        }
-        .videoSem resposta
-
-
-
-
         .logo { 
             font-weight: bold; 
             color: var(--primary); 
@@ -492,103 +275,25 @@
 
 <div class="grid-recent" id="animeGrid"></div>
 
-<!-- Substitua o conteúdo EXISTENTE da sua div 'postarModal' por este bloco -->
+<!-- Modal para Postar Anime -->
 <div id="postarModal" class="modal">
     <div class="modal-card">
-        <h3 style="color:var(--primary); margin:0 0 10px 0;">Postar Anime / Episódio</h3>
-        
-        <!-- Opções para Novo Anime ou Adicionar a Existente -->
-        <div style="margin-bottom: 15px;">
-            <label>
-                <input type="radio" name="postType" value="newAnime" checked onchange="togglePostTypeFields()"> Novo Anime
-            </label>
-            <label style="margin-left: 20px;">
-                <input type="radio" name="postType" value="addEpisode" onchange="togglePostTypeFields()"> Adicionar Episódio/Player
-            </label>
-        </div>
-
-        <!-- Campos para NOVO ANIME (visíveis por padrão) -->
-        <div id="newAnimeFields">
-            <input type="text" id="pAnimeNome" placeholder="Nome do Anime (principal)">
-            <input type="text" id="pAnimeCapaPrincipal" placeholder="Link da Imagem (Capa Principal do Anime)">
-            <textarea id="pAnimeBiografia" placeholder="Biografia do Anime" rows="3" style="width: 100%; padding: 12px; margin: 10px 0; background: var(--secondary-bg); border: 1px solid #333; color: var(--text); border-radius: 5px; box-sizing: border-box;"></textarea>
-            <input type="text" id="pAnimeGeneros" placeholder="Gêneros (separados por vírgula, ex: Ação, Aventura)">
-            <label for="pAnimeIsAdult" style="display:block; margin: 10px 0 5px;">
-                <input type="checkbox" id="pAnimeIsAdult" style="width: auto; margin-right: 5px;"> Conteúdo +18 (Echii/Hentai)?
-            </label>
-        </div>
-
-        <!-- Campos para ADICIONAR EPISÓDIO/PLAYER (ocultos por padrão) -->
-        <div id="addEpisodeFields" style="display: none;">
-            <select id="selectExistingAnime" style="width: 100%; padding: 12px; margin: 10px 0; background: var(--secondary-bg); border: 1px solid #333; color: var(--text); border-radius: 5px;">
-                <option value="">-- Selecione um Anime Existente --</option>
-                <!-- Animes existentes serão carregados aqui via JS -->
+        <h3 style="color:var(--primary); margin:0 0 10px 0;">Postar Anime</h3>
+        <input type="text" id="pNome" placeholder="Nome do Anime">
+        <input type="text" id="pCapa" placeholder="Link da Imagem (Capa)">
+        <input type="text" id="pLink" placeholder="Link do Vídeo (Embed do YouTube/Drive, etc.)">
+        <label for="pIsAdult" style="display:block; margin: 10px 0 5px;">
+            <input type="checkbox" id="pIsAdult" style="width: auto; margin-right: 5px;"> É +18?
+        </label>
+        <label for="pType" style="display:block; margin: 5px 0 10px;">
+            Tipo: 
+            <select id="pType" style="padding: 8px; background: var(--secondary-bg); border: 1px solid #333; color: var(--text); border-radius: 5px;">
+                <option value="legendado">Legendado</option>
+                <option value="dublado">Dublado</option>
             </select>
-            <input type="number" id="pEpisodeNumber" placeholder="Número do Episódio (ex: 1, 2)">
-            <input type="text" id="pEpisodeTitle" placeholder="Título do Episódio (ex: O Grande Exame Chunin!)">
-            <input type="text" id="pEpisodeThumbnail" placeholder="Link da Imagem (Capa do Episódio)">
-            <input type="text" id="pPlayerLink" placeholder="Link do Vídeo (Embed do YouTube/Drive, etc.)">
-            <label for="pPlayerType" style="display:block; margin: 5px 0 10px;">
-                Tipo: 
-                <select id="pPlayerType" style="padding: 8px; background: var(--secondary-bg); border: 1px solid #333; color: var(--text); border-radius: 5px;">
-                    <option value="legendado">Legendado</option>
-                    <option value="dublado">Dublado</option>
-                </select>
-            </label>
-        </div>
-        
-        <button class="btn-post" onclick="salvarConteudo()">PUBLICAR</button>
+        </label>
+        <button class="btn-post" onclick="salvarAnime()">PUBLICAR</button>
         <button class="cancel-btn" onclick="document.getElementById('postarModal').style.display='none'">Cancelar</button>
-    </div>
-</div>
-
-<!-- Adicione estas novas funções JavaScript DENTRO da sua tag <script> existente -->
-<script>
-    // ... (Seu código JavaScript existente aqui, antes destas novas funções)
-
-    // Nova função para alternar campos no modal de postagem
-    async function togglePostTypeFields() {
-        const newAnimeFields = document.getElementById('newAnimeFields');
-        const addEpisodeFields = document.getElementById('addEpisodeFields');
-        const postType = document.querySelector('input[name="postType"]:checked').value;
-
-        if (postType === 'newAnime') {
-            newAnimeFields.style.display = 'block';
-            addEpisodeFields.style.display = 'none';
-        } else {
-            newAnimeFields.style.display = 'none';
-            addEpisodeFields.style.display = 'block';
-            // Carregar animes existentes quando o modo "Adicionar Episódio/Player" é selecionado
-            await carregarAnimesExistentesParaSelect();
-        }
-    }
-
-    // Função para carregar animes existentes no <select>
-    async function carregarAnimesExistentesParaSelect() {
-        const selectElement = document.getElementById('selectExistingAnime');
-        // Limpa as opções e mostra "Carregando..."
-        selectElement.innerHTML = '<option value="">-- Carregando Animes... --</option>'; 
-
-        try {
-            const animesSnapshot = await db.collection("animes").orderBy("nome").get();
-            selectElement.innerHTML = '<option value="">-- Selecione um Anime Existente --</option>'; // Limpa e adiciona a opção padrão novamente
-            animesSnapshot.forEach(doc => {
-                const anime = doc.data();
-                const option = document.createElement('option');
-                option.value = doc.id; // O valor é o ID do documento do anime no Firestore
-                option.textContent = anime.nome;
-                selectElement.appendChild(option);
-            });
-        } catch (error) {
-            console.error("Erro ao carregar animes existentes para select:", error);
-            selectElement.innerHTML = '<option value="">-- Erro ao carregar Animes --</option>';
-            showMessage("Erro ao carregar lista de animes existentes: " + error.message);
-        }
-    }
-
-    // ... (O restante do seu JavaScript, incluindo 'salvarAnime', 'loginUsuario', etc.)
-</script>
-
     </div>
 </div>
 
@@ -652,122 +357,48 @@
         alert(message); // Por simplicidade, usando alert. Em uma app real, use um modal/toast.
     }
 
-    // ... (Seu código JavaScript existente antes desta função 'salvarConteudo')
+    // 3. FUNÇÃO SALVAR ANIME (PARA O BOTÃO "+")
+        // 3. FUNÇÃO SALVAR ANIME (PARA O BOTÃO "+")
+    async function salvarAnime() {
+        const nome = document.getElementById('pNome').value;
+        const capa = document.getElementById('pCapa').value;
+        const link = document.getElementById('pLink').value;
+        const isAdult = document.getElementById('pIsAdult').checked;
+        const type = document.getElementById('pType').value;
 
-// Função PRINCIPAL para SALVAR CONTEÚDO (Novo Anime OU Episódio/Player)
-async function salvarConteudo() {
-    if (!auth.currentUser) {
-        showMessage("Você precisa estar logado para postar conteúdo!");
-        return;
-    }
-
-    const postType = document.querySelector('input[name="postType"]:checked').value;
-
-    try {
-        if (postType === 'newAnime') {
-            // Lógica para criar um NOVO ANIME
-            const nome = document.getElementById('pAnimeNome').value;
-            const capaPrincipal = document.getElementById('pAnimeCapaPrincipal').value;
-            const biografia = document.getElementById('pAnimeBiografia').value;
-            const generosInput = document.getElementById('pAnimeGeneros').value;
-            const isAdultContent = document.getElementById('pAnimeIsAdult').checked;
-            
-            if (!nome || !capaPrincipal || !biografia || !generosInput) {
-                showMessage("Preencha todos os campos do novo anime (Nome, Capa, Biografia, Gêneros)!");
-                return;
-            }
-
-            const generos = generosInput.split(',').map(g => g.trim()).filter(g => g !== '');
-
-            // 1. Cria o documento principal do Anime
-            const animeRef = await db.collection("animes").add({
-                nome: nome,
-                capaPrincipal: capaPrincipal,
-                biografia: biografia,
-                generos: generos,
-                isAdultContent: isAdultContent,
-                firstPosterUid: auth.currentUser.uid,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            showMessage(`Anime "${nome}" criado com sucesso! Agora adicione o primeiro episódio/player.`);
-
-            // Opcional: Redirecionar para o modal de adicionar episódio para este anime
-            // Ou apenas limpar os campos e fechar o modal.
-            document.getElementById('postarModal').style.display = 'none';
-            // Limpa os campos do novo anime
-            document.getElementById('pAnimeNome').value = "";
-            document.getElementById('pAnimeCapaPrincipal').value = "";
-            document.getElementById('pAnimeBiografia').value = "";
-            document.getElementById('pAnimeGeneros').value = "";
-            document.getElementById('pAnimeIsAdult').checked = false;
-
-        } else {
-            // Lógica para ADICIONAR EPISÓDIO/PLAYER a um anime existente
-            const selectedAnimeId = document.getElementById('selectExistingAnime').value;
-            const episodeNumber = parseInt(document.getElementById('pEpisodeNumber').value);
-            const episodeTitle = document.getElementById('pEpisodeTitle').value;
-            const episodeThumbnail = document.getElementById('pEpisodeThumbnail').value;
-            const playerLink = document.getElementById('pPlayerLink').value;
-            const playerType = document.getElementById('pPlayerType').value;
-
-            if (!selectedAnimeId || isNaN(episodeNumber) || episodeNumber <= 0 || !episodeTitle || !episodeThumbnail || !playerLink) {
-                showMessage("Preencha todos os campos do episódio/player (Anime, Número, Título, Thumbnail, Link)!");
-                return;
-            }
-
-            // 1. Verifica se o episódio já existe ou cria um novo
-            const episodeRef = db.collection("animes").doc(selectedAnimeId).collection("episodes").doc(episodeNumber.toString()); // Usamos o número como ID do doc do episódio
-
-            const episodeDoc = await episodeRef.get();
-            let postedByEpisodeUid = auth.currentUser.uid; // Por padrão, quem postou o player
-
-            if (!episodeDoc.exists) {
-                // Se o episódio NÃO EXISTE, cria ele
-                await episodeRef.set({
-                    episodeNumber: episodeNumber,
-                    title: episodeTitle,
-                    episodeThumbnail: episodeThumbnail,
-                    postedByEpisodeUid: auth.currentUser.uid, // Quem criou este episódio
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                showMessage(`Episódio ${episodeNumber} criado para o anime!`);
-            } else {
-                // Se o episódio JÁ EXISTE, pega o UID de quem o criou primeiro
-                postedByEpisodeUid = episodeDoc.data().postedByEpisodeUid;
-            }
-
-            // 2. Adiciona o Player a este episódio
-            await episodeRef.collection("players").add({
-                link: playerLink,
-                type: playerType,
-                postedByPlayerUid: auth.currentUser.uid,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                reportsCount: 0
-            });
-            showMessage(`Player adicionado ao Episódio ${episodeNumber} com sucesso!`);
-            
-            document.getElementById('postarModal').style.display = 'none';
-            // Limpa os campos de adicionar episódio/player
-            document.getElementById('selectExistingAnime').value = "";
-            document.getElementById('pEpisodeNumber').value = "";
-            document.getElementById('pEpisodeTitle').value = "";
-            document.getElementById('pEpisodeThumbnail').value = "";
-            document.getElementById('pPlayerLink').value = "";
-            document.getElementById('pPlayerType').value = 'legendado';
+        if (!auth.currentUser) {
+            showMessage("Você precisa estar logado para postar animes!");
+            return;
         }
 
-        carregarAnimes(currentFilter); // Recarrega a lista para mostrar o novo/atualizado anime
-        
-    } catch (e) {
-        console.error("Erro ao salvar conteúdo:", e); 
-        showMessage("Erro do Firebase: " + e.message + "\n\nVerifique as 'Regras' no Firebase!");
+        if (!nome || !capa || !link) {
+            showMessage("Preencha todos os campos (Nome, Capa e Link do Vídeo)!");
+            return; 
+        }
+
+        try {
+            await db.collection("animes").add({
+                nome: nome,
+                capa: capa,
+                link: link,
+                data: firebase.firestore.FieldValue.serverTimestamp(),
+                postedBy: auth.currentUser.uid, 
+                isAdult: isAdult, 
+                type: type
+            });
+            showMessage("Sucesso! Anime postado.");
+            document.getElementById('postarModal').style.display = 'none';
+            document.getElementById('pNome').value = "";
+            document.getElementById('pCapa').value = "";
+            document.getElementById('pLink').value = "";
+            document.getElementById('pIsAdult').checked = false;
+            document.getElementById('pType').value = 'legendado';
+            carregarAnimes(currentFilter); // Recarrega a lista para mostrar o novo anime
+        } catch (e) {
+            console.error("Erro ao salvar:", e); 
+            showMessage("Erro do Firebase: " + e.message + "\n\nVerifique as 'Regras' no Firebase!");
+        }
     }
-}
-
-// ... (O restante do seu JavaScript, incluindo 'salvarAnime' se você ainda não o removeu, 'loginUsuario', etc.)
-// A função 'salvarAnime' antiga deve ser removida ou renomeada para evitar conflitos,
-// pois o botão "PUBLICAR" no modal agora chama 'salvarConteudo()'.
-
 
 
     // 4. LÓGICA DE AUTENTICAÇÃO (LOGIN/CADASTRO/LOGOUT)
