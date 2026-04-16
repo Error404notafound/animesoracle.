@@ -720,13 +720,28 @@ function prepararEdicaoAnime() {
 
     // Funções do Modal de Vídeo
     function abrirVideoModal(anime) {
-        currentPlayingAnime = anime; // Armazena o anime que está sendo reproduzido
-        const videoModal = document.getElementById('videoModal');
-        const videoFrame = document.getElementById('videoFrame');
-        const videoModalTitle = document.getElementById('videoModalTitle');
-        const btnSalvarAnime = document.getElementById('btnSalvarAnime');
+    currentPlayingAnime = anime; // Armazena o anime que está sendo reproduzido
+    currentAnimeOwnerId = anime.postedBy; // NOVO: Armazena o ID do autor do anime
+    const videoModal = document.getElementById('videoModal');
+    const videoFrame = document.getElementById('videoFrame');
+    const videoModalTitle = document.getElementById('videoModalTitle');
+    const btnSalvarAnime = document.getElementById('btnSalvarAnime');
+    const ownerActions = document.getElementById('ownerActions'); // NOVO: Referência à div dos botões
 
-        videoModalTitle.textContent = anime.nome;
+    videoModalTitle.textContent = anime.nome;
+    
+    // ... (resto do código da função, que permanece o mesmo) ...
+
+    // NOVO: Lógica para mostrar/esconder botões de edição/exclusão
+    if (auth.currentUser && auth.currentUser.uid === currentAnimeOwnerId) {
+        ownerActions.style.display = 'flex'; // Mostra os botões
+    } else {
+        ownerActions.style.display = 'none'; // Esconde os botões
+    }
+
+    videoModal.style.display = 'flex';
+}
+
         
         // Converte o link para formato embed do YouTube/Drive se necessário
         let embedLink = anime.link;
