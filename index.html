@@ -435,48 +435,122 @@
         alert(message); // Por simplicidade, usando alert. Em uma app real, use um modal/toast.
     }
 
-    // 3. FUNÇÃO SALVAR ANIME (PARA O BOTÃO "+")
-        // 3. FUNÇÃO SALVAR ANIME (PARA O BOTÃO "+")
-    async function salvarAnime() {
-        const nome = document.getElementById('pNome').value;
-        const capa = document.getElementById('pCapa').value;
-        const link = document.getElementById('pLink').value;
-        const isAdult = document.getElementById('pIsAdult').checked;
-        const type = document.getElementById('pType').value;
+    // ... (Seu código JavaScript existente antes desta função 'salvarConteudo')
 
-        if (!auth.currentUser) {
-            showMessage("Você precisa estar logado para postar animes!");
-            return;
-        }
-
-        if (!nome || !capa || !link) {
-            showMessage("Preencha todos os campos (Nome, Capa e Link do Vídeo)!");
-            return; 
-        }
-
-        try {
-            await db.collection("animes").add({
-                nome: nome,
-                capa: capa,
-                link: link,
-                data: firebase.firestore.FieldValue.serverTimestamp(),
-                postedBy: auth.currentUser.uid, 
-                isAdult: isAdult, 
-                type: type
-            });
-            showMessage("Sucesso! Anime postado.");
-            document.getElementById('postarModal').style.display = 'none';
-            document.getElementById('pNome').value = "";
-            document.getElementById('pCapa').value = "";
-            document.getElementById('pLink').value = "";
-            document.getElementById('pIsAdult').checked = false;
-            document.getElementById('pType').value = 'legendado';
-            carregarAnimes(currentFilter); // Recarrega a lista para mostrar o novo anime
-        } catch (e) {
-            console.error("Erro ao salvar:", e); 
-            showMessage("Erro do Firebase: " + e.message + "\n\nVerifique as 'Regras' no Firebase!");
-        }
+// Função PRINCIPAL para SALVAR CONTEÚDO (Novo Anime OU Episódio/Player)
+async function salvarConteudo() {
+    if (!auth.currentUser) {
+        showMessage("Você precisa estar logado para postar conteúdo!");
+        return;
     }
+
+    const postType = document.querySelector('input[name="postType"]:checked').value;
+
+    try {
+        if (postType === 'newAnime') {
+            // Lógica para criar um NOVO ANIME
+            const nome = document.getElementById('pAnimeNome').value;
+            const capaPrincipal = document.getElementById('pAnimeCapaPrincipal').value;
+            const biografia = document.getElementById('pAnimeBiografia').value;
+            const generosInput = document.getElementById('pAnimeGeneros').value;
+            const isAdultContent = document.getElementById('pAnimeIsAdult').checked;
+            
+            if (!nome || !capaPrincipal || !biografia || !generosInput) {
+                showMessage("Preencha todos os campos do novo anime (Nome, Capa, Biografia, Gêneros)!");
+                return;
+            }
+
+            const generos = generosInput.split(',').map(g => g.trim()).filter(g => g !== '');
+
+            // 1. Cria o documento principal do Anime
+            const animeRef = await db.collection("animes").add({
+                nome: nome,
+                capaPrincipal: capaPrincipal,
+                biografia: biografia,
+                generos: generos,
+                isAdultContent: isAdultContent,
+                firstPosterUid: auth.currentUser.uid,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            showMessage(`Anime "${nome}" criado com sucesso! Agora adicione o primeiro episódio/player.`);
+
+            // Opcional: Redirecionar para o modal de adicionar episódio para este anime
+            // Ou apenas limpar os campos e fechar o modal.
+            document.getElementById('postarModal').style.display = 'none';
+            // Limpa os campos do novo anime
+            document.getElementById('pAnimeNome').value = "";
+            document.getElementById('pAnimeCapaPrincipal').value = "";
+            document.getElementById('pAnimeBiografia').value = "";
+            document.getElementById('pAnimeGeneros').value = "";
+            document.getElementById('pAnimeIsAdult').checked = false;
+
+        } else {
+            // Lógica para ADICIONAR EPISÓDIO/PLAYER a um anime existente
+            const selectedAnimeId = document.getElementById('selectExistingAnime').value;
+            const episodeNumber = parseInt(document.getElementById('pEpisodeNumber').value);
+            const episodeTitle = document.getElementById('pEpisodeTitle').value;
+            const episodeThumbnail = document.getElementById('pEpisodeThumbnail').value;
+            const playerLink = document.getElementById('pPlayerLink').value;
+            const playerType = document.getElementById('pPlayerType').value;
+
+            if (!selectedAnimeId || isNaN(episodeNumber) || episodeNumber <= 0 || !episodeTitle || !episodeThumbnail || !playerLink) {
+                showMessage("Preencha todos os campos do episódio/player (Anime, Número, Título, Thumbnail, Link)!");
+                return;
+            }
+
+            // 1. Verifica se o episódio já existe ou cria um novo
+            const episodeRef = db.collection("animes").doc(selectedAnimeId).collection("episodes").doc(episodeNumber.toString()); // Usamos o número como ID do doc do episódio
+
+            const episodeDoc = await episodeRef.get();
+            let postedByEpisodeUid = auth.currentUser.uid; // Por padrão, quem postou o player
+
+            if (!episodeDoc.exists) {
+                // Se o episódio NÃO EXISTE, cria ele
+                await episodeRef.set({
+                    episodeNumber: episodeNumber,
+                    title: episodeTitle,
+                    episodeThumbnail: episodeThumbnail,
+                    postedByEpisodeUid: auth.currentUser.uid, // Quem criou este episódio
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                showMessage(`Episódio ${episodeNumber} criado para o anime!`);
+            } else {
+                // Se o episódio JÁ EXISTE, pega o UID de quem o criou primeiro
+                postedByEpisodeUid = episodeDoc.data().postedByEpisodeUid;
+            }
+
+            // 2. Adiciona o Player a este episódio
+            await episodeRef.collection("players").add({
+                link: playerLink,
+                type: playerType,
+                postedByPlayerUid: auth.currentUser.uid,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                reportsCount: 0
+            });
+            showMessage(`Player adicionado ao Episódio ${episodeNumber} com sucesso!`);
+            
+            document.getElementById('postarModal').style.display = 'none';
+            // Limpa os campos de adicionar episódio/player
+            document.getElementById('selectExistingAnime').value = "";
+            document.getElementById('pEpisodeNumber').value = "";
+            document.getElementById('pEpisodeTitle').value = "";
+            document.getElementById('pEpisodeThumbnail').value = "";
+            document.getElementById('pPlayerLink').value = "";
+            document.getElementById('pPlayerType').value = 'legendado';
+        }
+
+        carregarAnimes(currentFilter); // Recarrega a lista para mostrar o novo/atualizado anime
+        
+    } catch (e) {
+        console.error("Erro ao salvar conteúdo:", e); 
+        showMessage("Erro do Firebase: " + e.message + "\n\nVerifique as 'Regras' no Firebase!");
+    }
+}
+
+// ... (O restante do seu JavaScript, incluindo 'salvarAnime' se você ainda não o removeu, 'loginUsuario', etc.)
+// A função 'salvarAnime' antiga deve ser removida ou renomeada para evitar conflitos,
+// pois o botão "PUBLICAR" no modal agora chama 'salvarConteudo()'.
+
 
 
     // 4. LÓGICA DE AUTENTICAÇÃO (LOGIN/CADASTRO/LOGOUT)
