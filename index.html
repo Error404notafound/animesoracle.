@@ -275,25 +275,103 @@
 
 <div class="grid-recent" id="animeGrid"></div>
 
-<!-- Modal para Postar Anime -->
+<!-- Substitua o conteúdo EXISTENTE da sua div 'postarModal' por este bloco -->
 <div id="postarModal" class="modal">
     <div class="modal-card">
-        <h3 style="color:var(--primary); margin:0 0 10px 0;">Postar Anime</h3>
-        <input type="text" id="pNome" placeholder="Nome do Anime">
-        <input type="text" id="pCapa" placeholder="Link da Imagem (Capa)">
-        <input type="text" id="pLink" placeholder="Link do Vídeo (Embed do YouTube/Drive, etc.)">
-        <label for="pIsAdult" style="display:block; margin: 10px 0 5px;">
-            <input type="checkbox" id="pIsAdult" style="width: auto; margin-right: 5px;"> É +18?
-        </label>
-        <label for="pType" style="display:block; margin: 5px 0 10px;">
-            Tipo: 
-            <select id="pType" style="padding: 8px; background: var(--secondary-bg); border: 1px solid #333; color: var(--text); border-radius: 5px;">
-                <option value="legendado">Legendado</option>
-                <option value="dublado">Dublado</option>
+        <h3 style="color:var(--primary); margin:0 0 10px 0;">Postar Anime / Episódio</h3>
+        
+        <!-- Opções para Novo Anime ou Adicionar a Existente -->
+        <div style="margin-bottom: 15px;">
+            <label>
+                <input type="radio" name="postType" value="newAnime" checked onchange="togglePostTypeFields()"> Novo Anime
+            </label>
+            <label style="margin-left: 20px;">
+                <input type="radio" name="postType" value="addEpisode" onchange="togglePostTypeFields()"> Adicionar Episódio/Player
+            </label>
+        </div>
+
+        <!-- Campos para NOVO ANIME (visíveis por padrão) -->
+        <div id="newAnimeFields">
+            <input type="text" id="pAnimeNome" placeholder="Nome do Anime (principal)">
+            <input type="text" id="pAnimeCapaPrincipal" placeholder="Link da Imagem (Capa Principal do Anime)">
+            <textarea id="pAnimeBiografia" placeholder="Biografia do Anime" rows="3" style="width: 100%; padding: 12px; margin: 10px 0; background: var(--secondary-bg); border: 1px solid #333; color: var(--text); border-radius: 5px; box-sizing: border-box;"></textarea>
+            <input type="text" id="pAnimeGeneros" placeholder="Gêneros (separados por vírgula, ex: Ação, Aventura)">
+            <label for="pAnimeIsAdult" style="display:block; margin: 10px 0 5px;">
+                <input type="checkbox" id="pAnimeIsAdult" style="width: auto; margin-right: 5px;"> Conteúdo +18 (Echii/Hentai)?
+            </label>
+        </div>
+
+        <!-- Campos para ADICIONAR EPISÓDIO/PLAYER (ocultos por padrão) -->
+        <div id="addEpisodeFields" style="display: none;">
+            <select id="selectExistingAnime" style="width: 100%; padding: 12px; margin: 10px 0; background: var(--secondary-bg); border: 1px solid #333; color: var(--text); border-radius: 5px;">
+                <option value="">-- Selecione um Anime Existente --</option>
+                <!-- Animes existentes serão carregados aqui via JS -->
             </select>
-        </label>
-        <button class="btn-post" onclick="salvarAnime()">PUBLICAR</button>
+            <input type="number" id="pEpisodeNumber" placeholder="Número do Episódio (ex: 1, 2)">
+            <input type="text" id="pEpisodeTitle" placeholder="Título do Episódio (ex: O Grande Exame Chunin!)">
+            <input type="text" id="pEpisodeThumbnail" placeholder="Link da Imagem (Capa do Episódio)">
+            <input type="text" id="pPlayerLink" placeholder="Link do Vídeo (Embed do YouTube/Drive, etc.)">
+            <label for="pPlayerType" style="display:block; margin: 5px 0 10px;">
+                Tipo: 
+                <select id="pPlayerType" style="padding: 8px; background: var(--secondary-bg); border: 1px solid #333; color: var(--text); border-radius: 5px;">
+                    <option value="legendado">Legendado</option>
+                    <option value="dublado">Dublado</option>
+                </select>
+            </label>
+        </div>
+        
+        <button class="btn-post" onclick="salvarConteudo()">PUBLICAR</button>
         <button class="cancel-btn" onclick="document.getElementById('postarModal').style.display='none'">Cancelar</button>
+    </div>
+</div>
+
+<!-- Adicione estas novas funções JavaScript DENTRO da sua tag <script> existente -->
+<script>
+    // ... (Seu código JavaScript existente aqui, antes destas novas funções)
+
+    // Nova função para alternar campos no modal de postagem
+    async function togglePostTypeFields() {
+        const newAnimeFields = document.getElementById('newAnimeFields');
+        const addEpisodeFields = document.getElementById('addEpisodeFields');
+        const postType = document.querySelector('input[name="postType"]:checked').value;
+
+        if (postType === 'newAnime') {
+            newAnimeFields.style.display = 'block';
+            addEpisodeFields.style.display = 'none';
+        } else {
+            newAnimeFields.style.display = 'none';
+            addEpisodeFields.style.display = 'block';
+            // Carregar animes existentes quando o modo "Adicionar Episódio/Player" é selecionado
+            await carregarAnimesExistentesParaSelect();
+        }
+    }
+
+    // Função para carregar animes existentes no <select>
+    async function carregarAnimesExistentesParaSelect() {
+        const selectElement = document.getElementById('selectExistingAnime');
+        // Limpa as opções e mostra "Carregando..."
+        selectElement.innerHTML = '<option value="">-- Carregando Animes... --</option>'; 
+
+        try {
+            const animesSnapshot = await db.collection("animes").orderBy("nome").get();
+            selectElement.innerHTML = '<option value="">-- Selecione um Anime Existente --</option>'; // Limpa e adiciona a opção padrão novamente
+            animesSnapshot.forEach(doc => {
+                const anime = doc.data();
+                const option = document.createElement('option');
+                option.value = doc.id; // O valor é o ID do documento do anime no Firestore
+                option.textContent = anime.nome;
+                selectElement.appendChild(option);
+            });
+        } catch (error) {
+            console.error("Erro ao carregar animes existentes para select:", error);
+            selectElement.innerHTML = '<option value="">-- Erro ao carregar Animes --</option>';
+            showMessage("Erro ao carregar lista de animes existentes: " + error.message);
+        }
+    }
+
+    // ... (O restante do seu JavaScript, incluindo 'salvarAnime', 'loginUsuario', etc.)
+</script>
+
     </div>
 </div>
 
