@@ -418,22 +418,6 @@ async function excluirAnimeConfirm() {
 
     const confirmacao = confirm(Sem resposta
 
-// NOVO: Função para excluir um anime do Firestore
-async function excluirAnime(animeId) {
-    if (!auth.currentUser || auth.currentUser.uid !== currentAnimeOwnerId) {
-        showMessage("Você não tem permissão para excluir este anime.");
-        return;
-    }
-    try {
-        await db.collection("animes").doc(animeId).delete();
-        showMessage(`"${currentPlayingAnime.nome}" excluído com sucesso!`);
-        fecharVideoModal(); // Fecha o modal de vídeo
-        carregarAnimes(currentFilter); // Recarrega a lista
-    } catch (error) {
-        console.error("Erro ao excluir anime:", error);
-        showMessage("Erro ao excluir anime: " + error.message);
-    }
-}
 
 // NOVO: Função para fechar o modal de postagem/edição e limpar o formulário
 function fecharPostarModal() {
