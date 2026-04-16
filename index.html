@@ -83,22 +83,43 @@
             .grid-recent {
                 grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
             }
-            header {
-                height: 50px;
-            }
-            .logo {
-                font-size: 18px;
-            }
-            .icon-btn {
-                font-size: 20px;
-            }
-            #userMenu .modal-card {
-                width: 85%;
-            }
-            #videoPlayerModal iframe {
-                height: 180px;
-            }
+                    /* Estilos do Header */
+        header { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 0 15px; 
+            background: #000; 
+            height: 60px; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            border-bottom: 1px solid #333; 
+            /* Adicionado para posicionamento da barra de pesquisa */
+            position: relative; 
         }
+
+        /* Barra de Pesquisa Dinâmica */
+        #searchContainer {
+            position: absolute; /* Posiciona absolutamente dentro do header */
+            right: 15px; /* Alinha à direita */
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            z-index: 1001; /* Garante que fique acima de outros elementos */
+        }
+        #searchContainer.active .search-bar {
+            display: block; /* Mostra a barra quando ativa */
+            box-shadow: 0 0 10px var(--highlight-dark); /* Luz roxa na barra */
+            width: 200px; /* Largura total quando ativa */
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .search-icon-btn {
+            font-size: 24px; 
+            cursor: pointer;Sem resposta
+
 
         .logo { 
             font-weight: bold; 
