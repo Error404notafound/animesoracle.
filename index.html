@@ -440,6 +440,26 @@ async function salvarOuAtualizarAnime() {
     }
 }
 
+// NOVO: Função para preparar o modal de postagem para edição
+function prepararEdicaoAnime() {
+    if (!currentPlayingAnime) {
+        showMessage("Nenhum anime selecionado para edição.");
+        return;
+    }
+
+    document.getElementById('pAnimeId').value = currentPlayingAnime.id;
+    document.getElementById('pNome').value = currentPlayingAnime.nome;
+    document.getElementById('pCapa').value = currentPlayingAnime.capa;
+    document.getElementById('pLink').value = currentPlayingAnime.link;
+    document.getElementById('pIsAdult').checked = currentPlayingAnime.isAdult || false;
+    document.getElementById('pType').value = currentPlayingAnime.type || 'legendado';
+
+    // Altera o texto do botão para "ATUALIZAR"
+    document.getElementById('btnSalvarOuAtualizar').textContent = "ATUALIZAR";
+    
+    document.getElementById('videoModal').style.display = 'none'; // Fecha o modal de vídeo
+    document.getElementById('postarModal').style.display = 'flex'; // Abre o modal de postagem/edição
+}
 
 
     // 4. LÓGICA DE AUTENTICAÇÃO (LOGIN/CADASTRO/LOGOUT)
