@@ -390,26 +390,37 @@ let currentAnimeOwnerId = null; // NOVO: Armazena o ID do usuário que postou o 
         alert(message); // Por simplicidade, usando alert. Em uma app real, use um modal/toast.
     }
 
-    // 3. FUNÇÃO SALVAR ANIME (PARA O BOTÃO "+")
-        // 3. FUNÇÃO SALVAR ANIME (PARA O BOTÃO "+")
-    async function salvarAnime() {
-        const nome = document.getElementById('pNome').value;
-        const capa = document.getElementById('pCapa').value;
-        const link = document.getElementById('pLink').value;
-        const isAdult = document.getElementById('pIsAdult').checked;
-        const type = document.getElementById('pType').value;
+    // NOVO: Função para salvar ou atualizar um anime
+async function salvarOuAtualizarAnime() {
+    const animeId = document.getElementById('pAnimeId').value; // Pegamos o ID, se existir
+    const nome = document.getElementById('pNome').value;
+    const capa = document.getElementById('pCapa').value;
+    const link = document.getElementById('pLink').value;
+    const isAdult = document.getElementById('pIsAdult').checked;
+    const type = document.getElementById('pType').value;
 
-        if (!auth.currentUser) {
-            showMessage("Você precisa estar logado para postar animes!");
-            return;
-        }
+    if (!auth.currentUser) {
+        showMessage("Você precisa estar logado para postar/editar animes!");
+        return;
+    }
 
-        if (!nome || !capa || !link) {
-            showMessage("Preencha todos os campos (Nome, Capa e Link do Vídeo)!");
-            return; 
-        }
+    if (!nome || !capa || !link) {
+        showMessage("Preencha todos os campos (Nome, Capa e Link do Vídeo)!");
+        return; 
+    }
 
-        try {
+    try {
+        if (animeId) { // Se pAnimeId tem um valor, estamos EDITANDO
+            await db.collection("animes").doc(animeId).update({
+                nome: nome,
+                capa: capa,
+                link: link,
+                isAdult: isAdult,
+                type: type,
+                // Não alteramos 'data' nem 'postedBy' na edição
+            });
+            showMessage("Sucesso! Anime atualizado.");
+        } else { // Caso contrário, estamos CRIANDO um NOVO anime
             await db.collection("animes").add({
                 nome: nome,
                 capa: capa,
@@ -420,18 +431,15 @@ let currentAnimeOwnerId = null; // NOVO: Armazena o ID do usuário que postou o 
                 type: type
             });
             showMessage("Sucesso! Anime postado.");
-            document.getElementById('postarModal').style.display = 'none';
-            document.getElementById('pNome').value = "";
-            document.getElementById('pCapa').value = "";
-            document.getElementById('pLink').value = "";
-            document.getElementById('pIsAdult').checked = false;
-            document.getElementById('pType').value = 'legendado';
-            carregarAnimes(currentFilter); // Recarrega a lista para mostrar o novo anime
-        } catch (e) {
-            console.error("Erro ao salvar:", e); 
-            showMessage("Erro do Firebase: " + e.message + "\n\nVerifique as 'Regras' no Firebase!");
         }
+        fecharPostarModal(); // Fecha o modal após a operação
+        carregarAnimes(currentFilter); // Recarrega a lista
+    } catch (e) {
+        console.error("Erro ao salvar/atualizar:", e); 
+        showMessage("Erro do Firebase: " + e.message + "\n\nVerifique as 'Regras' no Firebase!");
     }
+}
+
 
 
     // 4. LÓGICA DE AUTENTICAÇÃO (LOGIN/CADASTRO/LOGOUT)
