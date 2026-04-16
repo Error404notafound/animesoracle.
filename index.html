@@ -17,21 +17,26 @@
 
 
     <style>
-        /* Estilos Globais e do Tema */
+                /* Estilos Globais e do Tema */
         :root { 
             --bg: #0f0f0f; 
             --card: #1a1a1a; 
             --text: #ffffff; 
             --primary: #6200ea; 
             --secondary-bg: #222;
+            --highlight-light: #8a2be250; /* Luz roxa suave para destaque */
+            --highlight-dark: #8a2be280;  /* Luz roxa mais intensa para foco/borda */
+            --brightness-filter: brightness(100%); /* Controle de luminosidade */
         }
         body { 
             margin: 0; 
             background: var(--bg); 
             color: var(--text); 
             font-family: sans-serif; 
-            transition: background-color 0.3s, color 0.3s;
+            transition: background-color 0.3s, color 0.3s, filter 0.3s; /* Adicionado filter para transição suave */
+            filter: var(--brightness-filter); /* Aplica o filtro de luminosidade */
         }
+
 
         /* Modo Escuro/Claro */
         body.light-mode {
