@@ -435,6 +435,19 @@ async function excluirAnime(animeId) {
     }
 }
 
+// NOVO: Função para fechar o modal de postagem/edição e limpar o formulário
+function fecharPostarModal() {
+    document.getElementById('postarModal').style.display = 'none';
+    // Limpa todos os campos
+    document.getElementById('pAnimeId').value = "";
+    document.getElementById('pNome').value = "";
+    document.getElementById('pCapa').value = "";
+    document.getElementById('pLink').value = "";
+    document.getElementById('pIsAdult').checked = false;
+    document.getElementById('pType').value = 'legendado';
+    document.getElementById('btnSalvarOuAtualizar').textContent = "PUBLICAR"; // Restaura o texto original do botão
+}
+
 
 // NOVO: Função para preparar o modal de postagem para edição
 function prepararEdicaoAnime() {
