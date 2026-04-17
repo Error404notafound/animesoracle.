@@ -86,7 +86,7 @@
             <button class="btn-post" onclick="criarNovaSerie()">CRIAR SÉRIE</button>
         </div>
 
-        <!-- Formulário para Adicionar Episodio (oculto inicialmente) -->
+                <!-- Formulário para Adicionar Episodio (oculto inicialmente) -->
         <div id="formNovoEpisodio" style="display:none;">
             <label for="selectSerieExistente" style="display:block; margin: 10px 0 5px;">Selecionar Série:</label>
             <select id="selectSerieExistente"></select> <!-- Popula com séries existentes pelo JS -->
@@ -190,6 +190,111 @@
             <button class="btn-player-type" id="btnPlayerLegendado" onclick="selecionarPlayerTipo('legendado')">Legendado</button>
             <button class="btn-player-type" id="btnPlayerDublado" onclick="selecionarPlayerTipo('dublado')">Dublado</button>
         </div>
+``````html
+        <!-- Formulário para Adicionar Episodio (oculto inicialmente) -->
+        <div id="formNovoEpisodio" style="display:none;">
+            <label for="selectSerieExistente" style="display:block; margin: 10px 0 5px;">Selecionar Série:</label>
+            <select id="selectSerieExistente"></select> <!-- Popula com séries existentes pelo JS -->
+            <input type="number" id="pEpisodioNumero" placeholder="Numero do Episodio">
+            <input type="text" id="pThumbnailEpisodio" placeholder="Link da Imagem do Episodio (Thumbnail)">
+            <input type="text" id="pPlayerLink" placeholder="Link do Video (Embed do YouTube/Drive, etc.)">
+            <label for="pPlayerType" style="display:block; margin: 10px 0 5px;">Tipo de Player:</label>
+            <select id="pPlayerType">
+                <option value="legendado">Legendado</option>
+                <option value="dublado">Dublado</option>
+            </select>
+            <button class="btn-post" onclick="adicionarEpisodioEPlayer()">ADICIONAR EPISODIO/PLAYER</button>
+        </div>
+        
+        <button class="cancel-btn" onclick="document.getElementById('postarModal').style.display='none'">Cancelar</button>
+    </div>
+</div>
+
+<!-- MODAL DE AUTENTICAÇÃO (Login/Cadastro) -->
+<div id="authModal" class="modal">
+    <div class="modal-card">
+        <h3 style="color:var(--primary); margin:0 0 10px 0;">Entrar / Cadastrar</h3>
+        <input type="email" id="authEmail" placeholder="E-mail">
+        <input type="password" id="authPassword" placeholder="Senha">
+        <button class="btn-post" onclick="cadastrarUsuario()">CADASTRAR</button>
+        <button class="btn-post" onclick="loginUsuario()" style="margin-top: 10px;">ENTRAR</button>
+        <button class="cancel-btn" onclick="document.getElementById('authModal').style.display='none'">Cancelar</button>
+    </div>
+</div>
+
+<!-- MENU DO USUÁRIO (Sidebar) -->
+<div id="userMenu" class="modal">
+    <div class="modal-card">
+        <button class="close-btn" onclick="document.getElementById('userMenu').style.display='none'">&times;</button>
+        <div id="userInfoDisplay">
+            <!-- Conteúdo do usuário (foto, email) será carregado aqui pelo JavaScript -->
+            <img id="userPhoto" src="https://via.placeholder.com/60?text=AP" alt="Foto de Perfil">
+            <p id="userEmail">Usuário Não Logado</p>
+        </div>
+        <hr style="border-color:#333; margin:15px 0;">
+        <p class="menu-item-white" onclick="mostrarAnimes('legendado')">Animes Legendados</p>
+        <p class="menu-item-white" onclick="mostrarAnimes('dublado')">Animes Dublados</p>
+        <p class="menu-item-primary" onclick="mostrarAnimes('salvos')">Animes Salvos (<span id="savedAnimesCount">0</span>)</p>
+        <!-- Nova opção para Gêneros -->
+        <p class="menu-item-white" onclick="abrirModalGeneros()">Gêneros</p>
+        <p class="menu-item-white" onclick="toggleModoNoite()">Modo Noite/Dia</p>
+        <p id="modoAdultoMenuItem" onclick="toggleModoAdulto()" class="menu-item-adult">Modo Adulto (+18)</p>
+        <p class="menu-item-white" onclick="abrirModalUploadFoto()">Atualizar Foto de Perfil</p>
+        <button onclick="logoutUsuario()" class="btn-post" style="background:#cc0000;">Sair</button>
+    </div>
+</div>
+
+<!-- MODAL PARA SELEÇÃO DE GÊNEROS -->
+<div id="generosModal" class="modal">
+    <div class="modal-card">
+        <h3 style="color:var(--primary);">Gêneros</h3>
+        <div id="generosList" class="generos-list">
+            <!-- Gêneros serão carregados dinamicamente por JavaScript aqui -->
+        </div>
+        <button class="cancel-btn" onclick="document.getElementById('generosModal').style.display='none'">Fechar</button>
+    </div>
+</div>
+
+<!-- MODAL PARA UPLOAD DE FOTO DE PERFIL -->
+<div id="uploadPhotoModal" class="modal">
+    <div class="modal-card">
+        <h3 style="color:var(--primary);">Atualizar Foto de Perfil</h3>
+        <input type="file" id="photoInput" accept="image/*">
+        <button class="btn-post" onclick="uploadProfilePhoto()">Fazer Upload</button>
+        <button class="cancel-btn" onclick="document.getElementById('uploadPhotoModal').style.display='none'">Cancelar</button>
+    </div>
+</div>
+
+<!-- MODAL PARA PLAYER DE VÍDEO E DETALHES DO EPISÓDIO -->
+<div id="videoModal" class="modal">
+    <div class="modal-card video-player-card">
+        <button class="close-video-btn" onclick="fecharVideoModal()">&times;</button>
+        
+        <!-- HEADER DO PLAYER (similar ao header principal, mas dentro do modal) -->
+        <div class="player-header">
+            <button class="icon-btn" id="playerMenuBtn" onclick="abrirMenuUsuario()">☰</button> <!-- Menu usuário -->
+            <div class="player-logo">AnimesOracle</div>
+            <button class="icon-btn" id="playerSearchBtn" onclick="toggleSearchBar()">🔍</button> <!-- Busca -->
+        </div>
+
+        <!-- CATÁLOGO A-Z NO PLAYER (mantém o mesmo do principal) -->
+        <div id="playerAlphabeticalFilter" class="alphabetical-filter">
+             <!-- As letras serão geradas por JavaScript -->
+        </div>
+
+        <!-- TÍTULO DO EPISÓDIO -->
+        <h3 class="anime-title" id="videoModalTitle"></h3>
+        
+        <!-- CONTAINER DO VÍDEO -->
+        <div class="video-container">
+            <iframe id="videoFrame" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+
+                <!-- BOTÕES DE TIPO DE PLAYER (Dublado / Legendado) -->
+        <div class="player-type-selector">
+            <button class="btn-player-type" id="btnPlayerLegendado" onclick="selecionarPlayerTipo('legendado')">Legendado</button>
+            <button class="btn-player-type" id="btnPlayerDublado" onclick="selecionarPlayerTipo('dublado')">Dublado</button>
+        </div>
 
         <!-- CONTROLES DE NAVEGAÇÃO DE EPISÓDIOS -->
         <div class="episode-navigation">
@@ -198,10 +303,17 @@
             <button class="nav-btn" onclick="navegarEpisodio(1)">ᐳ</button> <!-- Proximo Episodio -->
         </div>
 
-        <!-- BOTÕES DE AÇÃO (Salvar, Relatar Erro) -->
+        <!-- BOTÕES DE AÇÃO (Salvar, Relatar Erro, Votar) -->
         <div class="player-actions">
             <button class="btn-post" id="btnSalvarAnime" onclick="toggleSalvarAnime()"></button>
             <button class="btn-post error-btn" id="btnReportarErro" onclick="reportarErroPlayer()">Reportar Erro</button>
+            <!-- Botão de Votação (Estrelas ou similar, implementado com JS e CSS) -->
+            <div id="ratingSection" class="rating-section">
+                <span>Nota: </span>
+                <div class="stars" id="animeRatingStars">
+                    <!-- Estrelas de 1 a 10 serão geradas por JS -->
+                </div>
+            </div>
         </div>
 
         <!-- LISTA DE PLAYERS DISPONÍVEIS PARA O EPISÓDIO ATUAL -->
@@ -220,11 +332,391 @@
                 <!-- Comentários serão carregados aqui -->
             </div>
         </div>
+    </div> <!-- Fecha .modal-card.video-player-card -->
+</div> <!-- Fecha #videoModal -->
+
+<!-- MODAL PARA LISTAGEM DE EPISÓDIOS DA SÉRIE (Abre ao clicar no hambúrguer do player) -->
+<div id="episodeListModal" class="modal">
+    <div class="modal-card">
+        <button class="close-btn" onclick="closeModal('episodeListModal')">&times;</button>
+        <h3 id="episodeListModalTitle" style="color:var(--primary);"></h3>
+        <p id="episodeListModalDescription" class="series-description"></p>
+        <div id="episodeListContainer" class="episode-list-container">
+            <!-- Capa da série, biografia, gêneros e lista de episódios serão carregados aqui -->
+        </div>
     </div>
 </div>
 
-<!-- SCRIPTS FIREBASE E LÓGICA DA APLICAÇÃO -->
-<script src="script.js"></script> <!-- Seu arquivo JavaScript externo -->
+<!-- Estilos Embutidos - Parte 1 de X -->
+<style>
+/* style.css - Parte 6: Estilos Globais, Header, Barra de Pesquisa, Catálogo A-Z e Seções de Animes */
 
-</body>
-</html>
+/* Variáveis de Cores (Tema) */
+:root { 
+    --bg: #0f0f0f; /* Fundo principal */
+    --card: #1a1a1a; /* Cor de fundo dos cards e modais */
+    --text: #ffffff; /* Cor do texto principal */
+    --primary: #6200ea; /* Cor de destaque (roxo) */
+    --secondary-bg: #222; /* Fundo secundário (inputs, etc.) */
+    --accent-red: #cc0000; /* Vermelho para botões de erro/sair */
+    --border-color: #333; /* Cor de borda geral */
+    --shadow-color: rgba(0,0,0,0.5); /* Cor de sombra */
+    --highlight-glow: 0 0 8px var(--primary); /* Efeito de brilho roxo */
+}
+
+/* Modo Claro */
+body.light-mode {
+    --bg: #f0f0f0;
+    --card: #ffffff;
+    --text: #333333;
+    --primary: #6200ea;
+    --secondary-bg: #e0e0e0;
+    --accent-red: #cc0000;
+    --border-color: #ccc;
+    --shadow-color: rgba(0,0,0,0.1);
+    --highlight-glow: 0 0 8px rgba(98, 0, 234, 0.4);
+}
+
+/* Estilos Globais */
+body { 
+    margin: 0; 
+    background: var(--bg); 
+    color: var(--text); 
+    font-family: 'Roboto', sans-serif; /* Fonte mais moderna */
+    transition: background-color 0.3s, color 0.3s;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar personalizada (apenas para navegadores que suportam) */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--secondary-bg);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #4a00af;
+}
+
+/* Estilos do Header Principal */
+header { 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    padding: 0 15px; 
+    background: #000; /* Fundo preto fixo para o header */
+    height: 60px; 
+    position: sticky; 
+    top: 0; 
+    z-index: 1000; 
+    border-bottom: 1px solid var(--border-color); 
+    box-shadow: 0 2px 10px var(--shadow-color);
+}
+.logo { 
+    font-weight: bold; 
+    color: var(--primary); 
+    font-size: 24px; 
+    flex-grow: 1; 
+    text-align: center; 
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+.icon-btn { 
+    font-size: 24px; 
+    cursor: pointer; 
+    background: none; 
+    border: none; 
+    color: var(--primary); 
+    outline: none; 
+    padding: 0 5px; 
+    transition: color 0.2s, transform 0.2s;
+}
+.icon-btn:hover {
+    color: #4a00af;
+    transform: scale(1.1);
+}
+
+/* Barra de Pesquisa */
+.search-container {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    background: var(--card);
+    border-bottom: 1px solid var(--border-color);
+    transition: all 0.3s ease-out;
+    box-shadow: inset 0 -2px 5px var(--shadow-color);
+}
+.search-container.hidden {
+    display: none; /* Controlado por JS */
+}
+#searchInput {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background: var(--secondary-bg);
+    color: var(--text);
+    font-size: 16px;
+    transition: box-shadow 0.3s ease-in-out;
+}
+#searchInput::placeholder {
+    color: #888;
+}
+#searchInput:focus {
+    outline: none;
+    box-shadow: var(--highlight-glow); /* Aura roxa ao focar */
+}
+.close-search-btn {
+    margin-left: 10px;
+    color: var(--accent-red);
+    font-size: 28px;
+    padding: 0 8px;
+}
+.close-search-btn:hover {
+    color: #ff0000;
+}
+
+/* Catálogo A-Z */
+.alphabetical-filter {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 10px 0;
+    background: var(--secondary-bg);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 2px 5px var(--shadow-color);
+}
+.filter-char-btn {
+    background: none;
+    border: none;
+    color: var(--primary);
+    font-weight: bold;
+    font-size: 16px;
+    padding: 5px 8px;
+    margin: 2px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    border-radius: 4px;
+}
+.filter-char-btn:hover, .filter-char-btn.active {
+    background-color: var(--primary);
+    color: var(--text);
+}
+
+/* Seções de Animes */
+.content-sections {
+    padding: 15px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.anime-section {
+    margin-bottom: 30px;
+}
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    color: var(--text);
+    font-size: 20px;
+    border-left: 5px solid var(--primary); /* Detalhe lateral roxo */
+    padding-left: 10px;
+}
+.section-header .header-text {
+    font-weight: bold;
+}
+.see-more-btn {
+    background: none;
+    border: none;
+    color: var(--primary);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: color 0.2s;
+}
+.see-more-btn:hover {
+    color: #4a00af;
+}
+
+/* Grade de Animes (Cards) */
+.grid-recent { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Responsivo */
+    gap: 15px; 
+}
+.card-recent { 
+    background: var(--card); 
+    border-radius: 8px; 
+    overflow: hidden; 
+    border: 1px solid var(--border-color); 
+    text-align: center; 
+    box-shadow: 0 2px 8px var(--shadow-color);
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative; /* Para badges internos */
+    cursor: pointer;
+}
+.card-recent:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px var(--highlight-glow);
+}
+.card-recent img { 
+    width: 100%; 
+    aspect-ratio: 2/3; 
+    object-fit: cover; 
+    display: block; 
+}
+.card-info { 
+    padding: 8px; 
+    font-size: 14px; 
+    font-weight: bold; 
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.card-rating-badge {
+    position: absolute;
+    bottom: 0px; /* Ajuste para não cobrir o nome */
+    right: 5px;
+    background-color: var(--primary);
+    color: white;
+    padding: 3px 6px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: bold;
+    transform: translateY(-50%); /* Ajusta verticalmente */
+}
+.card-highlight-badge {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background-color: var(--primary); /* Roxo */
+    color: white;
+    padding: 3px 6px;
+    border-radius: 5px;
+    font-size: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    z-index: 10;
+}
+.card-recent.highlighted {
+    border: 3px solid var(--primary); /* LUZ ROXA */
+    box-shadow: 0 0 15px var(--primary);
+}
+
+/* Estilos Comuns para Modais (pop-ups) */
+.modal { 
+    display: flex; /* Usar flex para centralizar conteúdo */
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    background: rgba(0,0,0,0.9); 
+    z-index: 5000; 
+    justify-content: center; 
+    align-items: center; 
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.modal.visible {
+    opacity: 1;
+    visibility: visible;
+}
+.modal-card { 
+    background: var(--card); 
+    padding: 25px; 
+    border-radius: 15px; 
+    width: 85%; 
+    max-width: 500px; /* Max-width ajustado para modais gerais */
+    border: 1px solid var(--primary); 
+    box-shadow: 0 5px 20px var(--shadow-color);
+    position: relative; /* Para o botão fechar e outros elementos */
+    transform: translateY(-20px);
+    opacity: 0;
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    max-height: 90vh; /* Para garantir que o modal não seja maior que a tela */
+    overflow-y: auto; /* Adiciona scroll se o conteúdo for muito grande */
+}
+.modal.visible .modal-card {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+input, textarea, select { 
+    width: calc(100% - 24px); /* Padding interno */
+    padding: 12px; 
+    margin: 10px 0; 
+    background: var(--secondary-bg); 
+    border: 1px solid var(--border-color); 
+    color: var(--text); 
+    border-radius: 5px; 
+    box-sizing: border-box; 
+    font-size: 16px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 5px var(--primary);
+}
+label {
+    color: var(--text);
+    font-size: 14px;
+    margin-top: 10px;
+    display: block;
+}
+input[type="checkbox"] {
+    width: auto;
+    margin-right: 8px;
+}
+
+.btn-post { 
+    width: 100%; 
+    padding: 12px; 
+    background: var(--primary); 
+    color: white; 
+    border: none; 
+    border-radius: 5px; 
+    font-weight: bold; 
+    cursor: pointer; 
+    margin-top: 10px; 
+    font-size: 16px;
+    transition: background-color 0.2s, transform 0.2s;
+}
+.btn-post:hover {
+    background-color: #4a00af;
+    transform: translateY(-2px);
+}
+.btn-post.error-btn {
+    background: var(--accent-red);
+}
+.btn-post.error-btn:hover {
+    background-color: #ff0000;
+}
+.cancel-btn {
+    background: none; 
+    color: #999; /* Cinza */
+    border: none; 
+    margin-top: 15px; 
+    width:100%; 
+    cursor:pointer;
+    font-size: 14px;
+}
+.cancel-btn:hover {
+    color: var(--text);
+}
+
+
+
+
+
+
