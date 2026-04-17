@@ -12,292 +12,100 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <!-- Para autenticação de usuários (e-mail/senha) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <!-- Para upload de arquivos (fotos de perfil, capas de anime) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script> 
 
-    <style>
-        /* Estilos Globais e do Tema */
-        :root { 
-            --bg: #0f0f0f; 
-            --card: #1a1a1a; 
-            --text: #ffffff; 
-            --primary: #6200ea; 
-            --secondary-bg: #222;
-        }
-        body { 
-            margin: 0; 
-            background: var(--bg); 
-            color: var(--text); 
-            font-family: sans-serif; 
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        /* Modo Escuro/Claro */
-        body.light-mode {
-            --bg: #f0f0f0;
-            --card: #ffffff;
-            --text: #333333;
-            --secondary-bg: #e0e0e0;
-        }
-
-        /* Estilos do Header */
-        header { 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            padding: 0 15px; 
-            background: #000; 
-            height: 60px; 
-            position: sticky; 
-            top: 0; 
-            z-index: 1000; 
-            border-bottom: 1px solid #333; 
-        }
-        .logo { 
-            font-weight: bold; 
-            color: var(--primary); 
-            font-size: 20px; 
-            flex-grow: 1; 
-            text-align: center; 
-        }
-        .icon-btn { 
-            font-size: 24px; 
-            cursor: pointer; 
-            background: none; 
-            border: none; 
-            color: var(--primary); 
-            outline: none; 
-            padding: 0 5px; 
-        }
-
-        /* Estilos da Grade de Animes */
-        .grid-recent { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Responsivo */
-            gap: 12px; 
-            padding: 15px; 
-            max-width: 1200px; /* Largura máxima */
-            margin: 0 auto; /* Centraliza */
-        }
-        .card-recent { 
-            background: var(--card); 
-            border-radius: 8px; 
-            overflow: hidden; 
-            border: 1px solid #333; 
-            text-align: center; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            transition: transform 0.2s;
-        }
-        .card-recent:hover {
-            transform: translateY(-5px);
-        }
-        .card-recent img { 
-            width: 100%; 
-            aspect-ratio: 2/3; 
-            object-fit: cover; 
-            cursor: pointer; 
-            display: block; 
-        }
-        .card-info { 
-            padding: 8px; 
-            font-size: 13px; 
-            font-weight: bold; 
-            color: var(--text);
-        }
-
-        /* Estilos Comuns para Modais (pop-ups) */
-        .modal { 
-            display: none; 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background: rgba(0,0,0,0.9); 
-            z-index: 5000; 
-            justify-content: center; 
-            align-items: center; 
-        }
-        .modal-card { 
-            background: var(--card); 
-            padding: 25px; 
-            border-radius: 15px; 
-            width: 85%; 
-            max-width: 400px; 
-            border: 1px solid var(--primary); 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            position: relative; /* Para o botão fechar */
-        }
-        input { 
-            width: 100%; 
-            padding: 12px; 
-            margin: 10px 0; 
-            background: var(--secondary-bg); 
-            border: 1px solid #333; 
-            color: var(--text); 
-            border-radius: 5px; 
-            box-sizing: border-box; 
-        }
-        .btn-post { 
-            width: 100%; 
-            padding: 12px; 
-            background: var(--primary); 
-            color: white; 
-            border: none; 
-            border-radius: 5px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            margin-top: 10px; 
-            transition: background-color 0.2s;
-        }
-        .btn-post:hover {
-            background-color: #4a00af;
-        }
-        .cancel-btn {
-            background: none; 
-            color: gray; 
-            border: none; 
-            margin-top:15px; 
-            width:100%; 
-            cursor:pointer;
-        }
-
-        /* Estilos Específicos para o Menu do Usuário (Sidebar) */
-        #userMenu {
-            justify-content: flex-start; 
-            align-items: stretch; 
-            background: rgba(0,0,0,0.7); 
-            transition: all 0.3s ease-in-out;
-        }
-        #userMenu.hidden {
-            transform: translateX(-100%);
-            opacity: 0;
-            pointer-events: none; /* Desabilita cliques quando escondido */
-        }
-        #userMenu .modal-card {
-            width: 280px; 
-            max-width: 80%; 
-            height: 100%; 
-            border-radius: 0 15px 15px 0; 
-            padding: 20px;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.5); 
-            display: flex;
-            flex-direction: column; 
-            overflow-y: auto; 
-            position: relative; 
-            background: var(--card); /* Adapta ao tema */
-        }
-        #userMenu .close-btn {
-            background: none;
-            border: none;
-            color: var(--text); /* Adapta ao tema */
-            font-size: 24px;
-            cursor: pointer;
-            position: absolute; 
-            right: 15px;
-            top: 10px;
-            z-index: 5001; 
-        }
-        #userInfoDisplay {
-            text-align: center; 
-            margin-top: 30px; 
-        }
-        #userInfoDisplay img {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            margin-bottom: 10px;
-            object-fit: cover;
-            border: 2px solid var(--primary); 
-        }
-        #userInfoDisplay p {
-            margin: 8px 0;
-            padding: 5px;
-            cursor: pointer;
-            transition: background-color 0.2s ease, color 0.2s; 
-            color: var(--text);
-        }
-        #userInfoDisplay p:hover {
-            background-color: var(--secondary-bg); 
-            border-radius: 5px;
-        }
-        #userInfoDisplay .menu-item-primary {
-            color: var(--primary); 
-            font-weight: bold;
-        }
-        #userInfoDisplay .menu-item-adult {
-            font-weight: bold;
-            color: #ff4d4d; /* Cor para indicar perigo/alerta */
-        }
-        #userInfoDisplay .menu-item-adult.active {
-            color: #4CAF50; /* Verde quando ativo */
-        }
-        /* Estilos para o player de vídeo */
-        #videoPlayerModal {
-            padding: 20px;
-            text-align: center;
-        }
-        #videoPlayerModal iframe {
-            width: 100%;
-            max-width: 800px;
-            height: 450px;
-            border: none;
-            margin-top: 15px;
-        }
-        #videoPlayerModal .anime-title {
-            color: var(--primary);
-            margin-bottom: 10px;
-        }
-        #videoPlayerModal .close-video-btn {
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 30px;
-            cursor: pointer;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-        }
-
-        /* Estilo para o botão de salvar/remover anime na página de detalhes */
-        #btnSalvarAnime.saved {
-            background-color: #007bff; /* Azul, para indicar que está salvo */
-        }
-    </style>
+    <!-- Seu arquivo CSS externo para melhor organização -->
+    <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
 
+<!-- HEADER PRINCIPAL DO SITE -->
 <header>
-    <!-- Botão do hambúrguer que agora abre o menu do usuário -->
-    <button class="icon-btn" onclick="abrirMenuUsuario()"></button>
-    <div class="logo">AnimesOracle</div>
-    <!-- Botão de adicionar anime (permanece o mesmo) -->
-    <button class="icon-btn" onclick="document.getElementById('postarModal').style.display='flex'"></button>
+    <button class="icon-btn" id="menuUsuarioBtn" onclick="abrirMenuUsuario()">☰</button> <!-- Botão para o menu do usuário (hambúrguer) -->
+    <div class="logo">AnimesOracle</div> <!-- Nome do site centralizado -->
+    <button class="icon-btn" id="searchToggleBtn" onclick="toggleSearchBar()">🔍</button> <!-- Botão para ativar/desativar a busca -->
+    <button class="icon-btn" id="addContentBtn" onclick="abrirModalPostagem()">➕</button> <!-- Botão para adicionar novo conteúdo -->
 </header>
 
-<div class="grid-recent" id="animeGrid"></div>
+<!-- BARRA DE PESQUISA (inicialmente oculta) -->
+<div id="searchContainer" class="search-container hidden">
+    <input type="text" id="searchInput" placeholder="Buscar animes..." onkeyup="performSearch()">
+    <button class="icon-btn close-search-btn" onclick="toggleSearchBar()">✖</button>
+</div>
 
-<!-- Modal para Postar Anime -->
+<!-- CATÁLOGO A-Z (menu de letras para filtro) -->
+<div id="alphabeticalFilter" class="alphabetical-filter">
+    <button class="filter-char-btn" onclick="filterByChar('')">#</button> <!-- Botão para caracteres não alfabéticos ou reset -->
+    <!-- As letras (A-Z) serão geradas dinamicamente por JavaScript aqui -->
+</div>
+
+<!-- SEÇÕES DE EXIBIÇÃO DE ANIMES (GRID) -->
+<div class="content-sections">
+    <!-- Seção de "Mais Votados & Assistidos" -->
+    <section class="anime-section">
+        <h2 class="section-header">
+            <span class="header-text">MAIS VOTADOS & ASSISTIDOS</span>
+            <button class="see-more-btn" onclick="mostrarAnimes('mais_populares')">Ver Mais</button>
+        </h2>
+        <div class="grid-recent" id="mostPopularGrid">
+            <!-- Cards dos animes mais votados/assistidos serão injetados aqui -->
+        </div>
+    </section>
+
+    <!-- Seção de "Adicionados Recentemente" -->
+    <section class="anime-section">
+        <h2 class="section-header">
+            <span class="header-text">ADICIONADOS RECENTEMENTE</span>
+            <button class="see-more-btn" onclick="mostrarAnimes('recentes')">Ver Mais</button>
+        </h2>
+        <div class="grid-recent" id="animeGrid">
+            <!-- Cards dos animes recentes serão injetados aqui -->
+        </div>
+    </section>
+</div>
+
+<!-- MODAL PARA POSTAR CONTEÚDO (Série ou Episodio) -->
 <div id="postarModal" class="modal">
     <div class="modal-card">
-        <h3 style="color:var(--primary); margin:0 0 10px 0;">Postar Anime</h3>
-        <input type="text" id="pNome" placeholder="Nome do Anime">
-        <input type="text" id="pCapa" placeholder="Link da Imagem (Capa)">
-        <input type="text" id="pLink" placeholder="Link do Vídeo (Embed do YouTube/Drive, etc.)">
-        <label for="pIsAdult" style="display:block; margin: 10px 0 5px;">
-            <input type="checkbox" id="pIsAdult" style="width: auto; margin-right: 5px;"> É +18?
-        </label>
-        <label for="pType" style="display:block; margin: 5px 0 10px;">
-            Tipo: 
-            <select id="pType" style="padding: 8px; background: var(--secondary-bg); border: 1px solid #333; color: var(--text); border-radius: 5px;">
+        <h3 style="color:var(--primary); margin:0 0 10px 0;">Postar Conteúdo</h3>
+        <select id="postTypeSelector" onchange="togglePostForm()">
+            <option value="nova_serie">Nova Série</option>
+            <option value="novo_episodio">Novo Episodio para Série Existente</option>
+        </select>
+
+        <!-- Formulário para Nova Série (visível por padrão ao abrir o modal) -->
+        <div id="formNovaSerie">
+            <input type="text" id="pNomeSerie" placeholder="Nome da Série">
+            <input type="text" id="pCapaSerie" placeholder="Link da Imagem Principal (Capa da Série)">
+            <textarea id="pBiografiaSerie" placeholder="Biografia/Descrição da Série"></textarea>
+            <input type="text" id="pGenerosSerie" placeholder="Gêneros (separados por vírgula, ex: Ação, Aventura)">
+            <label for="pIsAdultSeries" style="display:block; margin: 10px 0 5px;">
+                <input type="checkbox" id="pIsAdultSeries" style="width: auto; margin-right: 5px;"> Conteúdo +18?
+            </label>
+            <button class="btn-post" onclick="criarNovaSerie()">CRIAR SÉRIE</button>
+        </div>
+
+        <!-- Formulário para Adicionar Episodio (oculto inicialmente) -->
+        <div id="formNovoEpisodio" style="display:none;">
+            <label for="selectSerieExistente" style="display:block; margin: 10px 0 5px;">Selecionar Série:</label>
+            <select id="selectSerieExistente"></select> <!-- Popula com séries existentes pelo JS -->
+            <input type="number" id="pEpisodioNumero" placeholder="Numero do Episodio">
+            <input type="text" id="pThumbnailEpisodio" placeholder="Link da Imagem do Episodio (Thumbnail)">
+            <input type="text" id="pPlayerLink" placeholder="Link do Video (Embed do YouTube/Drive, etc.)">
+            <label for="pPlayerType" style="display:block; margin: 10px 0 5px;">Tipo de Player:</label>
+            <select id="pPlayerType">
                 <option value="legendado">Legendado</option>
                 <option value="dublado">Dublado</option>
             </select>
-        </label>
-        <button class="btn-post" onclick="salvarAnime()">PUBLICAR</button>
+            <button class="btn-post" onclick="adicionarEpisodioEPlayer()">ADICIONAR EPISODIO/PLAYER</button>
+        </div>
+        
         <button class="cancel-btn" onclick="document.getElementById('postarModal').style.display='none'">Cancelar</button>
     </div>
 </div>
 
-<!-- Modal de Autenticação (Login/Cadastro) -->
+<!-- MODAL DE AUTENTICAÇÃO (Login/Cadastro) -->
 <div id="authModal" class="modal">
     <div class="modal-card">
         <h3 style="color:var(--primary); margin:0 0 10px 0;">Entrar / Cadastrar</h3>
@@ -309,481 +117,114 @@
     </div>
 </div>
 
-<!-- Menu do Usuário (Sidebar) -->
+<!-- MENU DO USUÁRIO (Sidebar) -->
 <div id="userMenu" class="modal">
     <div class="modal-card">
         <button class="close-btn" onclick="document.getElementById('userMenu').style.display='none'">&times;</button>
         <div id="userInfoDisplay">
-            <!-- Conteúdo do usuário será carregado aqui pelo JavaScript -->
+            <!-- Conteúdo do usuário (foto, email) será carregado aqui pelo JavaScript -->
+            <img id="userPhoto" src="https://via.placeholder.com/60?text=AP" alt="Foto de Perfil">
+            <p id="userEmail">Usuário Não Logado</p>
         </div>
         <hr style="border-color:#333; margin:15px 0;">
+        <p class="menu-item-white" onclick="mostrarAnimes('legendado')">Animes Legendados</p>
+        <p class="menu-item-white" onclick="mostrarAnimes('dublado')">Animes Dublados</p>
+        <p class="menu-item-primary" onclick="mostrarAnimes('salvos')">Animes Salvos (<span id="savedAnimesCount">0</span>)</p>
+        <!-- Nova opção para Gêneros -->
+        <p class="menu-item-white" onclick="abrirModalGeneros()">Gêneros</p>
+        <p class="menu-item-white" onclick="toggleModoNoite()">Modo Noite/Dia</p>
+        <p id="modoAdultoMenuItem" onclick="toggleModoAdulto()" class="menu-item-adult">Modo Adulto (+18)</p>
+        <p class="menu-item-white" onclick="abrirModalUploadFoto()">Atualizar Foto de Perfil</p>
         <button onclick="logoutUsuario()" class="btn-post" style="background:#cc0000;">Sair</button>
     </div>
 </div>
 
-<!-- Modal para o Player de Vídeo -->
-<div id="videoModal" class="modal">
-    <div class="modal-card" id="videoPlayerModal" style="max-width: 900px;">
-        <button class="close-video-btn" onclick="fecharVideoModal()">&times;</button>
-        <h3 class="anime-title" id="videoModalTitle"></h3>
-        <iframe id="videoFrame" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        <button class="btn-post" id="btnSalvarAnime" onclick="toggleSalvarAnime()"></button>
+<!-- MODAL PARA SELEÇÃO DE GÊNEROS -->
+<div id="generosModal" class="modal">
+    <div class="modal-card">
+        <h3 style="color:var(--primary);">Gêneros</h3>
+        <div id="generosList" class="generos-list">
+            <!-- Gêneros serão carregados dinamicamente por JavaScript aqui -->
+        </div>
+        <button class="cancel-btn" onclick="document.getElementById('generosModal').style.display='none'">Fechar</button>
     </div>
 </div>
 
-<!-- Scripts Firebase e Lógica da Aplicação -->
-<script>
-    // 1. CONFIGURAÇÃO DO FIREBASE (SEUS DADOS DE PROJETO)
-    const firebaseConfig = { 
-      apiKey: "AIzaSyBlhgf82RL_uSWChpBwzuUAfi_SHtQY2kw", 
-      authDomain: "animesoracle-a60e9.firebaseapp.com", 
-      projectId: "animesoracle-a60e9", 
-      storageBucket: "animesoracle-a60e9.firebasestorage.app", 
-      messagingSenderId: "751657326717", 
-      appId: "1:751657326717:web:67ef63d01ffa3ad044f914" 
-    };
+<!-- MODAL PARA UPLOAD DE FOTO DE PERFIL -->
+<div id="uploadPhotoModal" class="modal">
+    <div class="modal-card">
+        <h3 style="color:var(--primary);">Atualizar Foto de Perfil</h3>
+        <input type="file" id="photoInput" accept="image/*">
+        <button class="btn-post" onclick="uploadProfilePhoto()">Fazer Upload</button>
+        <button class="cancel-btn" onclick="document.getElementById('uploadPhotoModal').style.display='none'">Cancelar</button>
+    </div>
+</div>
 
-    // 2. INICIALIZAÇÃO DO FIREBASE
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const auth = firebase.auth(); 
-
-    let currentUserData = null; // Para armazenar os dados do usuário logado e seus settings
-    let currentFilter = 'recentes'; // Filtro de animes atual (recentes, legendados, dublados, salvos)
-    let currentPlayingAnime = null; // Armazena o ID do anime atualmente no player
-
-    // Helper para exibir mensagens de erro/sucesso
-    function showMessage(message, type = 'alert') {
-        alert(message); // Por simplicidade, usando alert. Em uma app real, use um modal/toast.
-    }
-
-    // 3. FUNÇÃO SALVAR ANIME (PARA O BOTÃO "+")
-        // 3. FUNÇÃO SALVAR ANIME (PARA O BOTÃO "+")
-    async function salvarAnime() {
-        const nome = document.getElementById('pNome').value;
-        const capa = document.getElementById('pCapa').value;
-        const link = document.getElementById('pLink').value;
-        const isAdult = document.getElementById('pIsAdult').checked;
-        const type = document.getElementById('pType').value;
-
-        if (!auth.currentUser) {
-            showMessage("Você precisa estar logado para postar animes!");
-            return;
-        }
-
-        if (!nome || !capa || !link) {
-            showMessage("Preencha todos os campos (Nome, Capa e Link do Vídeo)!");
-            return; 
-        }
-
-        try {
-            await db.collection("animes").add({
-                nome: nome,
-                capa: capa,
-                link: link,
-                data: firebase.firestore.FieldValue.serverTimestamp(),
-                postedBy: auth.currentUser.uid, 
-                isAdult: isAdult, 
-                type: type
-            });
-            showMessage("Sucesso! Anime postado.");
-            document.getElementById('postarModal').style.display = 'none';
-            document.getElementById('pNome').value = "";
-            document.getElementById('pCapa').value = "";
-            document.getElementById('pLink').value = "";
-            document.getElementById('pIsAdult').checked = false;
-            document.getElementById('pType').value = 'legendado';
-            carregarAnimes(currentFilter); // Recarrega a lista para mostrar o novo anime
-        } catch (e) {
-            console.error("Erro ao salvar:", e); 
-            showMessage("Erro do Firebase: " + e.message + "\n\nVerifique as 'Regras' no Firebase!");
-        }
-    }
-
-
-    // 4. LÓGICA DE AUTENTICAÇÃO (LOGIN/CADASTRO/LOGOUT)
-    async function cadastrarUsuario() {
-        const email = document.getElementById('authEmail').value;
-        const password = document.getElementById('authPassword').value;
-
-        if (!email || !password) {
-            showMessage("Por favor, preencha E-mail e Senha para cadastro.");
-            return;
-        }
-        if (password.length < 6) {
-            showMessage("A senha deve ter pelo menos 6 caracteres.");
-            return;
-        }
-
-        try {
-            const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-            await db.collection("users").doc(userCredential.user.uid).set({
-                email: email,
-                photoURL: 'https://via.placeholder.com/60?text=AP', 
-                animesSalvos: [],
-                modoAdulto: false,
-                theme: 'dark' 
-            });
-            showMessage("Cadastro realizado com sucesso!");
-            document.getElementById('authModal').style.display = 'none';
-        } catch (error) {
-            console.error("Erro ao cadastrar:", error);
-            showMessage("Erro ao cadastrar: " + error.message);
-        }
-    }
-
-    async function loginUsuario() {
-        const email = document.getElementById('authEmail').value;
-        const password = document.getElementById('authPassword').value;
-
-        if (!email || !password) {
-            showMessage("Por favor, preencha E-mail e Senha para entrar.");
-            return;
-        }
-
-        try {
-            await auth.signInWithEmailAndPassword(email, password);
-            showMessage("Login realizado com sucesso!");
-            document.getElementById('authModal').style.display = 'none';
-        } catch (error) {
-            console.error("Erro ao fazer login:", error);
-            showMessage("Erro ao fazer login: " + error.message);
-        }
-    }
-
-    async function logoutUsuario() {
-        try {
-            await auth.signOut();
-            showMessage("Você foi desconectado.");
-            document.getElementById('userMenu').style.display = 'none'; 
-            // Limpa a exibição do usuário
-            document.getElementById('userInfoDisplay').innerHTML = '';
-            currentUserData = null; // Limpa os dados do usuário
-            carregarAnimes('recentes'); // Volta para a exibição padrão de animes
-        } catch (error) {
-            console.error("Erro ao fazer logout:", error);
-            showMessage("Erro ao fazer logout: " + error.message);
-        }
-    }
-
-    // 5. LÓGICA DO MENU DO USUÁRIO E OUTRAS FUNCIONALIDADES
-
-    async function carregarDadosUsuario(uid) {
-        try {
-            const userDoc = await db.collection("users").doc(uid).get();
-            if (userDoc.exists) {
-                currentUserData = userDoc.data();
-                const userInfoDisplay = document.getElementById('userInfoDisplay');
-                userInfoDisplay.innerHTML = ''; // Limpa o conteúdo anterior
-
-                const img = document.createElement('img');
-                img.src = currentUserData.photoURL || 'https://via.placeholder.com/60?text=AP';
-                img.alt = 'Foto de Perfil';
-                userInfoDisplay.appendChild(img);
-
-                const pEmail = document.createElement('p');
-                pEmail.textContent = currentUserData.email;
-                userInfoDisplay.appendChild(pEmail);
-
-                // Opções do menu
-                userInfoDisplay.innerHTML += `
-                    <p onclick="mostrarAnimes('legendado')" class="menu-item-white">Animes Legendados</p>
-                    <p onclick="mostrarAnimes('dublado')" class="menu-item-white">Animes Dublados</p>
-                    <p onclick="mostrarAnimes('salvos')" class="menu-item-primary">Animes Salvos (${currentUserData.animesSalvos ? currentUserData.animesSalvos.length : 0})</p>
-                    <hr style="border-color:#333; margin:15px 0;">
-                    <p onclick="toggleModoNoite()" class="menu-item-white">Modo Noite/Dia</p>
-                    <p id="modoAdultoMenuItem" onclick="toggleModoAdulto()" class="menu-item-adult ${currentUserData.modoAdulto ? 'active' : ''}">Modo Adulto (+18)</p>
-                `;
-                // Aplica o tema imediatamente
-                aplicarTema(currentUserData.theme);
-
-            }
-        } catch (error) {
-            console.error("Erro ao carregar dados do usuário:", error);
-            showMessage("Erro ao carregar dados do usuário: " + error.message);
-        }
-    }
-
-    // Abre o menu do usuário, verificando o status de login
-    async function abrirMenuUsuario() {
-        const user = auth.currentUser;
-        if (user) {
-            await carregarDadosUsuario(user.uid);
-            document.getElementById('userMenu').style.display = 'flex';
-        } else {
-            document.getElementById('authModal').style.display = 'flex';
-        }
-    }
-
-    // Função para alternar o tema (noite/dia)
-    async function toggleModoNoite() {
-        const newTheme = document.body.classList.contains('light-mode') ? 'dark' : 'light';
-        aplicarTema(newTheme);
-
-        if (auth.currentUser && currentUserData) {
-            try {
-                await db.collection("users").doc(auth.currentUser.uid).update({ theme: newTheme });
-                currentUserData.theme = newTheme; // Atualiza o dado local
-            } catch (error) {
-                console.error("Erro ao salvar preferência de tema:", error);
-            }
-        }
-    }
-
-    // Aplica o tema visualmente
-    function aplicarTema(theme) {
-        if (theme === 'light') {
-            document.body.classList.add('light-mode');
-        } else {
-            document.body.classList.remove('light-mode');
-        }
-    }
-
-    // Função para alternar o modo adulto
-    async function toggleModoAdulto() {
-        if (!auth.currentUser || !currentUserData) {
-            showMessage("Você precisa estar logado para alterar as configurações de modo adulto.");
-            return;
-        }
-
-        const newModoAdultoState = !currentUserData.modoAdulto;
-        try {
-            await db.collection("users").doc(auth.currentUser.uid).update({ modoAdulto: newModoAdultoState });
-            currentUserData.modoAdulto = newModoAdultoState; // Atualiza o dado local
-            const modoAdultoMenuItem = document.getElementById('modoAdultoMenuItem');
-            if (modoAdultoMenuItem) {
-                modoAdultoMenuItem.classList.toggle('active', newModoAdultoState);
-                modoAdultoMenuItem.textContent = newModoAdultoState ? "Modo Adulto (+18) Ativo" : "Modo Adulto (+18)";
-            }
-            showMessage(`Modo Adulto: ${newModoAdultoState ? 'Ativado' : 'Desativado'}.`, 'info');
-            carregarAnimes(currentFilter); // Recarrega os animes com a nova configuração
-        } catch (error) {
-            console.error("Erro ao atualizar modo adulto:", error);
-            showMessage("Erro ao atualizar modo adulto: " + error.message);
-        }
-    }
-
-    // Função para exibir animes com base no filtro
-    async function mostrarAnimes(filtro) {
-        currentFilter = filtro;
-        document.getElementById('userMenu').style.display = 'none'; // Fecha o menu
-        carregarAnimes(filtro);
-    }
-
-    // Função para carregar e exibir animes
-    async function carregarAnimes(filtro = 'recentes') {
-        const animeGrid = document.getElementById('animeGrid');
-        animeGrid.innerHTML = '<h2>Carregando Animes...</h2>'; // Mensagem de carregamento
-
-        let query = db.collection("animes");
-
-        if (filtro === 'legendado' || filtro === 'dublado') {
-            query = query.where('type', '==', filtro);
-        } else if (filtro === 'salvos') {
-            if (!auth.currentUser || !currentUserData || !currentUserData.animesSalvos || currentUserData.animesSalvos.length === 0) {
-                animeGrid.innerHTML = '<p>Você não possui animes salvos ou não está logado.</p>';
-                return;
-            }
-            // Para "animes salvos", precisamos buscar cada anime individualmente
-            // ou usar uma query 'where in' se a lista não for muito grande (limite de 10)
-            const savedAnimesPromises = currentUserData.animesSalvos.map(animeId => db.collection("animes").doc(animeId).get());
-            const savedAnimeSnapshots = await Promise.all(savedAnimesPromises);
-            
-            animeGrid.innerHTML = '';
-            savedAnimeSnapshots.forEach(doc => {
-                if (doc.exists) {
-                    const anime = { id: doc.id, ...doc.data() };
-                    // Aplica as mesmas verificações de adulto que o filtro geral
-                    if (anime.isAdult && (!auth.currentUser || !currentUserData.modoAdulto)) {
-                        // Não exibe se for adulto e o modo adulto não estiver ativo
-                        return; 
-                    }
-                    displayAnimeCard(animeGrid, anime);
-                }
-            });
-            if (animeGrid.innerHTML === '') {
-                animeGrid.innerHTML = '<p>Nenhum anime salvo corresponde aos seus critérios de visualização.</p>';
-            }
-            return; // Termina a função aqui para animes salvos
-        }
+<!-- MODAL PARA PLAYER DE VÍDEO E DETALHES DO EPISÓDIO -->
+<div id="videoModal" class="modal">
+    <div class="modal-card video-player-card">
+        <button class="close-video-btn" onclick="fecharVideoModal()">&times;</button>
         
-        // Sempre ordena por data para "recentes" e outros filtros
-        query = query.orderBy("data", "desc");
+        <!-- HEADER DO PLAYER (similar ao header principal, mas dentro do modal) -->
+        <div class="player-header">
+            <button class="icon-btn" id="playerMenuBtn" onclick="abrirMenuUsuario()">☰</button> <!-- Menu usuário -->
+            <div class="player-logo">AnimesOracle</div>
+            <button class="icon-btn" id="playerSearchBtn" onclick="toggleSearchBar()">🔍</button> <!-- Busca -->
+        </div>
 
-        try {
-            const animesSnapshot = await query.get();
-            animeGrid.innerHTML = ''; // Limpa a mensagem de carregamento
+        <!-- CATÁLOGO A-Z NO PLAYER (mantém o mesmo do principal) -->
+        <div id="playerAlphabeticalFilter" class="alphabetical-filter">
+             <!-- As letras serão geradas por JavaScript -->
+        </div>
 
-            if (animesSnapshot.empty) {
-                animeGrid.innerHTML = '<p>Nenhum anime encontrado.</p>';
-                return;
-            }
-
-            animesSnapshot.forEach(doc => {
-                const anime = { id: doc.id, ...doc.data() };
-                // Lógica de filtragem do modo adulto no front-end
-                if (anime.isAdult && (!auth.currentUser || !currentUserData || !currentUserData.modoAdulto)) {
-                    // Não exibe animes adultos se o usuário não estiver logado ou modo adulto desativado
-                    return; 
-                }
-                displayAnimeCard(animeGrid, anime);
-            });
-
-        } catch (error) {
-            console.error("Erro ao carregar animes:", error);
-            animeGrid.innerHTML = '<p>Erro ao carregar animes.</p>';
-            showMessage("Erro ao carregar animes: " + error.message);
-        }
-    }
-
-    // Função para exibir um único card de anime
-    function displayAnimeCard(gridElement, anime) {
-        const card = document.createElement('div');
-        card.className = 'card-recent';
-        card.onclick = () => abrirVideoModal(anime); // Adiciona o evento de clique para abrir o vídeo
-        card.innerHTML = `
-            <img src="${anime.capa}" alt="${anime.nome}">
-            <div class="card-info">${anime.nome}</div>
-        `;
-        gridElement.appendChild(card);
-    }
-
-    // Funções do Modal de Vídeo
-    function abrirVideoModal(anime) {
-        currentPlayingAnime = anime; // Armazena o anime que está sendo reproduzido
-        const videoModal = document.getElementById('videoModal');
-        const videoFrame = document.getElementById('videoFrame');
-        const videoModalTitle = document.getElementById('videoModalTitle');
-        const btnSalvarAnime = document.getElementById('btnSalvarAnime');
-
-        videoModalTitle.textContent = anime.nome;
+        <!-- TÍTULO DO EPISÓDIO -->
+        <h3 class="anime-title" id="videoModalTitle"></h3>
         
-        // Converte o link para formato embed do YouTube/Drive se necessário
-        let embedLink = anime.link;
-        if (anime.link.includes("youtube.com/watch?v=")) {
-            embedLink = anime.link.replace("watch?v=", "embed/");
-        } else if (anime.link.includes("youtu.be/")) {
-            embedLink = anime.link.replace("youtu.be/", "youtube.com/embed/");
-        }
-        // Para Google Drive, link de embed geralmente é algo como:
-        // https://docs.google.com/file/d/VIDEO_ID/preview
-        // Se precisar de mais personalização para outros players, pode adicionar aqui.
+        <!-- CONTAINER DO VÍDEO -->
+        <div class="video-container">
+            <iframe id="videoFrame" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
 
-        videoFrame.src = embedLink + "?autoplay=1"; // Autoplay no vídeo
+        <!-- BOTÕES DE TIPO DE PLAYER (Dublado / Legendado) -->
+        <div class="player-type-selector">
+            <button class="btn-player-type" id="btnPlayerLegendado" onclick="selecionarPlayerTipo('legendado')">Legendado</button>
+            <button class="btn-player-type" id="btnPlayerDublado" onclick="selecionarPlayerTipo('dublado')">Dublado</button>
+        </div>
 
-        // Atualiza o botão Salvar Anime
-        if (auth.currentUser && currentUserData && currentUserData.animesSalvos.includes(anime.id)) {
-            btnSalvarAnime.textContent = "Remover dos Salvos";
-            btnSalvarAnime.classList.add('saved');
-        } else {
-            btnSalvarAnime.textContent = "Salvar Anime";
-            btnSalvarAnime.classList.remove('saved');
-        }
-        videoModal.style.display = 'flex';
-    }
+        <!-- CONTROLES DE NAVEGAÇÃO DE EPISÓDIOS -->
+        <div class="episode-navigation">
+            <button class="nav-btn" onclick="navegarEpisodio(-1)">ᐸ</button> <!-- Episodio Anterior -->
+            <button class="nav-btn menu-episode-btn" onclick="abrirListaEpisodios()">☰</button> <!-- Lista de Episódios -->
+            <button class="nav-btn" onclick="navegarEpisodio(1)">ᐳ</button> <!-- Proximo Episodio -->
+        </div>
 
-    function fecharVideoModal() {
-        const videoModal = document.getElementById('videoModal');
-        const videoFrame = document.getElementById('videoFrame');
-        videoFrame.src = ""; // Para parar o vídeo
-        videoModal.style.display = 'none';
-        currentPlayingAnime = null;
-    }
+        <!-- BOTÕES DE AÇÃO (Salvar, Relatar Erro) -->
+        <div class="player-actions">
+            <button class="btn-post" id="btnSalvarAnime" onclick="toggleSalvarAnime()"></button>
+            <button class="btn-post error-btn" id="btnReportarErro" onclick="reportarErroPlayer()">Reportar Erro</button>
+        </div>
 
-    // Função para salvar/remover anime da lista do usuário
-    async function toggleSalvarAnime() {
-        if (!auth.currentUser || !currentUserData) {
-            showMessage("Você precisa estar logado para salvar animes!");
-            document.getElementById('videoModal').style.display = 'none'; // Fecha o player
-            document.getElementById('authModal').style.display = 'flex'; // Abre o modal de login
-            return;
-        }
+        <!-- LISTA DE PLAYERS DISPONÍVEIS PARA O EPISÓDIO ATUAL -->
+        <div id="episodePlayersList" class="episode-players-list">
+            <!-- Players (Player 1, Player 2 etc.) serão injetados aqui -->
+        </div>
 
-        if (!currentPlayingAnime) {
-            showMessage("Nenhum anime selecionado para salvar/remover.");
-            return;
-        }
+        <!-- SEÇÃO DE COMENTÁRIOS -->
+        <div class="comments-section">
+            <h4>Comentários</h4>
+            <div id="commentInputContainer" class="comment-input-container">
+                <textarea id="commentTextarea" placeholder="Deixe seu comentário..."></textarea>
+                <button class="btn-post" onclick="postarComentario()">Comentar</button>
+            </div>
+            <div id="commentsList">
+                <!-- Comentários serão carregados aqui -->
+            </div>
+        </div>
+    </div>
+</div>
 
-        const animeId = currentPlayingAnime.id;
-        const animesSalvos = currentUserData.animesSalvos || [];
-        const btnSalvarAnime = document.getElementById('btnSalvarAnime');
+<!-- SCRIPTS FIREBASE E LÓGICA DA APLICAÇÃO -->
+<script src="script.js"></script> <!-- Seu arquivo JavaScript externo -->
 
-        try {
-            if (animesSalvos.includes(animeId)) {
-                // Remover
-                const updatedAnimesSalvos = animesSalvos.filter(id => id !== animeId);
-                await db.collection("users").doc(auth.currentUser.uid).update({ animesSalvos: updatedAnimesSalvos });
-                currentUserData.animesSalvos = updatedAnimesSalvos;
-                btnSalvarAnime.textContent = "Salvar Anime";
-                                btnSalvarAnime.classList.remove('saved');
-                showMessage(`"${currentPlayingAnime.nome}" removido dos seus animes salvos.`);
-            } else {
-                // Adicionar
-                const updatedAnimesSalvos = [...animesSalvos, animeId];
-                await db.collection("users").doc(auth.currentUser.uid).update({ animesSalvos: updatedAnimesSalvos });
-                currentUserData.animesSalvos = updatedAnimesSalvos;
-                btnSalvarAnime.textContent = "Remover dos Salvos";
-                btnSalvarAnime.classList.add('saved');
-                showMessage(`"${currentPlayingAnime.nome}" adicionado aos seus animes salvos!`);
-            }
-        } catch (error) {
-            console.error("Erro ao atualizar animes salvos:", error);
-            showMessage("Erro ao salvar/remover anime: " + error.message);
-        }
-    }
-
-    // Monitorar o estado de autenticação para atualizar a UI
-    auth.onAuthStateChanged(user => {
-        if (user) {
-            console.log("Usuário logado:", user.email);
-            // Carrega os dados do usuário e aplica as preferências (tema, modo adulto)
-            carregarDadosUsuario(user.uid).then(() => {
-                carregarAnimes(currentFilter); // Recarrega animes com base nas preferências do usuário
-            });
-        } else {
-            console.log("Usuário deslogado.");
-            currentUserData = null; // Limpa os dados do usuário
-            document.getElementById('userMenu').style.display = 'none'; // Esconde o menu
-            // Se o modo adulto estava ativo, ele será desativado ao deslogar
-            aplicarTema('dark'); // Volta para o tema padrão (escuro)
-            document.getElementById('userInfoDisplay').innerHTML = ''; // Limpa info do usuário
-            carregarAnimes('recentes'); // Mostra animes recentes (sem filtro de usuário)
-        }
-    });
-
-    // Inicia o carregamento de animes quando a página é carregada
-    // Se já estiver logado (sessão persistente), onAuthStateChanged cuidará da primeira carga
-    // Caso contrário, carrega animes recentes como default
-    if (!auth.currentUser) {
-        carregarAnimes('recentes');
-    }
-
-    // Adição do script de anúncios (Google AdSense)
-    // ATENÇÃO: SUBSTITUA 'SUA_ID_DE_ANUNCIO' PELA SUA ID REAL DO GOOGLE ADSENSE
-    /*
-    var adScript = document.createElement('script');
-    adScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
-    adScript.async = true;
-    adScript.setAttribute('data-ad-client', 'SUA_ID_DE_ANUNCIO');
-    document.head.appendChild(adScript);
-
-    // Exemplo de como você poderia inserir um bloco de anúncio no HTML
-    // Você precisaria de um div no seu HTML onde este bloco de anúncio será exibido.
-    // Ex: <div id="ad-banner"></div>
-    // E então no JS:
-    // document.getElementById('ad-banner').innerHTML = `
-    //     <ins class="adsbygoogle"
-    //          style="display:block"
-    //          data-ad-client="SUA_ID_DE_ANUNCIO"
-    //          data-ad-slot="SEU_SLOT_DE_ANUNCIO"
-    //          data-ad-format="auto"
-    //          data-full-width-responsive="true"></ins>
-    // `;
-    // (adsbygoogle = window.adsbygoogle || []).push({});
-    */
-
-</script>
 </body>
 </html>
-
-                
