@@ -165,17 +165,29 @@
             cursor:pointer;
         }
 
-        /* Estilos Específicos para o Menu do Usuário (Sidebar) */
+                /* Estilos Específicos para o Menu do Usuário (Sidebar) */
         #userMenu {
+            display: none; /* Começa totalmente escondido */
             justify-content: flex-start; 
             align-items: stretch; 
             background: rgba(0,0,0,0.7); 
-            transition: all 0.3s ease-in-out;
+            transition: opacity 0.3s ease;
         }
-        #userMenu.hidden {
+        /* Isso faz o card de dentro deslizar */
+        #userMenu.hidden .modal-card {
             transform: translateX(-100%);
-            opacity: 0;
-            pointer-events: none; /* Desabilita cliques quando escondido */
+        }
+        #userMenu .modal-card {
+            transition: transform 0.3s ease-in-out;
+            width: 280px; 
+            max-width: 80%; 
+            height: 100%; 
+            border-radius: 0 15px 15px 0; 
+            padding: 20px;
+            background: var(--card);
+            position: relative;
+        }
+
         }
         #userMenu .modal-card {
             width: 280px; 
