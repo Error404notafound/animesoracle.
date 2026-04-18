@@ -1776,14 +1776,29 @@
         // Carrega a lista de players para o episódio (se houver)
         updatePlayerOptions(episodio.links, playerIndex);
 
-        // Define o link do vídeo
-        let embedLink = episodio.links[playerIndex] ? episodio.links[playerIndex].url : '';
-        if (embedLink.includes("youtube.com/watch?v=")) {
-            embedLink = embedLink.replace("watch?v=", "embed/");
-        } else if (embedLink.includes("youtu.be/")) {
-            embedLink = embedLink.replace("youtu.be/", "youtube.com/embed/");
-        }
-        videoFrame.src = embedLink + "?autoplay=1";
+        // ... dentro da função abrirVideoModal ...
+
+let embedLink = episodio.links[playerIndex] ? episodio.links[playerIndex].url : '';
+
+// Lógica existente para YouTube
+if (embedLink.includes("youtube.com/watch?v=")) {
+    embedLink = embedLink.replace("watch?v=", "embed/");
+} else if (embedLink.includes("youtu.be/")) {
+    embedLink = embedLink.replace("youtu.be/", "youtube.com/embed/");
+}
+
+// NOVA LÓGICA para Google Drive /view para /embed
+if (embedLink.includes("drive.google.com/file/d/") && embedLink.includes("/view")) {
+    const videoIdMatch = embedLink.match(/\/d\/([a-zA-Z0-9_-]+)\/view/);
+    if (videoIdMatch && videoIdMatch[1]) {
+        embedLink = `https://drive.google.com/embed?id=${videoIdMatch[1]}`;
+    }
+}
+
+videoFrame.src = embedLink + "?autoplay=1";
+
+// ... restante da função ...
+
 
         // Atualiza o botão Salvar Anime
         if (auth.currentUser && currentUserData && currentUserData.animesSalvos.includes(serie.id)) {
