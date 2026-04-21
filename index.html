@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AnimesOracle</title>
     
-        <!-- BIBLIOTECAS FIREBASE (VERSÃO ESTÁVEL 8.10.0) -->
+    <!-- BIBLIOTECAS FIREBASE (VERSÃO ESTÁVEL 8.10.0) -->
     <!-- Essencial para o Firebase funcionar -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <!-- Para o banco de dados Firestore -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <!-- Para autenticação de usuários (e-mail/senha) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
     <!-- Adicionar Firebase Storage para foto de perfil -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
-
 
     <style>
         /* Estilos Globais e do Tema */
@@ -44,56 +44,6 @@
             --text: #333333;
             --secondary-bg: #e0e0e0;
         }
-
-                                /* Estilo para quando o player de vídeo estiver "sticky" */
-        body.sticky-player-active {
-            padding-top: 170px; /* Espaço para o player fixo */
-        }
-
-        /* ESTILO PARA O PLAYER DE VÍDEO FIXO */
-        #fixedVideoPlayer {
-            display: none; /* Escondido por padrão */
-            position: fixed;
-            top: 60px; /* Abaixo do header */
-            right: 20px;
-            width: 320px; /* Largura menor para o canto */
-            height: 180px; /* Proporção 16:9 */
-            z-index: 4000; /* Acima de quase tudo, mas abaixo do modal principal */
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid var(--primary);
-            transition: all 0.3s ease-in-out;
-        }
-        #fixedVideoPlayer.visible {
-            display: block;
-        }
-        #fixedVideoPlayer iframe {
-            width: 100%;
-            height: 100%;
-        }
-        #fixedVideoPlayer .close-fixed-player {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: rgba(0,0,0,0.7);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 25px;
-            height: 25px;
-            font-size: 16px;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: background-color 0.2s;
-        }
-        #fixedVideoPlayer .close-fixed-player:hover {
-            background-color: var(--danger);
-        }
-                /* FIM DO ESTILO PARA O PLAYER DE VÍDEO FIXO */
-
 
         /* Utilidades para flexbox */
         .flex-row { display: flex; align-items: center; }
@@ -148,7 +98,7 @@
         .search-container {
             position: relative;
             width: 100%;
-            display: none; /* Alterado para none por padrão */
+            display: flex;
             justify-content: center;
             padding: 10px 0;
             border-bottom: 1px solid #333; /* Linha divisória */
@@ -186,26 +136,18 @@
             padding: 5px;
         }
 
-        /* Catálogo A-Z (Agora deslizante horizontalmente) */
+        /* Catálogo A-Z */
         #azCatalog {
-            display: flex; /* Mudado para flex */
-            flex-wrap: nowrap; /* Impede quebras de linha */
-            overflow-x: auto; /* Adiciona scroll horizontal */
-            -webkit-overflow-scrolling: touch; /* Melhora o scroll em iOS */
-            justify-content: flex-start; /* Alinha o conteúdo ao início */
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             padding: 10px 15px;
             background: var(--bg);
             border-bottom: 1px solid #333;
             z-index: 998;
             gap: 5px; /* Espaçamento entre as letras */
-            scrollbar-width: none; /* Esconde a barra de scroll no Firefox */
-        }
-        /* Esconde a barra de scroll no WebKit (Chrome, Safari) */
-        #azCatalog::-webkit-scrollbar {
-            display: none;
         }
         #azCatalog span {
-            flex-shrink: 0; /* Impede que os itens encolham */
             color: var(--primary); /* Letras roxas */
             font-weight: bold;
             font-size: 1.1em;
@@ -289,20 +231,13 @@
             object-fit: cover; 
             display: block; 
         }
-        /* Estilo para lazy loading */
-        .anime-card img.lazy-load {
-            background-color: var(--secondary-bg); /* Placeholder cinza */
-            min-height: 100px; /* Garante que ocupe espaço antes de carregar */
-            transition: background-color 0.3s ease-in-out;
-        }
-
         .anime-card-info { 
             padding: 8px; 
             font-size: 13px; 
             font-weight: bold; 
             color: var(--text);
         }
-                /* Destaque para "Mais Votados & Assistidos" */
+        /* Destaque para "Mais Votados & Assistidos" */
         .anime-card.highlighted {
             box-shadow: var(--highlight-glow);
             border-color: var(--primary);
@@ -320,7 +255,8 @@
             border-radius: 8px 0 8px 0;
             z-index: 10;
         }
-                        /* Estilos Comuns para Modais (pop-ups) */
+
+                /* Estilos Comuns para Modais (pop-ups) */
         .modal { 
             display: none; 
             position: fixed; 
@@ -389,26 +325,18 @@
             color: var(--text);
         }
 
-                /* Estilos Específicos para o Menu do Usuário (Sidebar) */
+        /* Estilos Específicos para o Menu do Usuário (Sidebar) */
         #userMenu {
-            display: none; /* Adicionado para garantir que esteja escondido por padrão */
-            position: fixed; /* Adicionado para o modal ficar fixo na tela */
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background: rgba(0,0,0,0.7); 
-            z-index: 5000; /* Garante que fique acima de outros elementos */
-            justify-content: flex-start; /* Alinha o card à esquerda */
+            justify-content: flex-start; 
             align-items: stretch; 
-            transition: opacity 0.3s ease-in-out; /* Transição para opacidade */
+            background: rgba(0,0,0,0.7); 
+            transition: all 0.3s ease-in-out;
             opacity: 0;
             pointer-events: none; /* Desabilita cliques quando escondido */
         }
         #userMenu.open { /* Classe para abrir o menu */
             opacity: 1;
             pointer-events: all;
-            display: flex; /* Garante que seja exibido */
         }
         #userMenu .modal-card {
             width: 280px; 
@@ -469,7 +397,7 @@
             color: #4CAF50; /* Verde quando ativo */
         }
         
-                        /* Controles de luminosidade */
+                /* Controles de luminosidade */
         .luminosity-control {
             margin-top: 15px;
             padding: 10px;
@@ -551,7 +479,7 @@
             background-color: #007bff; /* Azul, para indicar que está salvo */
         }
 
-                /* Estilos do Player de Video Personalizado */
+        /* Estilos do Player de Video Personalizado */
         .player-controls {
             display: flex;
             justify-content: center;
@@ -567,8 +495,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            border-radius: 50%; /* Torna os botões circulares */
-            border: 1px solid var(--primary); /* Borda para destaque */
         }
         .player-options {
             display: flex;
@@ -716,7 +642,7 @@
             min-height: 100px;
             resize: vertical;
         }
-                /* Estilos para upload de imagem de perfil */
+        /* Estilos para upload de imagem de perfil */
         .profile-pic-upload-area {
             display: flex;
             flex-direction: column;
@@ -757,72 +683,6 @@
             color: white;
         }
 
-                /* Estilos para o Modal de Compartilhamento */
-        .social-btn {
-            background-color: var(--secondary-bg);
-            border: 1px solid #444;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: transform 0.2s, background-color 0.2s;
-            padding: 0; /* Remover padding padrão do botão */
-        }
-        .social-btn:hover {
-            transform: scale(1.05);
-            background-color: var(--primary-light);
-        }
-        .social-btn svg {
-            width: 28px;
-            height: 28px;
-        }
-
-        /* Estilos para o Modal de Checkout PIX */
-        .pix-qr-container {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .pix-qr-container p {
-            color: #333; /* Cor escura para texto em fundo claro */
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .pix-status-info {
-            padding: 10px;
-            border-radius: 5px;
-            background-color: var(--secondary-bg);
-        }
-        .status-badge {
-            display: inline-block;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-weight: bold;
-            color: white;
-            text-transform: uppercase;
-            font-size: 0.85em;
-        }
-        .status-badge.pending {
-            background-color: #ffc107; /* Amarelo/Laranja para pendente */
-            color: #333;
-        }
-        .status-badge.paid {
-            background-color: #28a745; /* Verde para pago */
-        }
-        .status-badge.failed {
-            background-color: var(--danger); /* Vermelho para falha */
-        }
-                /* Alinhamento dos elementos de copiar PIX */
-        .flex-row.gap-2 {
-            display: flex;
-            align-items: center;
-        }
-
     </style>
 </head>
 <body>
@@ -847,7 +707,7 @@
 </header>
 
 <!-- Barra de Pesquisa (Escondida por padrão) -->
-<div id="searchContainer" class="search-container">
+<div id="searchContainer" class="search-container" style="display: none;">
     <input type="text" id="searchBar" placeholder="Buscar animes..." onfocus="this.classList.add('focused')" onblur="this.classList.remove('focused')" oninput="filterAnimes()">
     <button class="search-close-btn" onclick="closeSearchBar()">×</button>
 </div>
@@ -858,7 +718,7 @@
 </div>
 
 <!-- Menu de Gêneros (Escondido por padrão) -->
-<div id="generosMenu" class="modal">
+<div id="generosMenu" class="modal" style="display: none; align-items: flex-start; justify-content: flex-start;">
     <div class="modal-card" style="width: 280px; max-width: 80%; border-radius: 0 15px 15px 0;">
         <button class="close-btn" onclick="toggleGenerosMenu()">&times;</button>
         <h3 style="color:var(--primary); margin: 0 0 20px 0;">Gêneros</h3>
@@ -890,7 +750,7 @@
         </div>
     </section>
 
-            <!-- Modal para Postar Anime (Nova estrutura para Série) -->
+        <!-- Modal para Postar Anime (Nova estrutura para Série) -->
     <div id="postarModal" class="modal">
         <div class="modal-card">
             <h3 style="color:var(--primary); margin:0 0 10px 0;">Postar Nova Série de Anime</h3>
@@ -925,7 +785,7 @@
                 <input type="text" id="pCapaEpisodio" placeholder="URL da imagem específica do episodio">
             </div>
             <div class="form-group">
-                <label for="pLinkEpisodio">Link do Vídeo (Embed YouTube/Drive/Blogger/etc.):</label>
+                <label for="pLinkEpisodio">Link do Vídeo (Embed YouTube/Drive):</label>
                 <input type="text" id="pLinkEpisodio" placeholder="https://www.youtube.com/embed/...">
             </div>
             <div class="form-group">
@@ -940,7 +800,7 @@
         </div>
     </div>
 
-    <!-- Modal para Adicionar Episódio a Série Existente -->
+    <!-- Modal para Adicionar Episodio a Série Existente -->
     <div id="addEpisodeModal" class="modal">
         <div class="modal-card">
             <h3 style="color:var(--primary); margin:0 0 10px 0;">Adicionar Episódio</h3>
@@ -954,7 +814,7 @@
                 <input type="text" id="addEpCapa" placeholder="URL da imagem específica do episodio">
             </div>
             <div class="form-group">
-                <label for="addEpLink">Link do Vídeo (Embed YouTube/Drive/Blogger/etc.):</label>
+                <label for="addEpLink">Link do Vídeo (Embed YouTube/Drive):</label>
                 <input type="text" id="addEpLink" placeholder="https://www.youtube.com/embed/...">
             </div>
             <div class="form-group">
@@ -993,13 +853,11 @@
                 <label for="luminosityRange">Luminosidade:</label>
                 <input type="range" id="luminosityRange" min="50" max="150" value="100" oninput="ajustarLuminosidade(this.value)">
             </div>
-            <!-- Novo botão para abrir modal de contribuição/pagamento -->
-            <button class="btn-post" onclick="openPaymentOptions()" style="margin-top: 15px; background-color: #f7931a;">Contribuir (Sem Anúncios)</button>
-            <button onclick="logoutUsuario()" class="btn-post" style="background:var(--danger); margin-top: 10px;">Sair</button>
+            <button onclick="logoutUsuario()" class="btn-post" style="background:var(--danger); margin-top: 20px;">Sair</button>
         </div>
     </div>
 
-                <!-- Modal para o Player de Vídeo -->
+    <!-- Modal para o Player de Vídeo -->
     <div id="videoModal" class="modal">
         <div class="modal-card" id="videoPlayerModal">
             <!-- Breadcrumbs -->
@@ -1009,17 +867,12 @@
             <h3 class="anime-title" id="videoModalSerieTitle"></h3>
             <h4 class="episode-title" id="videoModalEpisodeTitle"></h4>
             
-            <!-- Player de Vídeo -->
+                        <!-- Player de Vídeo -->
             <div class="video-wrapper">
                 <iframe id="videoFrame" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
 
-            <!-- Botão de Compartilhar -->
-            <button class="icon-btn" onclick="openShareModal()" style="margin-top: 15px; background: none; border: none; color: var(--primary);">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24px" height="24px"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.52.47 1.2.77 1.96.77 1.1 0 2-.9 2-2s-.9-2-2-2c0 .24.04.47.09.7L7.14 9.17c-.52-.47-1.2-.77-1.96-.77-1.1 0-2 .9-2 2s.9 2 2 2c.76 0 1.44-.3 1.96-.77L15.09 15.3c-.05.23-.09.46-.09.7 0 1.1.9 2 2 2s2-.9 2-2-.9-2-2-2z"/></svg>
-                Compartilhar
-            </button>
-            
+
             <!-- Opções Dublado/Legendado -->
             <div class="player-options">
                 <button id="playerOptionDublado" onclick="switchPlayerType('dublado')">Dublado</button>
@@ -1034,14 +887,12 @@
                 <button class="icon-btn" onclick="openEpisodeListModal()">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
                 </button>
-                <button class="icon-btn" id="nextEpisodeButton" onclick="nextEpisode()">
-                    <!-- Texto e Seta para antecipação do próximo episódio -->
-                    <span id="nextEpisodePreview" style="font-size: 0.7em; margin-right: 5px;">Próximo</span>
+                <button class="icon-btn" onclick="nextEpisode()">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
                 </button>
             </div>
 
-                        <!-- Botões de Ação do Usuário Logado (Salvar, Reportar) -->
+            <!-- Botões de Ação do Usuário Logado (Salvar, Reportar) -->
             <div class="flex-row justify-center gap-4" style="margin-top: 20px;">
                 <button class="btn-post" id="btnSalvarAnime" onclick="toggleSalvarAnime()" style="flex: 1;">Salvar Anime</button>
                 <button class="btn-post" id="btnReportarErro" onclick="reportarErro()" style="flex: 1; background-color: var(--danger);">Reportar Erro</button>
@@ -1075,7 +926,7 @@
         </div>
     </div>
 
-        <!-- Modal para Listar Múltiplos Players (Player 1, Player 2) -->
+    <!-- Modal para Listar Múltiplos Players (Player 1, Player 2) -->
     <div id="multiplePlayersModal" class="modal player-list-modal">
         <div class="modal-card">
             <h3 style="color:var(--primary); margin:0 0 20px 0;">Escolha o Player</h3>
@@ -1096,156 +947,6 @@
             <button class="cancel-btn" onclick="document.getElementById('episodeListModal').style.display='none'">Fechar</button>
         </div>
     </div>
-
-        <!-- Modal de Compartilhamento -->
-    <div id="shareModal" class="modal">
-        <div class="modal-card">
-            <button class="close-btn" onclick="closeShareModal()">&times;</button>
-            <h3 style="color:var(--primary); margin:0 0 20px 0;">Compartilhar</h3>
-            <p id="shareTitle" style="margin-bottom: 15px; color: var(--text);"></p>
-            <div class="flex-row justify-center gap-4" style="margin-bottom: 20px;">
-                <!-- Botões de redes sociais -->
-                <button class="social-btn facebook" onclick="shareOnSocial('facebook')">
-                    <svg viewBox="0 0 24 24" width="24" height="24" fill="#1877F2"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.24 6.22 14.07 6.22c1.32 0 2.45.24 2.78.35v2.5H15c-1.2 0-1.56.72-1.56 1.41V12h3l-.58 3H13v6.79c4.52-.92 8-4.96 8-9.8v-.01z"/></svg>
-                </button>
-                <button class="social-btn twitter" onclick="shareOnSocial('twitter')">
-                    <svg viewBox="0 0 24 24" width="24" height="24" fill="#1DA1F2"><path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.73 1.05C18.23 4.2 16.96 3.5 15.5 3.5c-2.38 0-4.32 1.94-4.32 4.32 0 .34.04.67.11.98C8.36 8.78 5.47 7.23 3.5 4.71c-.37.64-.58 1.39-.58 2.2 0 1.5.77 2.81 1.94 3.59-.7-.02-1.35-.22-1.92-.5V11c0 2.1 1.48 3.84 3.44 4.25-.36.1-.73.15-1.12.15-.27 0-.53-.02-.79-.08.55 1.7 2.14 2.93 4.02 2.97-1.46 1.14-3.3 1.82-5.32 1.82-.35 0-.7-.02-1.05-.06C3.26 20.31 5.37 21 7.6 21c7.22 0 11.17-5.96 11.17-11.17 0-.17-.01-.34-.01-.51.77-.55 1.44-1.24 1.97-2.02z"/></svg>
-                </button>
-                <button class="social-btn whatsapp" onclick="shareOnSocial('whatsapp')">
-                    <svg viewBox="0 0 24 24" width="24" height="24" fill="#25D366"><path d="M12.04 2C7.34 2 3.53 5.81 3.53 10.5c0 1.4.38 2.83 1.03 4.09L3 21l6.73-1.78c1.1-.37 2.27-.56 3.3-.56h.04c4.72 0 8.53-3.81 8.53-8.5S16.76 2 12.04 2zM17.16 16.5c-.2.27-.47.4-.73.4-.27 0-.53-.13-.73-.27L14.73 15.3c-.2-.13-.47-.2-.73-.2-.27 0-.53.07-.73.2l-1.07 1.07c-.13.13-.27.2-.47.2-.2 0-.33-.07-.47-.2-1.6-1.67-2.6-3.13-3.46-4.93-.07-.2-.07-.33 0-.47l.8-.87c.2-.2.2-.47.13-.6l-.33-.73c-.07-.2-.13-.27-.2-.27-.07 0-.2.07-.33.13l-.53.27c-.2.13-.33.27-.4.4-.67 1.47-.33 2.87.67 4.07l.87.87c.2.2.2.4.27.47.07.07.13.13.2.13.07 0 .2-.07.27-.13l.87-.87c.2-.2.4-.2.6-.13l1.8.87c.2.07.4.2.47.27.07.07.13.13.13.2z"/></svg>
-                </button>
-                <button class="social-btn telegram" onclick="shareOnSocial('telegram')">
-                    <svg viewBox="0 0 24 24" width="24" height="24" fill="#0088CC"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.3 8.3L9.6 14.7c-.5.3-1.2.1-1.4-.4-.2-.5.1-1.2.6-1.4l5.3-3.2c.5-.3 1.1-.1 1.4.4.2.5-.1 1.2-.6 1.4zm-4.4 2.8l-1.6 1.6s0 0 0 0h-.01l-.25-.25c-.26-.26-.67-.26-.92 0-.25.26-.25.68 0 .93l.9.9c.2.2.4.3.7.3.3 0 .5-.1.7-.3l2.4-2.4c.26-.26.26-.68 0-.93s-.67-.26-.92 0z"/></svg>
-                </button>
-                <button class="social-btn blogger" onclick="shareOnSocial('blogger')">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="#FF5722"><path d="M19.98 10.15c-.02-.04-.04-.08-.06-.11l-3.21-3.22c-.2-.2-.46-.3-.74-.3-.28 0-.54.1-.74.3l-3.21 3.22c-.02.04-.04-.08-.06-.11-.02.04-.04.08-.06.11l-.01.01c-.13.21-.19.46-.19.71 0 .26.06.51.19.71l3.21 3.22c.2.2.46.3.74.3.28 0 .54-.1.74-.3l3.21-3.22c.02-.04.04-.08.06-.11.13-.21.19-.46.19-.71 0-.26-.06-.51-.19-.71zM12 1.5c-5.52 0-10 4.48-10 10s4.48 10 10 10 10-4.48 10-10-4.48-10-10-10zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
-                </button>
-            </div>
-            <div style="margin-bottom: 20px;">
-                <input type="text" id="shareLinkInput" value="" readonly style="width: calc(100% - 70px); display: inline-block; vertical-align: middle;">
-                <button class="btn-post" onclick="copyShareLink()" style="width: 60px; display: inline-block; vertical-align: middle; margin-left: 10px;">Copiar</button>
-            </div>
-        </div>
-    </div>
-
-        <!-- Modal de Opções de Pagamento/Contribuição -->
-    <div id="paymentOptionsModal" class="modal">
-        <div class="modal-card">
-            <h3 style="color:var(--primary); margin:0 0 20px 0;">Contribuir e Remover Anúncios</h3>
-            <p style="color:var(--text); margin-bottom: 15px;">Apoie o AnimesOracle e navegue sem anúncios por um período!</p>
-            <div id="paymentPlansList" class="flex-col gap-2">
-                <!-- Planos de pagamento serão carregados aqui -->
-                <button class="btn-post" onclick="openPixCheckoutModal('plan-1month', 7.90)">1 Mês (R$ 7,90)</button>
-                <button class="btn-post" onclick="openPixCheckoutModal('plan-3months', 19.90)">3 Meses (R$ 19,90) - Mais Popular!</button>
-                <button class="btn-post" onclick="openPixCheckoutModal('plan-6months', 34.90)">6 Meses (R$ 34,90)</button>
-            </div>
-            <button class="cancel-btn" onclick="document.getElementById('paymentOptionsModal').style.display='none'">Cancelar</button>
-        </div>
-    </div>
-
-                <!-- Modal para Checkout de Pagamento PIX -->
-    <div id="pixCheckoutModal" class="modal">
-        <div class="modal-card">
-            <button class="close-btn" onclick="closePixCheckoutModal()">&times;</button>
-            <h3 style="color:var(--primary); margin:0 0 20px 0;">Finalizar Pagamento via PIX</h3>
-
-            <div class="pix-qr-container">
-                <p>Escaneie o QR Code para pagar:</p>
-                <img id="qrCodeImage" src="https://via.placeholder.com/200?text=Gerando+QR..." alt="QR Code PIX" style="width:200px; height:200px; margin: 15px auto; display: block; border: 1px solid #333;">
-            </div>
-
-            <p style="text-align: center; margin-top: 20px;">Ou utilize o código "Copia e Cola":</p>
-            <div class="flex-row gap-2" style="margin-top: 10px;">
-                <input type="text" id="pixCopiaColaInput" value="Gerando código..." readonly style="flex-grow: 1;">
-                <button class="btn-post" onclick="copyPixCode()" style="width: 100px; flex-shrink: 0;">Copiar</button>
-            </div>
-
-            <div class="pix-status-info" style="margin-top: 20px; text-align: center;">
-                <span id="paymentStatusBadge" class="status-badge pending">Aguardando pagamento</span>
-                <p id="paymentStatusMessage" style="font-size: 0.9em; color: #aaa; margin-top: 10px;">Seu pagamento será verificado automaticamente.</p>
-            </div>
-            
-            <button class="btn-post" id="verifyPaymentButton" onclick="checkPaymentStatusManual()" style="margin-top: 20px; background-color: #007bff;">Verificar agora</button>
-            <button class="cancel-btn" onclick="closePixCheckoutModal()" style="margin-top: 15px;">Cancelar Pagamento</button>
-        </div>
-    </div>
-
-
-                    <!-- Modal de Compartilhamento -->
-    <div id="shareModal" class="modal">
-        <div class="modal-card">
-            <button class="close-btn" onclick="closeShareModal()">&times;</button>
-            <h3 style="color:var(--primary); margin:0 0 20px 0;">Compartilhar</h3>
-            <p id="shareTitle" style="margin-bottom: 15px; color: var(--text);"></p>
-            <div class="flex-row justify-center gap-4" style="margin-bottom: 20px;">
-                <!-- Botões de redes sociais -->
-                <button class="social-btn facebook" onclick="shareOnSocial('facebook')">
-                    <svg viewBox="0 0 24 24" width="24" height="24" fill="#1877F2"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.24 6.22 14.07 6.22c1.32 0 2.45.24 2.78.35v2.5H15c-1.2 0-1.56.72-1.56 1.41V12h3l-.58 3H13v6.79c4.52-.92 8-4.96 8-9.8v-.01z"/></svg>
-                </button>
-                <button class="social-btn twitter" onclick="shareOnSocial('twitter')">
-                    <svg viewBox="0 0 24 24" width="24" height="24" fill="#1DA1F2"><path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.73 1.05C18.23 4.2 16.96 3.5 15.5 3.5c-2.38 0-4.32 1.94-4.32 4.32 0 .34.04.67.11.98C8.36 8.78 5.47 7.23 3.5 4.71c-.37.64-.58 1.39-.58 2.2 0 1.5.77 2.81 1.94 3.59-.7-.02-1.35-.22-1.92-.5V11c0 2.1 1.48 3.84 3.44 4.25-.36.1-.73.15-1.12.15-.27 0-.53-.02-.79-.08.55 1.7 2.14 2.93 4.02 2.97-1.46 1.14-3.3 1.82-5.32 1.82-.35 0-.7-.02-1.05-.06C3.26 20.31 5.37 21 7.6 21c7.22 0 11.17-5.96 11.17-11.17 0-.17-.01-.34-.01-.51.77-.55 1.44-1.24 1.97-2.02z"/></svg>
-                </button>
-                <button class="social-btn whatsapp" onclick="shareOnSocial('whatsapp')">
-                    <svg viewBox="0 0 24 24" width="24" height="24" fill="#25D366"><path d="M12.04 2C7.34 2 3.53 5.81 3.53 10.5c0 1.4.38 2.83 1.03 4.09L3 21l6.73-1.78c1.1-.37 2.27-.56 3.3-.56h.04c4.72 0 8.53-3.81 8.53-8.5S16.76 2 12.04 2zM17.16 16.5c-.2.27-.47.4-.73.4-.27 0-.53-.13-.73-.27L14.73 15.3c-.2-.13-.47-.2-.73-.2-.27 0-.53.07-.73.2l-1.07 1.07c-.13.13-.27.2-.47.2-.2 0-.33-.07-.47-.2-1.6-1.67-2.6-3.13-3.46-4.93-.07-.2-.07-.33 0-.47l.8-.87c.2-.2.2-.47.13-.6l-.33-.73c-.07-.2-.13-.27-.2-.27-.07 0-.2.07-.33.13l-.53.27c-.2.13-.33.27-.4.4-.67 1.47-.33 2.87.67 4.07l.87.87c.2.2.2.4.27.47.07.07.13.13.2.13.07 0 .2-.07.27-.13l.87-.87c.2-.2.4-.2.6-.13l1.8.87c.2.07.4.2.47.27.07.07.13.13.13.2z"/></svg>
-                </button>
-                <button class="social-btn telegram" onclick="shareOnSocial('telegram')">
-                    <svg viewBox="0 0 24 24" width="24" height="24" fill="#0088CC"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.3 8.3L9.6 14.7c-.5.3-1.2.1-1.4-.4-.2-.5.1-1.2.6-1.4l5.3-3.2c.5-.3 1.1-.1 1.4.4.2.5-.1 1.2-.6 1.4zm-4.4 2.8l-1.6 1.6s0 0 0 0h-.01l-.25-.25c-.26-.26-.67-.26-.92 0-.25.26-.25.68 0 .93l.9.9c.2.2.4.3.7.3.3 0 .5-.1.7-.3l2.4-2.4c.26-.26.26-.68 0-.93s-.67-.26-.92 0z"/></svg>
-                </button>
-                <button class="social-btn blogger" onclick="shareOnSocial('blogger')">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="#FF5722"><path d="M19.98 10.15c-.02-.04-.04-.08-.06-.11l-3.21-3.22c-.2-.2-.46-.3-.74-.3-.28 0-.54.1-.74.3l-3.21 3.22c-.02.04-.04-.08-.06-.11-.02.04-.04.08-.06.11l-.01.01c-.13.21-.19.46-.19.71 0 .26.06.51.19.71l3.21 3.22c.2.2.46.3.74.3.28 0 .54-.1.74-.3l3.21-3.22c.02-.04.04-.08.06-.11.13-.21.19-.46.19-.71 0-.26-.06-.51-.19-.71zM12 1.5c-5.52 0-10 4.48-10 10s4.48 10 10 10 10-4.48 10-10-4.48-10-10-10zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
-                </button>
-            </div>
-            <div style="margin-bottom: 20px;">
-                <input type="text" id="shareLinkInput" value="" readonly style="width: calc(100% - 70px); display: inline-block; vertical-align: middle;">
-                <button class="btn-post" onclick="copyShareLink()" style="width: 60px; display: inline-block; vertical-align: middle; margin-left: 10px;">Copiar</button>
-            </div>
-        </div>
-    </div>
-
-
-                        <!-- Modal de Opções de Pagamento/Contribuição -->
-    <div id="paymentOptionsModal" class="modal">
-        <div class="modal-card">
-            <h3 style="color:var(--primary); margin:0 0 20px 0;">Contribuir e Remover Anúncios</h3>
-            <p style="color:var(--text); margin-bottom: 15px;">Apoie o AnimesOracle e navegue sem anúncios por um período!</p>
-            <div id="paymentPlansList" class="flex-col gap-2">
-                <!-- Planos de pagamento serão carregados aqui -->
-                <button class="btn-post" onclick="openPixCheckoutModal('plan-1month', 7.90)">1 Mês (R$ 7,90)</button>
-                <button class="btn-post" onclick="openPixCheckoutModal('plan-3months', 19.90)">3 Meses (R$ 19,90) - Mais Popular!</button>
-                <button class="btn-post" onclick="openPixCheckoutModal('plan-6months', 34.90)">6 Meses (R$ 34,90)</button>
-            </div>
-            <button class="cancel-btn" onclick="document.getElementById('paymentOptionsModal').style.display='none'">Cancelar</button>
-        </div>
-    </div>
-
-
-                                                <!-- Modal para Checkout de Pagamento PIX -->
-    <div id="pixCheckoutModal" class="modal">
-        <div class="modal-card">
-            <button class="close-btn" onclick="closePixCheckoutModal()">&times;</button>
-            <h3 style="color:var(--primary); margin:0 0 20px 0;">Finalizar Pagamento via PIX</h3>
-
-            <div class="pix-qr-container">
-                <p>Escaneie o QR Code para pagar:</p>
-                <img id="qrCodeImage" src="https://via.placeholder.com/200?text=Gerando+QR..." alt="QR Code PIX" style="width:200px; height:200px; margin: 15px auto; display: block; border: 1px solid #333;">
-            </div>
-
-            <p style="text-align: center; margin-top: 20px;">Ou utilize o código "Copia e Cola":</p>
-            <div class="flex-row gap-2" style="margin-top: 10px;">
-                <input type="text" id="pixCopiaColaInput" value="Gerando código..." readonly style="flex-grow: 1;">
-                <button class="btn-post" onclick="copyPixCode()" style="width: 100px; flex-shrink: 0;">Copiar</button>
-            </div>
-
-            <div class="pix-status-info" style="margin-top: 20px; text-align: center;">
-                <span id="paymentStatusBadge" class="status-badge pending">Aguardando pagamento</span>
-                <p id="paymentStatusMessage" style="font-size: 0.9em; color: #aaa; margin-top: 10px;">Seu pagamento será verificado automaticamente.</p>
-            </div>
-            
-            <button class="btn-post" id="verifyPaymentButton" onclick="checkPaymentStatusManual()" style="margin-top: 20px; background-color: #007bff;">Verificar agora</button>
-            <button class="cancel-btn" onclick="closePixCheckoutModal()" style="margin-top: 15px;">Cancelar Pagamento</button>
-        </div>
-    </div>
-
 
 </main>
 
@@ -1273,9 +974,6 @@
     let currentPlayingEpisode = null; // Armazena o ID do episódio atualmente no player
     let currentPlayingPlayerIndex = 0; // Index do player atual (se houver múltiplos)
 
-    let currentTransactionId = null; // Para rastrear a transação PIX atual
-    let paymentPollingInterval = null; // Para o polling do status de pagamento
-
     const allGeneros = [
         "Ação", "Aventura", "Comédia", "Drama", "Fantasia", "Ficção Científica", "Horror", "Mistério", "Romance", "Slice of Life",
         "Esporte", "Música", "Mecha", "Guerra", "Histórico", "Samurai", "Superpoderes", "Magia", "Vampiros", "Demônios",
@@ -1293,31 +991,6 @@
         // Ajusta o brilho do body (ou de um container principal)
         // 100% é normal, 50% mais escuro, 150% mais claro
         body.style.filter = `brightness(${value}%)`;
-    }
-
-    // Função para setup do Lazy Loading
-    function setupLazyLoading() {
-        const lazyImages = document.querySelectorAll('.lazy-load');
-        if ('IntersectionObserver' in window) {
-            let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
-                entries.forEach(function(entry) {
-                    if (entry.isIntersecting) {
-                        let lazyImage = entry.target;
-                        lazyImage.src = lazyImage.dataset.src;
-                        lazyImage.classList.remove('lazy-load');
-                        lazyImageObserver.unobserve(lazyImage);
-                    }
-                });
-            });
-            lazyImages.forEach(function(lazyImage) {
-                lazyImageObserver.observe(lazyImage);
-            });
-        } else {
-            // Fallback para navegadores antigos (carrega todas as imagens imediatamente)
-            lazyImages.forEach(function(image) {
-                image.src = image.dataset.src;
-            });
-        }
     }
 
     // Funções para a barra de pesquisa
@@ -1349,7 +1022,7 @@
         }
     }
 
-        // Função para filtrar animes (será chamada ao digitar na barra de pesquisa)
+    // Função para filtrar animes (será chamada ao digitar na barra de pesquisa)
     async function filterAnimes() {
         const searchTerm = document.getElementById('searchBar').value.toLowerCase();
         if (searchTerm.length > 0) {
@@ -1360,7 +1033,7 @@
             recentGrid.innerHTML = '<h2>Buscando Animes...</h2>';
 
             try {
-                                // Busca por séries que contenham o termo de pesquisa no nome ou biografia
+                // Busca por séries que contenham o termo de pesquisa no nome ou biografia
                 const seriesSnapshot = await db.collection("series")
                                                 .where('nomeLowerCase', '>=', searchTerm)
                                                 .where('nomeLowerCase', '<=', searchTerm + '\uf8ff')
@@ -1381,7 +1054,6 @@
                     }
                     displaySerieCard(recentGrid, serie);
                 });
-                setupLazyLoading(); // Chamar setupLazyLoading após adicionar novos cards
 
             } catch (error) {
                 console.error("Erro ao buscar animes:", error);
@@ -1401,7 +1073,7 @@
         azCatalogDiv.innerHTML = ''; // Limpa antes de gerar
         const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         
-                // Adiciona um item para números e símbolos se desejar
+        // Adiciona um item para números e símbolos se desejar
         // azCatalogDiv.innerHTML += `<span onclick="filterByLetter('#')">#</span>`; 
 
         for (let i = 0; i < alphabet.length; i++) {
@@ -1441,7 +1113,6 @@
                 }
                 displaySerieCard(recentGrid, serie);
             });
-            setupLazyLoading(); // Chamar setupLazyLoading após adicionar novos cards
 
         } catch (error) {
             console.error("Erro ao filtrar animes por letra:", error);
@@ -1450,8 +1121,7 @@
         }
     }
 
-
-        // Função para alternar o menu de gêneros
+    // Função para alternar o menu de gêneros
     let generosMenuOpen = false;
     function toggleGenerosMenu() {
         const generosMenu = document.getElementById('generosMenu');
@@ -1488,7 +1158,7 @@
         recentGrid.innerHTML = `<h2>Animes do gênero: '${genero}'...</h2>`;
 
         try {
-                        // Busca séries onde o array de gêneros contém o gênero selecionado
+            // Busca séries onde o array de gêneros contém o gênero selecionado
             const seriesSnapshot = await db.collection("series")
                                             .where('generos', 'array-contains', genero)
                                             .get();
@@ -1507,7 +1177,6 @@
                 }
                 displaySerieCard(recentGrid, serie);
             });
-            setupLazyLoading(); // Chamar setupLazyLoading após adicionar novos cards
 
         } catch (error) {
             console.error("Erro ao filtrar animes por gênero:", error);
@@ -1516,8 +1185,7 @@
         }
     }
 
-
-        // Função para abrir o modal de postar anime (nova série)
+    // Função para abrir o modal de postar anime (nova série)
     function openPostAnimeModal() {
         if (!auth.currentUser) {
             showMessage("Você precisa estar logado para postar animes!");
@@ -1598,7 +1266,7 @@
         }
     }
 
-        // Função para abrir o modal de adicionar episódio
+    // Função para abrir o modal de adicionar episódio
     function openAddEpisodeModal(serieId, serieTitle) {
         if (!auth.currentUser) {
             showMessage("Você precisa estar logado para adicionar episódios!");
@@ -1644,8 +1312,6 @@
                 // Assumindo que isAdult é herdado da série por padrão ou precisa ser definido
                 // isAdult: (await db.collection("series").doc(serieId).get()).data().isAdult, 
             });
-            // ... (o restante da função será na próxima parte)
-
 
             showMessage(`Episódio ${proximoNumero} adicionado à série com sucesso!`);
             document.getElementById('addEpisodeModal').style.display = 'none';
@@ -1666,7 +1332,7 @@
         }
     }
 
-                                // 4. LÓGICA DE AUTENTICAÇÃO (LOGIN/CADASTRO/LOGOUT)
+        // 4. LÓGICA DE AUTENTICAÇÃO (LOGIN/CADASTRO/LOGOUT)
     async function cadastrarUsuario() {
         const email = document.getElementById('authEmail').value;
         const password = document.getElementById('authPassword').value;
@@ -1688,9 +1354,7 @@
                 animesSalvos: [],
                 modoAdulto: false,
                 theme: 'dark',
-                luminosidade: 100, // Padrão
-                hasPaidMembership: false, // Novo campo para controle de membros
-                membershipExpires: null // Data de expiração
+                luminosidade: 100 // Padrão
             });
             showMessage("Cadastro realizado com sucesso!");
             document.getElementById('authModal').style.display = 'none';
@@ -1729,7 +1393,7 @@
             currentUserData = null; // Limpa os dados do usuário
             // Se o modo adulto estava ativo, ele será desativado ao deslogar
             aplicarTema('dark'); // Volta para o tema padrão (escuro)
-            document.getElementById('luminosidadeRange').value = 100; // Reseta luminosidade
+            document.getElementById('luminosityRange').value = 100; // Reseta luminosidade
             ajustarLuminosidade(100); // Aplica luminosidade padrão
             carregarAnimes('recentes'); // Mostra animes recentes (sem filtro de usuário)
         } catch (error) {
@@ -1738,7 +1402,7 @@
         }
     }
 
-        // 5. LÓGICA DO MENU DO USUÁRIO E OUTRAS FUNCIONALIDADES
+    // 5. LÓGICA DO MENU DO USUÁRIO E OUTRAS FUNCIONALIDADES
 
     async function carregarDadosUsuario(uid) {
         try {
@@ -1764,31 +1428,20 @@
                 pEmail.textContent = currentUserData.email;
                 userInfoDisplay.appendChild(pEmail);
 
-                // Adiciona status de membro
-                const membershipStatus = document.createElement('p');
-                if (currentUserData.hasPaidMembership && currentUserData.membershipExpires && currentUserData.membershipExpires.toDate() > new Date()) {
-                    const expiresDate = currentUserData.membershipExpires.toDate().toLocaleDateString('pt-BR');
-                    membershipStatus.innerHTML = `<span style="color: #4CAF50; font-weight: bold;">Membro Premium</span><br><small>Expira em: ${expiresDate}</small>`;
-                } else {
-                    membershipStatus.innerHTML = `<span style="color: #f7931a; font-weight: bold;">Membro Grátis</span><br><small>Com anúncios</small>`;
-                }
-                userInfoDisplay.appendChild(membershipStatus);
-
-
                 // Opções do menu
                 userInfoDisplay.innerHTML += `
-                    <p onclick="filterAnimesByStatus('assistidos')" class="menu-item-white">Animes Assistidos</p>
+                    <p onclick="filterAnimes('assistidos')" class="menu-item-white">Animes Assistidos</p>
                     <p onclick="filterAnimesByStatus('legendado')" class="menu-item-white">Animes Legendados</p>
                     <p onclick="filterAnimesByStatus('dublado')" class="menu-item-white">Animes Dublados</p>
-                    <p onclick="filterAnimesByStatus('salvos')" class="menu-item-primary">Minha Lista (${currentUserData.animesSalvos ? currentUserData.animesSalvos.length : 0})</p>
+                    <p onclick="filterAnimes('salvos')" class="menu-item-primary">Minha Lista (${currentUserData.animesSalvos ? currentUserData.animesSalvos.length : 0})</p>
                     <hr style="border-color:#333; margin:15px 0;">
                     <p onclick="toggleModoNoite()" class="menu-item-white">Modo Noite/Dia</p>
                     <p id="modoAdultoMenuItem" onclick="toggleModoAdulto()" class="menu-item-adult ${currentUserData.modoAdulto ? 'active' : ''}">${currentUserData.modoAdulto ? "Modo Adulto (+18) Ativo" : "Modo Adulto (+18)"}</p>
                 `;
 
-                                                                // Aplica o tema e luminosidade imediatamente
+                // Aplica o tema e luminosidade imediatamente
                 aplicarTema(currentUserData.theme);
-                document.getElementById('luminosidadeRange').value = currentUserData.luminosidade || 100;
+                document.getElementById('luminosityRange').value = currentUserData.luminosidade || 100;
                 ajustarLuminosidade(currentUserData.luminosidade || 100);
 
             }
@@ -1894,7 +1547,7 @@
         }
     }
 
-        // Função para exibir animes com base no filtro (agora para séries)
+    // Função para exibir animes com base no filtro (agora para séries)
     async function filterAnimesByStatus(filtro) { // 'legendado', 'dublado', 'assistidos', 'salvos'
         currentFilter = filtro;
         document.getElementById('userMenu').classList.remove('open'); // Fecha o menu
@@ -1924,7 +1577,7 @@
                 recentGrid.innerHTML = '<p>Você não possui animes salvos ou não está logado.</p>';
                 return;
             }
-                                                // Para "animes salvos", precisamos buscar cada série individualmente
+            // Para "animes salvos", precisamos buscar cada série individualmente
             const savedSeriesPromises = currentUserData.animesSalvos.map(serieId => db.collection("series").doc(serieId).get());
             const savedSeriesSnapshots = await Promise.all(savedSeriesPromises);
             
@@ -1942,7 +1595,6 @@
             if (recentGrid.innerHTML === '') {
                 recentGrid.innerHTML = '<p>Nenhum anime salvo corresponde aos seus critérios de visualização.</p>';
             }
-            setupLazyLoading(); // Chamar setupLazyLoading após adicionar novos cards
             return; // Termina a função aqui para animes salvos
         } else if (filtro === 'assistidos') {
             recentGrid.innerHTML = '<p>Funcionalidade de "animes assistidos" será implementada em breve. Exibindo todos os recentes por enquanto.</p>';
@@ -1966,8 +1618,6 @@
                 }
                 displaySerieCard(recentGrid, serie);
             });
-            setupLazyLoading(); // Chamar setupLazyLoading após adicionar novos cards
-
 
         } catch (error) {
             console.error("Erro ao carregar séries:", error);
@@ -1976,7 +1626,7 @@
         }
     }
 
-    // Função principal para carregar e exibir animes (agora séries)
+        // Função principal para carregar e exibir animes (agora séries)
     async function carregarAnimes(tipo = 'recentes') { // 'recentes', 'mais_votados'
         const highlightedAnimesGrid = document.getElementById('highlightedAnimesGrid');
         const recentAnimesGrid = document.getElementById('recentAnimesGrid');
@@ -2002,8 +1652,6 @@
             if (highlightedAnimesGrid.innerHTML === '') {
                 highlightedAnimesGrid.innerHTML = '<p>Nenhum anime destacado encontrado.</p>';
             }
-            setupLazyLoading(); // Chamar setupLazyLoading após adicionar novos cards
-
 
         } catch (error) {
             console.error("Erro ao carregar animes destacados:", error);
@@ -2030,8 +1678,6 @@
                 }
                 displaySerieCard(recentAnimesGrid, serie);
             });
-            setupLazyLoading(); // Chamar setupLazyLoading após adicionar novos cards
-
 
         } catch (error) {
             console.error("Erro ao carregar animes recentes:", error);
@@ -2049,7 +1695,7 @@
         }
         card.onclick = () => openSeriePage(serie.id); // Abre a página da série/primeiro episódio
         card.innerHTML = `
-            <img class="lazy-load" data-src="${serie.capa}" alt="${serie.nome}">
+            <img src="${serie.capa}" alt="${serie.nome}">
             <div class="anime-card-info">${serie.nome}</div>
             ${serie.mediaAvaliacao > 0 ? `<div class="rating-badge">${serie.mediaAvaliacao.toFixed(1)} ⭐</div>` : ''}
         `;
@@ -2089,7 +1735,7 @@
 
             const firstEpisodeData = { id: firstEpisodeSnapshot.docs[0].id, ...firstEpisodeSnapshot.docs[0].data() };
             
-                        // Abre o modal de vídeo com o primeiro episódio
+            // Abre o modal de vídeo com o primeiro episódio
             abrirVideoModal(serieData, firstEpisodeData);
 
         } catch (error) {
@@ -2118,8 +1764,6 @@
         const commentForm = document.getElementById('commentForm');
         const commentLoginPrompt = document.getElementById('commentLoginPrompt');
         const playerBreadcrumbs = document.getElementById('playerBreadcrumbs');
-        const nextEpisodeButton = document.getElementById('nextEpisodeButton'); // Botão "Próximo"
-        const nextEpisodePreview = document.getElementById('nextEpisodePreview'); // Span para o preview
 
         // Breadcrumbs
         playerBreadcrumbs.innerHTML = `AnimesOracle » <a href="#" onclick="openSeriePage('${serie.id}')">${serie.nome}</a> » Episodio ${episodio.numero}`;
@@ -2133,71 +1777,29 @@
         // Carrega a lista de players para o episódio (se houver)
         updatePlayerOptions(episodio.links, playerIndex);
 
-        let embedLink = episodio.links[playerIndex] ? episodio.links[playerIndex].url : '';
+        // ... dentro da função abrirVideoModal ...
 
-        // Lógica existente para YouTube
-        if (embedLink.includes("youtube.com/watch?v=")) {
-            embedLink = embedLink.replace("watch?v=", "embed/");
-        } else if (embedLink.includes("youtu.be/")) {
-            embedLink = embedLink.replace("youtu.be/", "youtube.com/embed/");
-        }
+let embedLink = episodio.links[playerIndex] ? episodio.links[playerIndex].url : '';
 
-        // NOVA LÓGICA para Google Drive /view para /embed
-        if (embedLink.includes("drive.google.com/file/d/") && embedLink.includes("/view")) {
-            const videoIdMatch = embedLink.match(/\/d\/([a-zA-Z0-9_-]+)\/view/);
-            if (videoIdMatch && videoIdMatch[1]) {
-                embedLink = `https://drive.google.com/embed?id=${videoIdMatch[1]}`;
-            }
-        }
+// Lógica existente para YouTube
+if (embedLink.includes("youtube.com/watch?v=")) {
+    embedLink = embedLink.replace("watch?v=", "embed/");
+} else if (embedLink.includes("youtu.be/")) {
+    embedLink = embedLink.replace("youtu.be/", "youtube.com/embed/");
+}
 
-        // NOVA LÓGICA para embeds do Blogger
-        if (embedLink.includes("blogger.com/video-play.mp4") || embedLink.includes("docs.google.com/file/d/") && embedLink.includes("preview")) {
-            // Links do Blogger/Drive com "preview" podem ser usados diretamente
-            // Ou o formato específico do Blogger.
-            // Apenas para garantir, o embedLink já deve estar no formato correto.
-        }
-        // OK.ru
-        else if (embedLink.includes("ok.ru/videoembed/")) {
-            // Assume que o link já é o embed
-        }
-        // Mail.ru
-        else if (embedLink.includes("my.mail.ru/video/embed/")) {
-            // Assume que o link já é o embed
-        }
-        // Rutube
-        else if (embedLink.includes("rutube.ru/play/embed/")) {
-            // Assume que o link já é o embed
-        }
-        // Sibnet
-        else if (embedLink.includes("sibnet.ru/shell.php?id=")) {
-            // Assume que o link já é o embed
-        }
-        // StreamWish / VidHide / Voe.sx
-        else if (embedLink.includes("streamwish.com/e/") || embedLink.includes("vidhide.com/e/") || embedLink.includes("voe.sx/e/")) {
-             // Assume que o link já é o embed
-        }
+// NOVA LÓGICA para Google Drive /view para /embed
+if (embedLink.includes("drive.google.com/file/d/") && embedLink.includes("/view")) {
+    const videoIdMatch = embedLink.match(/\/d\/([a-zA-Z0-9_-]+)\/view/);
+    if (videoIdMatch && videoIdMatch[1]) {
+        embedLink = `https://drive.google.com/embed?id=${videoIdMatch[1]}`;
+    }
+}
 
+videoFrame.src = embedLink + "?autoplay=1";
 
-        videoFrame.src = embedLink + "?autoplay=1";
+// ... restante da função ...
 
-                                // Atualiza o botão "Próximo" com o preview do próximo episódio
-        try {
-            const nextEpSnapshot = await db.collection("series").doc(serie.id).collection("episodios")
-                                        .where("numero", ">", episodio.numero)
-                                        .orderBy("numero", "asc")
-                                        .limit(1)
-                                        .get();
-            if (!nextEpSnapshot.empty) {
-                const proximoEp = nextEpSnapshot.docs[0].data();
-                // Assumindo que você tem um <span> com id="nextEpisodePreview" dentro do botão "Próximo"
-                document.getElementById('nextEpisodePreview').textContent = `Próximo: ${proximoEp.nome}`;
-            } else {
-                document.getElementById('nextEpisodePreview').textContent = `Último Ep.`; // Ou desabilita o botão
-            }
-        } catch (error) {
-            console.error("Erro ao carregar preview do próximo episódio:", error);
-            document.getElementById('nextEpisodePreview').textContent = `Próximo`;
-        }
 
         // Atualiza o botão Salvar Anime
         if (auth.currentUser && currentUserData && currentUserData.animesSalvos.includes(serie.id)) {
@@ -2221,31 +1823,13 @@
             commentLoginPrompt.style.display = 'block';
         }
 
+        // Carrega a lista de episódios da série
+        // loadSerieDetailsAndEpisodes(serie.id);
+
         // Carrega os comentários para o episódio
         loadComments(serie.id, episodio.id);
 
         videoModal.style.display = 'flex';
-        // Chamar setupLazyLoading novamente caso haja imagens dinâmicas no modal de vídeo
-        setupLazyLoading(); 
-
-                        // Adiciona um IntersectionObserver para o player ficar fixo
-        const videoWrapper = document.querySelector('#videoModal .video-wrapper');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (window.innerWidth >= 768) { // Apenas para telas maiores que mobile
-                    if (!entry.isIntersecting && entry.boundingClientRect.top < 0) {
-                        // Se não está visível e já passou da tela para cima
-                        fixarVideoPlayer(embedLink + "?autoplay=1");
-                    } else {
-                        // Se está visível novamente
-                        desfixarVideoPlayer();
-                    }
-                }
-            });
-        }, { threshold: 0 }); // Observa quando 0% do elemento está visível
-
-        observer.observe(videoWrapper);
-
     }
 
     function fecharVideoModal() {
@@ -2255,48 +1839,7 @@
         videoModal.style.display = 'none';
         currentPlayingSerie = null;
         currentPlayingEpisode = null;
-        // Resetar o texto do botão "Próximo" para o padrão
-        document.getElementById('nextEpisodePreview').textContent = `Próximo`;
-        desfixarVideoPlayer(); // Garante que o player fixo seja removido
-
     }
-
-            // NOVA FUNÇÃO: Fixar player de vídeo no canto
-    let fixedPlayerIframe = document.createElement('iframe');
-    fixedPlayerIframe.frameBorder = "0";
-    fixedPlayerIframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-    fixedPlayerIframe.allowFullscreen = true;
-    let fixedPlayerContainer = document.createElement('div');
-    fixedPlayerContainer.id = 'fixedVideoPlayer';
-    fixedPlayerContainer.appendChild(fixedPlayerIframe);
-    let closeFixedPlayerBtn = document.createElement('button');
-    closeFixedPlayerBtn.className = 'close-fixed-player';
-    closeFixedPlayerBtn.textContent = 'X';
-    closeFixedPlayerBtn.onclick = () => {
-        desfixarVideoPlayer();
-        fecharVideoModal(); // Também fecha o modal principal
-    };
-    fixedPlayerContainer.appendChild(closeFixedPlayerBtn);
-    document.body.appendChild(fixedPlayerContainer);
-
-
-    function fixarVideoPlayer(videoSrc) {
-        const videoModal = document.getElementById('videoModal');
-        // Se o modal principal está aberto e o fixed player não está visível
-        if (videoModal.style.display === 'flex') {
-            fixedPlayerIframe.src = videoSrc;
-            fixedPlayerContainer.classList.add('visible');
-            document.body.classList.add('sticky-player-active'); // Adiciona padding ao body
-        }
-    }
-
-    function desfixarVideoPlayer() {
-        fixedPlayerContainer.classList.remove('visible');
-        fixedPlayerIframe.src = ""; // Para o vídeo no player fixo
-        document.body.classList.remove('sticky-player-active'); // Remove padding do body
-    }
-
-
 
     // Função para atualizar as opções de player (Dublado/Legendado)
     function updatePlayerOptions(links, currentPlayerIndex) {
@@ -2332,7 +1875,7 @@
         }
     }
 
-        // Função para navegar para o episódio anterior
+    // Função para navegar para o episódio anterior
     async function previousEpisode() {
         if (!currentPlayingSerie || !currentPlayingEpisode) return;
 
@@ -2408,7 +1951,7 @@
             `;
             episodeListContent.appendChild(serieDetailsDiv);
 
-                                                // Adiciona a opção de postar novo episódio (para usuários logados)
+                        // Adiciona a opção de postar novo episódio (para usuários logados)
             if (auth.currentUser) {
                 const addEpisodeBtn = document.createElement('button');
                 addEpisodeBtn.textContent = 'Adicionar Novo Episodio';
@@ -2436,7 +1979,6 @@
             });
 
             episodeListModal.style.display = 'flex';
-            setupLazyLoading(); // Chamar setupLazyLoading caso haja imagens na lista de episódios
 
         } catch (error) {
             console.error("Erro ao carregar lista de episódios:", error);
@@ -2446,7 +1988,7 @@
     }
 
 
-            // Função para salvar/remover anime da lista do usuário
+    // Função para salvar/remover anime da lista do usuário
     async function toggleSalvarAnime() {
         if (!auth.currentUser || !currentUserData) {
             showMessage("Você precisa estar logado para salvar animes!");
@@ -2470,7 +2012,7 @@
                 const updatedAnimesSalvos = animesSalvos.filter(id => id !== serieId);
                 await db.collection("users").doc(auth.currentUser.uid).update({ animesSalvos: updatedAnimesSalvos });
                 currentUserData.animesSalvos = updatedAnimesSalvos;
-                btnSalvarAnime.textContent = "Remover da Lista";
+                btnSalvarAnime.textContent = "Adicionar à Lista";
                 btnSalvarAnime.classList.remove('saved');
                 showMessage(`"${currentPlayingSerie.nome}" removido dos seus animes salvos.`);
             } else {
@@ -2594,268 +2136,6 @@
         commentInput.focus();
     }
 
-        // Funções do Modal de Compartilhamento
-    let currentShareUrl = '';
-    let currentShareTitle = '';
-
-    function openShareModal() {
-        if (!currentPlayingSerie || !currentPlayingEpisode) {
-            showMessage("Selecione um episódio para compartilhar.");
-            return;
-        }
-        currentShareUrl = window.location.href; // Ou gere um link específico para o episódio se tiver rotas dinâmicas
-        currentShareTitle = `Assista "${currentPlayingEpisode.nome}" de "${currentPlayingSerie.nome}" no AnimesOracle!`;
-        document.getElementById('shareTitle').textContent = currentShareTitle;
-        document.getElementById('shareLinkInput').value = currentShareUrl;
-        document.getElementById('shareModal').style.display = 'flex';
-    }
-
-    function closeShareModal() {
-        document.getElementById('shareModal').style.display = 'none';
-    }
-
-    function copyShareLink() {
-        const shareLinkInput = document.getElementById('shareLinkInput');
-        shareLinkInput.select();
-        shareLinkInput.setSelectionRange(0, 99999); // Para mobile
-        document.execCommand('copy');
-        showMessage("Link copiado para a área de transferência!");
-    }
-
-    function shareOnSocial(platform) {
-        let shareUrl = currentShareUrl;
-        let shareText = currentShareTitle;
-        let finalUrl = '';
-
-        switch (platform) {
-            case 'facebook':
-                finalUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
-                break;
-            case 'twitter':
-                finalUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
-                break;
-            case 'whatsapp':
-                finalUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + " " + shareUrl)}`;
-                break;
-            case 'telegram':
-                finalUrl = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`;
-                break;
-            case 'blogger':
-                // Para Blogger, o ideal é abrir uma nova postagem com o embed/link
-                // Isso é mais complexo pois depende de como o Blogger aceita "pré-preencher" posts.
-                // Uma abordagem simples é apenas compartilhar o link da página.
-                // Outra seria gerar um embed code e pedir para o usuário colar.
-                // Por simplicidade, vamos para o link direto.
-                finalUrl = `https://www.blogger.com/blog-this.g?u=${encodeURIComponent(shareUrl)}&n=${encodeURIComponent(shareText)}`;
-                break;
-            default:
-                showMessage("Plataforma de compartilhamento desconhecida.");
-                return;
-        }
-        window.open(finalUrl, '_blank');
-    }
-
-    // Funções do Modal de Pagamento/Contribuição
-    function openPaymentOptions() {
-        document.getElementById('paymentOptionsModal').style.display = 'flex';
-        document.getElementById('userMenu').classList.remove('open'); // Fecha o menu do usuário
-        document.getElementById('userMenu').style.display = 'none';
-    }
-
-    // Funções do Modal de Checkout PIX
-    let currentTransactionId = null; // Para rastrear a transação PIX atual
-    let paymentPollingInterval = null; // Para o polling do status de pagamento
-
-    // Função para abrir o modal de checkout PIX
-    async function openPixCheckoutModal(planId, amount) {
-        if (!auth.currentUser) {
-            showMessage("Você precisa estar logado para fazer uma contribuição.");
-            document.getElementById('authModal').style.display = 'flex';
-            return;
-        }
-
-        document.getElementById('paymentOptionsModal').style.display = 'none'; // Fecha o modal de planos
-        document.getElementById('pixCheckoutModal').style.display = 'flex';
-        // Resetar o estado do modal
-        document.getElementById('qrCodeImage').src = 'https://via.placeholder.com/200?text=Gerando+QR...';
-        document.getElementById('pixCopiaColaInput').value = 'Gerando código...';
-        document.getElementById('paymentStatusBadge').className = 'status-badge pending';
-        document.getElementById('paymentStatusBadge').textContent = 'Aguardando pagamento';
-        document.getElementById('paymentStatusMessage').textContent = 'Seu pagamento será verificado automaticamente.';
-        document.getElementById('verifyPaymentButton').style.display = 'block'; // Mostra o botão de verificar manualmente
-
-                // Iniciar a geração do pagamento PIX (CHAMADA À CLOUD FUNCTION)
-        await generatePixPayment(planId, amount);
-    }
-
-    // Função para fechar o modal de checkout PIX
-    function closePixCheckoutModal() {
-        document.getElementById('pixCheckoutModal').style.display = 'none';
-        // Limpar o intervalo de polling, se estiver ativo
-        if (paymentPollingInterval) {
-            clearInterval(paymentPollingInterval);
-            paymentPollingInterval = null;
-        }
-        currentTransactionId = null;
-    }
-
-        // SIMULADO: Função para gerar o pagamento PIX (chama uma Cloud Function real)
-    async function generatePixPayment(planId, amount) {
-        try {
-            // **INTEGRAÇÃO COM CLOUD FUNCTIONS**
-            // Esta é uma chamada HTTP para sua Cloud Function.
-            // Exemplo: const response = await fetch('https://YOUR_CLOUD_FUNCTION_URL/createPixPayment', {
-            //     method: 'POST',
-            //     headers: { 'Content-Type': 'application/json' },
-            //     body: JSON.stringify({ userId: auth.currentUser.uid, planId, amount })
-            // });
-            // const data = await response.json();
-
-            // SIMULAÇÃO de resposta da Cloud Function (substitua com a chamada real)
-            // Crie um ID de transação aleatório para a simulação
-            const simulatedTransactionId = `TX${Date.now()}${Math.floor(Math.random() * 1000)}`;
-
-            const simulatedData = {
-                // QR Code gerado por um serviço online genérico (para fins de exemplo)
-                // Em um ambiente real, seria gerado pelo gateway de pagamento.
-                qrCodeUrl: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=00020126580014BR.GOV.BCB.PIX0136${simulatedTransactionId}520400005303986540${amount.toFixed(2).replace('.', '')}5802BR5913ANONIMIZADO6008BRASILIA62070503***6304899A`, // Exemplo de QR Code para PIX
-                pixCopiaCola: `00020126580014BR.GOV.BCB.PIX0136${simulatedTransactionId}520400005303986540${amount.toFixed(2).replace('.', '')}5802BR5913ANONIMIZADO6008BRASILIA62070503***6304899A`,
-                transactionId: simulatedTransactionId, // ID da transação gerado no backend
-                // Outros dados como o nome da empresa, etc.
-            };
-            const data = simulatedData;
-
-            if (data && data.qrCodeUrl && data.pixCopiaCola && data.transactionId) {
-                document.getElementById('qrCodeImage').src = data.qrCodeUrl;
-                document.getElementById('pixCopiaColaInput').value = data.pixCopiaCola;
-                currentTransactionId = data.transactionId;
-
-                                // Salvar a transação pendente no Firestore (para simulação de backend)
-                await db.collection("transactions").doc(currentTransactionId).set({
-                    userId: auth.currentUser.uid,
-                    planId: planId,
-                    amount: amount,
-                    status: 'pending',
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    // Em um ambiente real, você também guardaria o QR Code/Copia e Cola aqui,
-                    // mas como estamos simulando, o status é o mais importante.
-                });
-
-
-                // Iniciar polling para verificar o status do pagamento a cada X segundos
-                // Use onSnapshot para realtime updates, que é mais eficiente que polling para Firestore
-                db.collection("transactions").doc(currentTransactionId)
-                    .onSnapshot((doc) => {
-                        if (doc.exists) {
-                            const transactionData = doc.data();
-                            updatePaymentStatusUI(transactionData.status);
-
-                            if (transactionData.status === 'paid' || transactionData.status === 'failed' || transactionData.status === 'expired') {
-                                // Parar de escutar mudanças no documento
-                                // Como onSnapshot retorna uma função de "unsubscribe", você pode chamá-la aqui
-                                // (Para este exemplo simples, não estamos guardando a função de unsubscribe,
-                                // mas em uma aplicação real, você faria isso para gerenciar as subscriptions)
-                                
-                                // Opcional: Fechar modal após alguns segundos ou redirecionar
-                                setTimeout(() => {
-                                    closePixCheckoutModal();
-                                    if (transactionData.status === 'paid') {
-                                        showMessage("Pagamento confirmado! Sua assinatura foi ativada.");
-                                        // Recarregar dados do usuário para refletir a nova assinatura
-                                        if (auth.currentUser) carregarDadosUsuario(auth.currentUser.uid);
-                                    } else if (transactionData.status === 'failed') {
-                                        showMessage("Pagamento falhou ou expirou.");
-                                    } else if (transactionData.status === 'expired') {
-                                        showMessage("O prazo para pagamento expirou.");
-                                    }
-                                }, 3000);
-                            }
-                        }
-                    });
-
-                // Remover o polling tradicional, pois estamos usando onSnapshot
-                // clearInterval(paymentPollingInterval); 
-                // paymentPollingInterval = null;
-
-            } else {
-                showMessage("Erro ao gerar PIX: dados incompletos.");
-                closePixCheckoutModal();
-            }
-
-        } catch (error) {
-            console.error("Erro ao gerar pagamento PIX:", error);
-            showMessage("Erro ao gerar pagamento PIX: " + error.message);
-            closePixCheckoutModal();
-        }
-    }
-
-    // Função para copiar o código PIX
-    function copyPixCode() {
-        const pixInput = document.getElementById('pixCopiaColaInput');
-        pixInput.select();
-        pixInput.setSelectionRange(0, 99999); // Para mobile
-        document.execCommand('copy');
-        showMessage("Código PIX copiado para a área de transferência!");
-    }
-
-    // Função para verificar o status do pagamento manualmente (para o botão "Verificar agora")
-    // Em uma aplicação real, esta função poderia chamar uma Cloud Function para consultar o gateway de pagamento.
-    // Como estamos usando onSnapshot, este botão pode simplesmente forçar uma atualização do status do documento
-    // no Firestore, se o gateway de pagamento for atualizá-lo via Webhook.
-    async function checkPaymentStatusManual() {
-        if (!currentTransactionId) {
-            showMessage("Nenhuma transação ativa para verificar.");
-            return;
-        }
-        showMessage("Verificando status...");
-        // Apenas para simulação: se o status ainda for 'pending',
-        // podemos "simular" que o backend o atualizou para 'paid' após um tempo.
-        // Em um ambiente real, essa verificação manual seria mais complexa.
-        const transactionRef = db.collection("transactions").doc(currentTransactionId);
-        const transactionDoc = await transactionRef.get();
-        if (transactionDoc.exists && transactionDoc.data().status === 'pending') {
-            // Esta parte seria um Webhook ou uma lógica de backend real.
-            // Aqui, estamos simulando que a verificação manual "forçou" a atualização.
-            // Para testar, você pode comentar esta linha e ir no Firestore para mudar manualmente o status para 'paid'.
-            // await transactionRef.update({ status: 'paid', paidAt: firebase.firestore.FieldValue.serverTimestamp() });
-        }
-    }
-
-    // Atualiza a UI do modal com base no status do pagamento
-    function updatePaymentStatusUI(status) {
-        const badge = document.getElementById('paymentStatusBadge');
-        const message = document.getElementById('paymentStatusMessage');
-        const verifyButton = document.getElementById('verifyPaymentButton');
-
-        badge.className = `status-badge ${status}`;
-        verifyButton.style.display = 'block'; // Por padrão, sempre visível a não ser que o pagamento seja finalizado
-
-        switch (status) {
-            case 'pending':
-                badge.textContent = 'Aguardando pagamento';
-                message.textContent = 'Estamos aguardando a confirmação do seu pagamento. Isso pode levar alguns minutos.';
-                break;
-            case 'paid':
-                badge.textContent = 'Pago';
-                message.textContent = 'Seu pagamento foi confirmado com sucesso! Obrigado pela sua contribuição.';
-                verifyButton.style.display = 'none'; // Esconde o botão se já pagou
-                break;
-            case 'failed':
-                badge.textContent = 'Falhou';
-                message.textContent = 'Não foi possível confirmar o pagamento. Por favor, tente novamente.';
-                verifyButton.style.display = 'none'; // Esconde o botão se falhou
-                break;
-            case 'expired':
-                badge.textContent = 'Expirado';
-                message.textContent = 'O prazo para pagamento expirou. Por favor, gere um novo PIX.';
-                verifyButton.style.display = 'none'; // Esconde o botão se expirou
-                break;
-            default:
-                badge.textContent = 'Desconhecido';
-                message.textContent = 'Status de pagamento desconhecido.';
-        }
-    }
-
     // Monitorar o estado de autenticação para atualizar a UI
     auth.onAuthStateChanged(user => {
         if (user) {
@@ -2873,7 +2153,7 @@
             document.getElementById('userMenu').classList.remove('open'); // Esconde o menu
             document.getElementById('userMenu').style.display = 'none';
             aplicarTema('dark'); // Volta para o tema padrão (escuro)
-            document.getElementById('luminosidadeRange').value = 100; // Reseta luminosidade
+            document.getElementById('luminosityRange').value = 100; // Reseta luminosidade
             ajustarLuminosidade(100); // Aplica luminosidade padrão
             document.getElementById('userInfoDisplay').innerHTML = ''; // Limpa info do usuário
             carregarAnimes('recentes'); // Mostra animes recentes (sem filtro de usuário)
@@ -2883,7 +2163,7 @@
         }
     });
 
-            // Inicia o carregamento de animes e catálogo A-Z quando a página é carregada
+    // Inicia o carregamento de animes e catálogo A-Z quando a página é carregada
     document.addEventListener('DOMContentLoaded', () => {
         generateAZCatalog();
         // Se já estiver logado (sessão persistente), onAuthStateChanged cuidará da primeira carga
@@ -2894,7 +2174,6 @@
         // Aplica o tema padrão no carregamento inicial (será sobrescrito se houver preferência do usuário)
         aplicarTema('dark');
         ajustarLuminosidade(100);
-        setupLazyLoading(); // Inicializa o observador para as imagens iniciais
     });
 
     // Adição do script de anúncios (Google AdSense)
@@ -2924,15 +2203,6 @@
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
 
 
 
