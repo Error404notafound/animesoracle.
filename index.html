@@ -45,6 +45,55 @@
             --secondary-bg: #e0e0e0;
         }
 
+                /* Estilo para quando o player de vídeo estiver "sticky" */
+        body.sticky-player-active {
+            padding-top: 170px; /* Espaço para o player fixo */
+        }
+
+        /* ESTILO PARA O PLAYER DE VÍDEO FIXO */
+        #fixedVideoPlayer {
+            display: none; /* Escondido por padrão */
+            position: fixed;
+            top: 60px; /* Abaixo do header */
+            right: 20px;
+            width: 320px; /* Largura menor para o canto */
+            height: 180px; /* Proporção 16:9 */
+            z-index: 4000; /* Acima de quase tudo, mas abaixo do modal principal */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--primary);
+            transition: all 0.3s ease-in-out;
+        }
+        #fixedVideoPlayer.visible {
+            display: block;
+        }
+        #fixedVideoPlayer iframe {
+            width: 100%;
+            height: 100%;
+        }
+        #fixedVideoPlayer .close-fixed-player {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+        #fixedVideoPlayer .close-fixed-player:hover {
+            background-color: var(--danger);
+        }
+                /* FIM DO ESTILO PARA O PLAYER DE VÍDEO FIXO */
+
         /* Utilidades para flexbox */
         .flex-row { display: flex; align-items: center; }
         .flex-col { display: flex; flex-direction: column; }
@@ -270,7 +319,7 @@
             border-radius: 8px 0 8px 0;
             z-index: 10;
         }
-                /* Estilos Comuns para Modais (pop-ups) */
+                        /* Estilos Comuns para Modais (pop-ups) */
         .modal { 
             display: none; 
             position: fixed; 
@@ -411,7 +460,7 @@
             color: #4CAF50; /* Verde quando ativo */
         }
         
-                /* Controles de luminosidade */
+                        /* Controles de luminosidade */
         .luminosity-control {
             margin-top: 15px;
             padding: 10px;
@@ -658,7 +707,7 @@
             min-height: 100px;
             resize: vertical;
         }
-        /* Estilos para upload de imagem de perfil */
+                /* Estilos para upload de imagem de perfil */
         .profile-pic-upload-area {
             display: flex;
             flex-direction: column;
@@ -941,7 +990,7 @@
         </div>
     </div>
 
-    <!-- Modal para o Player de Vídeo -->
+        <!-- Modal para o Player de Vídeo -->
     <div id="videoModal" class="modal">
         <div class="modal-card" id="videoPlayerModal">
             <!-- Breadcrumbs -->
@@ -951,14 +1000,14 @@
             <h3 class="anime-title" id="videoModalSerieTitle"></h3>
             <h4 class="episode-title" id="videoModalEpisodeTitle"></h4>
             
-                        <!-- Player de Vídeo -->
+            <!-- Player de Vídeo -->
             <div class="video-wrapper">
                 <iframe id="videoFrame" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
 
             <!-- Botão de Compartilhar -->
             <button class="icon-btn" onclick="openShareModal()" style="margin-top: 15px; background: none; border: none; color: var(--primary);">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24px" height="24px"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.52.47 1.2.77 1.96.77 1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2c0 .24.04.47.09.7L7.14 9.17c-.52-.47-1.2-.77-1.96-.77-1.1 0-2 .9-2 2s.9 2 2 2c.76 0 1.44-.3 1.96-.77L15.09 15.3c-.05.23-.09.46-.09.7 0 1.1.9 2 2 2s2-.9 2-2-.9-2-2-2z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24px" height="24px"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.52.47 1.2.77 1.96.77 1.1 0 2-.9 2-2s-.9-2-2-2c0 .24.04.47.09.7L7.14 9.17c-.52-.47-1.2-.77-1.96-.77-1.1 0-2 .9-2 2s.9 2 2 2c.76 0 1.44-.3 1.96-.77L15.09 15.3c-.05.23-.09.46-.09.7 0 1.1.9 2 2 2s2-.9 2-2-.9-2-2-2z"/></svg>
                 Compartilhar
             </button>
             
@@ -1039,7 +1088,7 @@
         </div>
     </div>
 
-    <!-- Modal de Compartilhamento -->
+        <!-- Modal de Compartilhamento -->
     <div id="shareModal" class="modal">
         <div class="modal-card">
             <button class="close-btn" onclick="closeShareModal()">&times;</button>
@@ -1060,7 +1109,7 @@
                     <svg viewBox="0 0 24 24" width="24" height="24" fill="#0088CC"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.3 8.3L9.6 14.7c-.5.3-1.2.1-1.4-.4-.2-.5.1-1.2.6-1.4l5.3-3.2c.5-.3 1.1-.1 1.4.4.2.5-.1 1.2-.6 1.4zm-4.4 2.8l-1.6 1.6s0 0 0 0h-.01l-.25-.25c-.26-.26-.67-.26-.92 0-.25.26-.25.68 0 .93l.9.9c.2.2.4.3.7.3.3 0 .5-.1.7-.3l2.4-2.4c.26-.26.26-.68 0-.93s-.67-.26-.92 0z"/></svg>
                 </button>
                 <button class="social-btn blogger" onclick="shareOnSocial('blogger')">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="#FF5722"><path d="M19.98 10.15c-.02-.04-.04-.08-.06-.11l-3.21-3.22c-.2-.2-.46-.3-.74-.3-.28 0-.54.1-.74.3l-3.21 3.22c-.02.04-.04.08-.06.11-.02.04-.04.08-.06.11l-.01.01c-.13.21-.19.46-.19.71 0 .26.06.51.19.71l3.21 3.22c.2.2.46.3.74.3.28 0 .54-.1.74-.3l3.21-3.22c.02-.04.04-.08.06-.11.13-.21.19-.46.19-.71 0-.26-.06-.51-.19-.71zM12 1.5c-5.52 0-10 4.48-10 10s4.48 10 10 10 10-4.48 10-10-4.48-10-10-10zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="#FF5722"><path d="M19.98 10.15c-.02-.04-.04-.08-.06-.11l-3.21-3.22c-.2-.2-.46-.3-.74-.3-.28 0-.54.1-.74.3l-3.21 3.22c-.02.04-.04-.08-.06-.11-.02.04-.04.08-.06.11l-.01.01c-.13.21-.19.46-.19.71 0 .26.06.51.19.71l3.21 3.22c.2.2.46.3.74.3.28 0 .54-.1.74-.3l3.21-3.22c.02-.04.04-.08.06-.11.13-.21.19-.46.19-.71 0-.26-.06-.51-.19-.71zM12 1.5c-5.52 0-10 4.48-10 10s4.48 10 10 10 10-4.48 10-10-4.48-10-10-10zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
                 </button>
             </div>
             <div style="margin-bottom: 20px;">
@@ -1085,7 +1134,7 @@
         </div>
     </div>
 
-        <!-- Modal para Checkout de Pagamento PIX -->
+                <!-- Modal para Checkout de Pagamento PIX -->
     <div id="pixCheckoutModal" class="modal">
         <div class="modal-card">
             <button class="close-btn" onclick="closePixCheckoutModal()">&times;</button>
@@ -1152,7 +1201,7 @@
         alert(message); // Por simplicidade, usando alert. Em uma app real, use um modal/toast.
     }
 
-        // Função para ajustar a luminosidade do site
+                // Função para ajustar a luminosidade do site
     function ajustarLuminosidade(value) {
         const body = document.body;
         // Ajusta o brilho do body (ou de um container principal)
@@ -1278,7 +1327,7 @@
         }
     }
 
-    // Função para filtrar animes por letra inicial
+        // Função para filtrar animes por letra inicial
     async function filterByLetter(letter) {
         currentFilter = 'letter';
         const highlightedGrid = document.getElementById('highlightedAnimesGrid');
@@ -1430,7 +1479,7 @@
                 visualizacoes: 0,
             });
 
-            // Adiciona o primeiro episódio como uma subcoleção da série
+                        // Adiciona o primeiro episódio como uma subcoleção da série
             await newSerieRef.collection("episodios").add({
                 numero: 1, // Assumindo que este é o primeiro episódio
                 nome: nomeEpisodio,
@@ -1527,7 +1576,7 @@
         }
     }
 
-                // 4. LÓGICA DE AUTENTICAÇÃO (LOGIN/CADASTRO/LOGOUT)
+                                // 4. LÓGICA DE AUTENTICAÇÃO (LOGIN/CADASTRO/LOGOUT)
     async function cadastrarUsuario() {
         const email = document.getElementById('authEmail').value;
         const password = document.getElementById('authPassword').value;
@@ -1590,7 +1639,7 @@
             currentUserData = null; // Limpa os dados do usuário
             // Se o modo adulto estava ativo, ele será desativado ao deslogar
             aplicarTema('dark'); // Volta para o tema padrão (escuro)
-            document.getElementById('luminosityRange').value = 100; // Reseta luminosidade
+            document.getElementById('luminosidadeRange').value = 100; // Reseta luminosidade
             ajustarLuminosidade(100); // Aplica luminosidade padrão
             carregarAnimes('recentes'); // Mostra animes recentes (sem filtro de usuário)
         } catch (error) {
@@ -1647,9 +1696,9 @@
                     <p id="modoAdultoMenuItem" onclick="toggleModoAdulto()" class="menu-item-adult ${currentUserData.modoAdulto ? 'active' : ''}">${currentUserData.modoAdulto ? "Modo Adulto (+18) Ativo" : "Modo Adulto (+18)"}</p>
                 `;
 
-                // Aplica o tema e luminosidade imediatamente
+                                // Aplica o tema e luminosidade imediatamente
                 aplicarTema(currentUserData.theme);
-                document.getElementById('luminosityRange').value = currentUserData.luminosidade || 100;
+                document.getElementById('luminosidadeRange').value = currentUserData.luminosidade || 100;
                 ajustarLuminosidade(currentUserData.luminosidade || 100);
 
             }
@@ -1755,7 +1804,7 @@
         }
     }
 
-    // Função para exibir animes com base no filtro (agora para séries)
+        // Função para exibir animes com base no filtro (agora para séries)
     async function filterAnimesByStatus(filtro) { // 'legendado', 'dublado', 'assistidos', 'salvos'
         currentFilter = filtro;
         document.getElementById('userMenu').classList.remove('open'); // Fecha o menu
@@ -1950,7 +1999,7 @@
 
             const firstEpisodeData = { id: firstEpisodeSnapshot.docs[0].id, ...firstEpisodeSnapshot.docs[0].data() };
             
-            // Abre o modal de vídeo com o primeiro episódio
+                        // Abre o modal de vídeo com o primeiro episódio
             abrirVideoModal(serieData, firstEpisodeData);
 
         } catch (error) {
@@ -2012,25 +2061,32 @@
         }
 
         // NOVA LÓGICA para embeds do Blogger
-        if (embedLink.includes("blogger.com/video-play.mp4")) {
-            // Links do Blogger já costumam vir no formato embed, mas se precisar de ajustes:
-            // Exemplo: 'https://www.blogger.com/video-play.mp4?url=SEU_VIDEO_URL'
-            // O iframe pode precisar de parâmetros específicos, mas geralmente funciona assim:
-            // <iframe src="https://www.blogger.com/video-play.mp4?url=SEU_VIDEO_URL" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
-            // O src já deve ser o link direto do embed.
+        if (embedLink.includes("blogger.com/video-play.mp4") || embedLink.includes("docs.google.com/file/d/") && embedLink.includes("preview")) {
+            // Links do Blogger/Drive com "preview" podem ser usados diretamente
+            // Ou o formato específico do Blogger.
+            // Apenas para garantir, o embedLink já deve estar no formato correto.
+        }
+        // OK.ru
+        else if (embedLink.includes("ok.ru/videoembed/")) {
+            // Assume que o link já é o embed
+        }
+        // Mail.ru
+        else if (embedLink.includes("my.mail.ru/video/embed/")) {
+            // Assume que o link já é o embed
+        }
+        // Rutube
+        else if (embedLink.includes("rutube.ru/play/embed/")) {
+            // Assume que o link já é o embed
+        }
+        // Sibnet
+        else if (embedLink.includes("sibnet.ru/shell.php?id=")) {
+            // Assume que o link já é o embed
+        }
+        // StreamWish / VidHide / Voe.sx
+        else if (embedLink.includes("streamwish.com/e/") || embedLink.includes("vidhide.com/e/") || embedLink.includes("voe.sx/e/")) {
+             // Assume que o link já é o embed
         }
 
-        // NOVA LÓGICA para outros players (OK.ru, Mail.ru, Rutube, Sibnet, StreamWish/VidHide/Voe.sx)
-        // Estes players já devem fornecer um URL de embed que pode ser usado diretamente no iframe src.
-        // O que você precisa garantir é que o URL salvo no Firestore já seja o URL de embed.
-        // Por exemplo, para OK.ru, o formato de embed é geralmente:
-        // https://ok.ru/videoembed/VIDEO_ID
-        // Para Rutube:
-        // https://rutube.ru/play/embed/VIDEO_ID
-        // Para Mail.ru:
-        // https://my.mail.ru/video/embed/VIDEO_ID
-        // Se o usuário inserir o link normal, você precisaria de uma função para converter para embed URL.
-        // Por agora, assumimos que o `linkEpisodio` já é o URL de embed correto.
 
         videoFrame.src = embedLink + "?autoplay=1";
 
@@ -2081,6 +2137,24 @@
         videoModal.style.display = 'flex';
         // Chamar setupLazyLoading novamente caso haja imagens dinâmicas no modal de vídeo
         setupLazyLoading(); 
+
+                // Adiciona um IntersectionObserver para o player ficar fixo
+        const videoWrapper = document.querySelector('#videoModal .video-wrapper');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (window.innerWidth >= 768) { // Apenas para telas maiores que mobile
+                    if (!entry.isIntersecting && entry.boundingClientRect.top < 0) {
+                        // Se não está visível e já passou da tela para cima
+                        fixarVideoPlayer(embedLink + "?autoplay=1");
+                    } else {
+                        // Se está visível novamente
+                        desfixarVideoPlayer();
+                    }
+                }
+            });
+        }, { threshold: 0 }); // Observa quando 0% do elemento está visível
+
+        observer.observe(videoWrapper);
     }
 
     function fecharVideoModal() {
@@ -2092,7 +2166,44 @@
         currentPlayingEpisode = null;
         // Resetar o texto do botão "Próximo" para o padrão
         document.getElementById('nextEpisodePreview').textContent = `Próximo`;
+        desfixarVideoPlayer(); // Garante que o player fixo seja removido
     }
+
+    // NOVA FUNÇÃO: Fixar player de vídeo no canto
+    let fixedPlayerIframe = document.createElement('iframe');
+    fixedPlayerIframe.frameBorder = "0";
+    fixedPlayerIframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+    fixedPlayerIframe.allowFullscreen = true;
+    let fixedPlayerContainer = document.createElement('div');
+    fixedPlayerContainer.id = 'fixedVideoPlayer';
+    fixedPlayerContainer.appendChild(fixedPlayerIframe);
+    let closeFixedPlayerBtn = document.createElement('button');
+    closeFixedPlayerBtn.className = 'close-fixed-player';
+    closeFixedPlayerBtn.textContent = 'X';
+    closeFixedPlayerBtn.onclick = () => {
+        desfixarVideoPlayer();
+        fecharVideoModal(); // Também fecha o modal principal
+    };
+    fixedPlayerContainer.appendChild(closeFixedPlayerBtn);
+    document.body.appendChild(fixedPlayerContainer);
+
+
+    function fixarVideoPlayer(videoSrc) {
+        const videoModal = document.getElementById('videoModal');
+        // Se o modal principal está aberto e o fixed player não está visível
+        if (videoModal.style.display === 'flex') {
+            fixedPlayerIframe.src = videoSrc;
+            fixedPlayerContainer.classList.add('visible');
+            document.body.classList.add('sticky-player-active'); // Adiciona padding ao body
+        }
+    }
+
+    function desfixarVideoPlayer() {
+        fixedPlayerContainer.classList.remove('visible');
+        fixedPlayerIframe.src = ""; // Para o vídeo no player fixo
+        document.body.classList.remove('sticky-player-active'); // Remove padding do body
+    }
+
 
     // Função para atualizar as opções de player (Dublado/Legendado)
     function updatePlayerOptions(links, currentPlayerIndex) {
@@ -2128,7 +2239,7 @@
         }
     }
 
-    // Função para navegar para o episódio anterior
+        // Função para navegar para o episódio anterior
     async function previousEpisode() {
         if (!currentPlayingSerie || !currentPlayingEpisode) return;
 
@@ -2242,7 +2353,7 @@
     }
 
 
-    // Função para salvar/remover anime da lista do usuário
+        // Função para salvar/remover anime da lista do usuário
     async function toggleSalvarAnime() {
         if (!auth.currentUser || !currentUserData) {
             showMessage("Você precisa estar logado para salvar animes!");
@@ -2266,7 +2377,7 @@
                 const updatedAnimesSalvos = animesSalvos.filter(id => id !== serieId);
                 await db.collection("users").doc(auth.currentUser.uid).update({ animesSalvos: updatedAnimesSalvos });
                 currentUserData.animesSalvos = updatedAnimesSalvos;
-                btnSalvarAnime.textContent = "Adicionar à Lista";
+                btnSalvarAnime.textContent = "Remover da Lista";
                 btnSalvarAnime.classList.remove('saved');
                 showMessage(`"${currentPlayingSerie.nome}" removido dos seus animes salvos.`);
             } else {
@@ -2390,7 +2501,7 @@
         commentInput.focus();
     }
 
-    // Funções do Modal de Compartilhamento
+        // Funções do Modal de Compartilhamento
     let currentShareUrl = '';
     let currentShareTitle = '';
 
@@ -2526,7 +2637,7 @@
                 document.getElementById('pixCopiaColaInput').value = data.pixCopiaCola;
                 currentTransactionId = data.transactionId;
 
-                // Salvar a transação pendente no Firestore (para simulação de backend)
+                                // Salvar a transação pendente no Firestore (para simulação de backend)
                 await db.collection("transactions").doc(currentTransactionId).set({
                     userId: auth.currentUser.uid,
                     planId: planId,
@@ -2669,7 +2780,7 @@
             document.getElementById('userMenu').classList.remove('open'); // Esconde o menu
             document.getElementById('userMenu').style.display = 'none';
             aplicarTema('dark'); // Volta para o tema padrão (escuro)
-            document.getElementById('luminosityRange').value = 100; // Reseta luminosidade
+            document.getElementById('luminosidadeRange').value = 100; // Reseta luminosidade
             ajustarLuminosidade(100); // Aplica luminosidade padrão
             document.getElementById('userInfoDisplay').innerHTML = ''; // Limpa info do usuário
             carregarAnimes('recentes'); // Mostra animes recentes (sem filtro de usuário)
@@ -2720,6 +2831,15 @@
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
 
 
 
