@@ -1718,9 +1718,10 @@
             }
 
             // Aumenta a contagem de visualizações da série
-            await db.collection("series").doc(serieId).update({
-                visualizacoes: firebase.firestore.FieldValue.increment(1)
-            });
+// await db.collection("series").doc(serieId).update({
+//     visualizacoes: firebase.firestore.FieldValue.increment(1)
+// });
+
 
             // Busca o primeiro episódio da série
             const firstEpisodeSnapshot = await db.collection("series").doc(serieId).collection("episodios")
@@ -1796,9 +1797,7 @@ if (embedLink.includes("drive.google.com/file/d/") && embedLink.includes("/view"
     }
 }
 
-// videoFrame.src = embedLink + "?autoplay=1";
-videoFrame.src = embedLink; // Altere para esta linha
-
+videoFrame.src = embedLink + "?autoplay=1";
 
 // ... restante da função ...
 
@@ -2205,7 +2204,6 @@ videoFrame.src = embedLink; // Altere para esta linha
 </script>
 </body>
 </html>
-
 
 
 
