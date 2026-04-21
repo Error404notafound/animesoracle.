@@ -1796,7 +1796,9 @@ if (embedLink.includes("drive.google.com/file/d/") && embedLink.includes("/view"
     }
 }
 
-videoFrame.src = embedLink + "?autoplay=1";
+// videoFrame.src = embedLink + "?autoplay=1";
+videoFrame.src = embedLink; // Altere para esta linha
+
 
 // ... restante da função ...
 
