@@ -147,7 +147,7 @@
         .search-container {
             position: relative;
             width: 100%;
-            display: flex;
+            display: none; /* Alterado para none por padrão */
             justify-content: center;
             padding: 10px 0;
             border-bottom: 1px solid #333; /* Linha divisória */
@@ -388,18 +388,26 @@
             color: var(--text);
         }
 
-        /* Estilos Específicos para o Menu do Usuário (Sidebar) */
+                /* Estilos Específicos para o Menu do Usuário (Sidebar) */
         #userMenu {
-            justify-content: flex-start; 
-            align-items: stretch; 
+            display: none; /* Adicionado para garantir que esteja escondido por padrão */
+            position: fixed; /* Adicionado para o modal ficar fixo na tela */
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
             background: rgba(0,0,0,0.7); 
-            transition: all 0.3s ease-in-out;
+            z-index: 5000; /* Garante que fique acima de outros elementos */
+            justify-content: flex-start; /* Alinha o card à esquerda */
+            align-items: stretch; 
+            transition: opacity 0.3s ease-in-out; /* Transição para opacidade */
             opacity: 0;
             pointer-events: none; /* Desabilita cliques quando escondido */
         }
         #userMenu.open { /* Classe para abrir o menu */
             opacity: 1;
             pointer-events: all;
+            display: flex; /* Garante que seja exibido */
         }
         #userMenu .modal-card {
             width: 280px; 
@@ -748,7 +756,7 @@
             color: white;
         }
 
-        /* Estilos para o Modal de Compartilhamento */
+                /* Estilos para o Modal de Compartilhamento */
         .social-btn {
             background-color: var(--secondary-bg);
             border: 1px solid #444;
@@ -838,7 +846,7 @@
 </header>
 
 <!-- Barra de Pesquisa (Escondida por padrão) -->
-<div id="searchContainer" class="search-container" style="display: none;">
+<div id="searchContainer" class="search-container">
     <input type="text" id="searchBar" placeholder="Buscar animes..." onfocus="this.classList.add('focused')" onblur="this.classList.remove('focused')" oninput="filterAnimes()">
     <button class="search-close-btn" onclick="closeSearchBar()">×</button>
 </div>
@@ -849,7 +857,7 @@
 </div>
 
 <!-- Menu de Gêneros (Escondido por padrão) -->
-<div id="generosMenu" class="modal" style="display: none; align-items: flex-start; justify-content: flex-start;">
+<div id="generosMenu" class="modal">
     <div class="modal-card" style="width: 280px; max-width: 80%; border-radius: 0 15px 15px 0;">
         <button class="close-btn" onclick="toggleGenerosMenu()">&times;</button>
         <h3 style="color:var(--primary); margin: 0 0 20px 0;">Gêneros</h3>
@@ -931,7 +939,7 @@
         </div>
     </div>
 
-    <!-- Modal para Adicionar Episodio a Série Existente -->
+    <!-- Modal para Adicionar Episódio a Série Existente -->
     <div id="addEpisodeModal" class="modal">
         <div class="modal-card">
             <h3 style="color:var(--primary); margin:0 0 10px 0;">Adicionar Episódio</h3>
@@ -990,7 +998,7 @@
         </div>
     </div>
 
-        <!-- Modal para o Player de Vídeo -->
+                <!-- Modal para o Player de Vídeo -->
     <div id="videoModal" class="modal">
         <div class="modal-card" id="videoPlayerModal">
             <!-- Breadcrumbs -->
@@ -1032,7 +1040,7 @@
                 </button>
             </div>
 
-            <!-- Botões de Ação do Usuário Logado (Salvar, Reportar) -->
+                        <!-- Botões de Ação do Usuário Logado (Salvar, Reportar) -->
             <div class="flex-row justify-center gap-4" style="margin-top: 20px;">
                 <button class="btn-post" id="btnSalvarAnime" onclick="toggleSalvarAnime()" style="flex: 1;">Salvar Anime</button>
                 <button class="btn-post" id="btnReportarErro" onclick="reportarErro()" style="flex: 1; background-color: var(--danger);">Reportar Erro</button>
@@ -1119,7 +1127,7 @@
         </div>
     </div>
 
-    <!-- Modal de Opções de Pagamento/Contribuição -->
+        <!-- Modal de Opções de Pagamento/Contribuição -->
     <div id="paymentOptionsModal" class="modal">
         <div class="modal-card">
             <h3 style="color:var(--primary); margin:0 0 20px 0;">Contribuir e Remover Anúncios</h3>
@@ -1166,16 +1174,6 @@
 <!-- Scripts Firebase e Lógica da Aplicação -->
 <script>
     // 1. CONFIGURAÇÃO DO FIREBASE (SEUS DADOS DE PROJETO)
-    const firebaseConfig = { 
-      apiKey: "AIzaSyBlhgf82RL_uSWChpBwzuUAfi_SHtQY2kw", 
-      authDomain: "animesoracle-a60e9.firebaseapp.com", 
-      projectId: "animesoracle-a60e9", 
-      storageBucket: "animesoracle-a60e9.firebasestorage.app", 
-      messagingSenderId: "751657326717", 
-      appId: "1:751657326717:web:67ef63d01ffa3ad044f914" 
-    };
-
-        // 1. CONFIGURAÇÃO DO FIREBASE (SEUS DADOS DE PROJETO)
     const firebaseConfig = { 
       apiKey: "AIzaSyBlhgf82RL_uSWChpBwzuUAfi_SHtQY2kw", 
       authDomain: "animesoracle-a60e9.firebaseapp.com", 
@@ -1412,7 +1410,7 @@
         recentGrid.innerHTML = `<h2>Animes do gênero: '${genero}'...</h2>`;
 
         try {
-            // Busca séries onde o array de gêneros contém o gênero selecionado
+                        // Busca séries onde o array de gêneros contém o gênero selecionado
             const seriesSnapshot = await db.collection("series")
                                             .where('generos', 'array-contains', genero)
                                             .get();
@@ -1662,7 +1660,7 @@
         }
     }
 
-    // 5. LÓGICA DO MENU DO USUÁRIO E OUTRAS FUNCIONALIDADES
+        // 5. LÓGICA DO MENU DO USUÁRIO E OUTRAS FUNCIONALIDADES
 
     async function carregarDadosUsuario(uid) {
         try {
@@ -1710,7 +1708,7 @@
                     <p id="modoAdultoMenuItem" onclick="toggleModoAdulto()" class="menu-item-adult ${currentUserData.modoAdulto ? 'active' : ''}">${currentUserData.modoAdulto ? "Modo Adulto (+18) Ativo" : "Modo Adulto (+18)"}</p>
                 `;
 
-                                // Aplica o tema e luminosidade imediatamente
+                                                                // Aplica o tema e luminosidade imediatamente
                 aplicarTema(currentUserData.theme);
                 document.getElementById('luminosidadeRange').value = currentUserData.luminosidade || 100;
                 ajustarLuminosidade(currentUserData.luminosidade || 100);
@@ -1848,7 +1846,7 @@
                 recentGrid.innerHTML = '<p>Você não possui animes salvos ou não está logado.</p>';
                 return;
             }
-                        // Para "animes salvos", precisamos buscar cada série individualmente
+                                                // Para "animes salvos", precisamos buscar cada série individualmente
             const savedSeriesPromises = currentUserData.animesSalvos.map(serieId => db.collection("series").doc(serieId).get());
             const savedSeriesSnapshots = await Promise.all(savedSeriesPromises);
             
@@ -1900,7 +1898,7 @@
         }
     }
 
-        // Função principal para carregar e exibir animes (agora séries)
+    // Função principal para carregar e exibir animes (agora séries)
     async function carregarAnimes(tipo = 'recentes') { // 'recentes', 'mais_votados'
         const highlightedAnimesGrid = document.getElementById('highlightedAnimesGrid');
         const recentAnimesGrid = document.getElementById('recentAnimesGrid');
@@ -2104,7 +2102,7 @@
 
         videoFrame.src = embedLink + "?autoplay=1";
 
-                // Atualiza o botão "Próximo" com o preview do próximo episódio
+                                // Atualiza o botão "Próximo" com o preview do próximo episódio
         try {
             const nextEpSnapshot = await db.collection("series").doc(serie.id).collection("episodios")
                                         .where("numero", ">", episodio.numero)
@@ -2367,7 +2365,7 @@
     }
 
 
-        // Função para salvar/remover anime da lista do usuário
+            // Função para salvar/remover anime da lista do usuário
     async function toggleSalvarAnime() {
         if (!auth.currentUser || !currentUserData) {
             showMessage("Você precisa estar logado para salvar animes!");
@@ -2620,7 +2618,7 @@
         currentTransactionId = null;
     }
 
-    // SIMULADO: Função para gerar o pagamento PIX (chama uma Cloud Function real)
+        // SIMULADO: Função para gerar o pagamento PIX (chama uma Cloud Function real)
     async function generatePixPayment(planId, amount) {
         try {
             // **INTEGRAÇÃO COM CLOUD FUNCTIONS**
@@ -2804,7 +2802,7 @@
         }
     });
 
-        // Inicia o carregamento de animes e catálogo A-Z quando a página é carregada
+            // Inicia o carregamento de animes e catálogo A-Z quando a página é carregada
     document.addEventListener('DOMContentLoaded', () => {
         generateAZCatalog();
         // Se já estiver logado (sessão persistente), onAuthStateChanged cuidará da primeira carga
@@ -2845,10 +2843,6 @@
 </script>
 </body>
 </html>
-
-
-
-
 
 
 
