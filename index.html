@@ -1175,6 +1175,16 @@
       appId: "1:751657326717:web:67ef63d01ffa3ad044f914" 
     };
 
+        // 1. CONFIGURAÇÃO DO FIREBASE (SEUS DADOS DE PROJETO)
+    const firebaseConfig = { 
+      apiKey: "AIzaSyBlhgf82RL_uSWChpBwzuUAfi_SHtQY2kw", 
+      authDomain: "animesoracle-a60e9.firebaseapp.com", 
+      projectId: "animesoracle-a60e9", 
+      storageBucket: "animesoracle-a60e9.firebasestorage.app", 
+      messagingSenderId: "751657326717", 
+      appId: "1:751657326717:web:67ef63d01ffa3ad044f914" 
+    };
+
     // 2. INICIALIZAÇÃO DO FIREBASE
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
@@ -1201,7 +1211,7 @@
         alert(message); // Por simplicidade, usando alert. Em uma app real, use um modal/toast.
     }
 
-                // Função para ajustar a luminosidade do site
+        // Função para ajustar a luminosidade do site
     function ajustarLuminosidade(value) {
         const body = document.body;
         // Ajusta o brilho do body (ou de um container principal)
@@ -1274,7 +1284,7 @@
             recentGrid.innerHTML = '<h2>Buscando Animes...</h2>';
 
             try {
-                // Busca por séries que contenham o termo de pesquisa no nome ou biografia
+                                // Busca por séries que contenham o termo de pesquisa no nome ou biografia
                 const seriesSnapshot = await db.collection("series")
                                                 .where('nomeLowerCase', '>=', searchTerm)
                                                 .where('nomeLowerCase', '<=', searchTerm + '\uf8ff')
@@ -1315,7 +1325,7 @@
         azCatalogDiv.innerHTML = ''; // Limpa antes de gerar
         const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         
-        // Adiciona um item para números e símbolos se desejar
+                // Adiciona um item para números e símbolos se desejar
         // azCatalogDiv.innerHTML += `<span onclick="filterByLetter('#')">#</span>`; 
 
         for (let i = 0; i < alphabet.length; i++) {
@@ -1327,7 +1337,7 @@
         }
     }
 
-        // Função para filtrar animes por letra inicial
+    // Função para filtrar animes por letra inicial
     async function filterByLetter(letter) {
         currentFilter = 'letter';
         const highlightedGrid = document.getElementById('highlightedAnimesGrid');
@@ -1364,7 +1374,8 @@
         }
     }
 
-    // Função para alternar o menu de gêneros
+
+        // Função para alternar o menu de gêneros
     let generosMenuOpen = false;
     function toggleGenerosMenu() {
         const generosMenu = document.getElementById('generosMenu');
@@ -1429,7 +1440,8 @@
         }
     }
 
-    // Função para abrir o modal de postar anime (nova série)
+
+        // Função para abrir o modal de postar anime (nova série)
     function openPostAnimeModal() {
         if (!auth.currentUser) {
             showMessage("Você precisa estar logado para postar animes!");
@@ -1479,7 +1491,7 @@
                 visualizacoes: 0,
             });
 
-                        // Adiciona o primeiro episódio como uma subcoleção da série
+            // Adiciona o primeiro episódio como uma subcoleção da série
             await newSerieRef.collection("episodios").add({
                 numero: 1, // Assumindo que este é o primeiro episódio
                 nome: nomeEpisodio,
@@ -1510,7 +1522,7 @@
         }
     }
 
-    // Função para abrir o modal de adicionar episódio
+        // Função para abrir o modal de adicionar episódio
     function openAddEpisodeModal(serieId, serieTitle) {
         if (!auth.currentUser) {
             showMessage("Você precisa estar logado para adicionar episódios!");
@@ -1556,6 +1568,8 @@
                 // Assumindo que isAdult é herdado da série por padrão ou precisa ser definido
                 // isAdult: (await db.collection("series").doc(serieId).get()).data().isAdult, 
             });
+            // ... (o restante da função será na próxima parte)
+
 
             showMessage(`Episódio ${proximoNumero} adicionado à série com sucesso!`);
             document.getElementById('addEpisodeModal').style.display = 'none';
