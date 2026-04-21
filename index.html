@@ -45,7 +45,7 @@
             --secondary-bg: #e0e0e0;
         }
 
-                /* Estilo para quando o player de vídeo estiver "sticky" */
+                                /* Estilo para quando o player de vídeo estiver "sticky" */
         body.sticky-player-active {
             padding-top: 170px; /* Espaço para o player fixo */
         }
@@ -93,6 +93,7 @@
             background-color: var(--danger);
         }
                 /* FIM DO ESTILO PARA O PLAYER DE VÍDEO FIXO */
+
 
         /* Utilidades para flexbox */
         .flex-row { display: flex; align-items: center; }
@@ -2227,7 +2228,7 @@
         // Chamar setupLazyLoading novamente caso haja imagens dinâmicas no modal de vídeo
         setupLazyLoading(); 
 
-                // Adiciona um IntersectionObserver para o player ficar fixo
+                        // Adiciona um IntersectionObserver para o player ficar fixo
         const videoWrapper = document.querySelector('#videoModal .video-wrapper');
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -2244,6 +2245,7 @@
         }, { threshold: 0 }); // Observa quando 0% do elemento está visível
 
         observer.observe(videoWrapper);
+
     }
 
     function fecharVideoModal() {
@@ -2256,9 +2258,10 @@
         // Resetar o texto do botão "Próximo" para o padrão
         document.getElementById('nextEpisodePreview').textContent = `Próximo`;
         desfixarVideoPlayer(); // Garante que o player fixo seja removido
+
     }
 
-    // NOVA FUNÇÃO: Fixar player de vídeo no canto
+            // NOVA FUNÇÃO: Fixar player de vídeo no canto
     let fixedPlayerIframe = document.createElement('iframe');
     fixedPlayerIframe.frameBorder = "0";
     fixedPlayerIframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
@@ -2292,6 +2295,7 @@
         fixedPlayerIframe.src = ""; // Para o vídeo no player fixo
         document.body.classList.remove('sticky-player-active'); // Remove padding do body
     }
+
 
 
     // Função para atualizar as opções de player (Dublado/Legendado)
