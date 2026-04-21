@@ -1169,6 +1169,83 @@
         </div>
     </div>
 
+
+                    <!-- Modal de Compartilhamento -->
+    <div id="shareModal" class="modal">
+        <div class="modal-card">
+            <button class="close-btn" onclick="closeShareModal()">&times;</button>
+            <h3 style="color:var(--primary); margin:0 0 20px 0;">Compartilhar</h3>
+            <p id="shareTitle" style="margin-bottom: 15px; color: var(--text);"></p>
+            <div class="flex-row justify-center gap-4" style="margin-bottom: 20px;">
+                <!-- Botões de redes sociais -->
+                <button class="social-btn facebook" onclick="shareOnSocial('facebook')">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="#1877F2"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.24 6.22 14.07 6.22c1.32 0 2.45.24 2.78.35v2.5H15c-1.2 0-1.56.72-1.56 1.41V12h3l-.58 3H13v6.79c4.52-.92 8-4.96 8-9.8v-.01z"/></svg>
+                </button>
+                <button class="social-btn twitter" onclick="shareOnSocial('twitter')">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="#1DA1F2"><path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.73 1.05C18.23 4.2 16.96 3.5 15.5 3.5c-2.38 0-4.32 1.94-4.32 4.32 0 .34.04.67.11.98C8.36 8.78 5.47 7.23 3.5 4.71c-.37.64-.58 1.39-.58 2.2 0 1.5.77 2.81 1.94 3.59-.7-.02-1.35-.22-1.92-.5V11c0 2.1 1.48 3.84 3.44 4.25-.36.1-.73.15-1.12.15-.27 0-.53-.02-.79-.08.55 1.7 2.14 2.93 4.02 2.97-1.46 1.14-3.3 1.82-5.32 1.82-.35 0-.7-.02-1.05-.06C3.26 20.31 5.37 21 7.6 21c7.22 0 11.17-5.96 11.17-11.17 0-.17-.01-.34-.01-.51.77-.55 1.44-1.24 1.97-2.02z"/></svg>
+                </button>
+                <button class="social-btn whatsapp" onclick="shareOnSocial('whatsapp')">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="#25D366"><path d="M12.04 2C7.34 2 3.53 5.81 3.53 10.5c0 1.4.38 2.83 1.03 4.09L3 21l6.73-1.78c1.1-.37 2.27-.56 3.3-.56h.04c4.72 0 8.53-3.81 8.53-8.5S16.76 2 12.04 2zM17.16 16.5c-.2.27-.47.4-.73.4-.27 0-.53-.13-.73-.27L14.73 15.3c-.2-.13-.47-.2-.73-.2-.27 0-.53.07-.73.2l-1.07 1.07c-.13.13-.27.2-.47.2-.2 0-.33-.07-.47-.2-1.6-1.67-2.6-3.13-3.46-4.93-.07-.2-.07-.33 0-.47l.8-.87c.2-.2.2-.47.13-.6l-.33-.73c-.07-.2-.13-.27-.2-.27-.07 0-.2.07-.33.13l-.53.27c-.2.13-.33.27-.4.4-.67 1.47-.33 2.87.67 4.07l.87.87c.2.2.2.4.27.47.07.07.13.13.2.13.07 0 .2-.07.27-.13l.87-.87c.2-.2.4-.2.6-.13l1.8.87c.2.07.4.2.47.27.07.07.13.13.13.2z"/></svg>
+                </button>
+                <button class="social-btn telegram" onclick="shareOnSocial('telegram')">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="#0088CC"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.3 8.3L9.6 14.7c-.5.3-1.2.1-1.4-.4-.2-.5.1-1.2.6-1.4l5.3-3.2c.5-.3 1.1-.1 1.4.4.2.5-.1 1.2-.6 1.4zm-4.4 2.8l-1.6 1.6s0 0 0 0h-.01l-.25-.25c-.26-.26-.67-.26-.92 0-.25.26-.25.68 0 .93l.9.9c.2.2.4.3.7.3.3 0 .5-.1.7-.3l2.4-2.4c.26-.26.26-.68 0-.93s-.67-.26-.92 0z"/></svg>
+                </button>
+                <button class="social-btn blogger" onclick="shareOnSocial('blogger')">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="#FF5722"><path d="M19.98 10.15c-.02-.04-.04-.08-.06-.11l-3.21-3.22c-.2-.2-.46-.3-.74-.3-.28 0-.54.1-.74.3l-3.21 3.22c-.02.04-.04-.08-.06-.11-.02.04-.04.08-.06.11l-.01.01c-.13.21-.19.46-.19.71 0 .26.06.51.19.71l3.21 3.22c.2.2.46.3.74.3.28 0 .54-.1.74-.3l3.21-3.22c.02-.04.04-.08.06-.11.13-.21.19-.46.19-.71 0-.26-.06-.51-.19-.71zM12 1.5c-5.52 0-10 4.48-10 10s4.48 10 10 10 10-4.48 10-10-4.48-10-10-10zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                </button>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <input type="text" id="shareLinkInput" value="" readonly style="width: calc(100% - 70px); display: inline-block; vertical-align: middle;">
+                <button class="btn-post" onclick="copyShareLink()" style="width: 60px; display: inline-block; vertical-align: middle; margin-left: 10px;">Copiar</button>
+            </div>
+        </div>
+    </div>
+
+
+                        <!-- Modal de Opções de Pagamento/Contribuição -->
+    <div id="paymentOptionsModal" class="modal">
+        <div class="modal-card">
+            <h3 style="color:var(--primary); margin:0 0 20px 0;">Contribuir e Remover Anúncios</h3>
+            <p style="color:var(--text); margin-bottom: 15px;">Apoie o AnimesOracle e navegue sem anúncios por um período!</p>
+            <div id="paymentPlansList" class="flex-col gap-2">
+                <!-- Planos de pagamento serão carregados aqui -->
+                <button class="btn-post" onclick="openPixCheckoutModal('plan-1month', 7.90)">1 Mês (R$ 7,90)</button>
+                <button class="btn-post" onclick="openPixCheckoutModal('plan-3months', 19.90)">3 Meses (R$ 19,90) - Mais Popular!</button>
+                <button class="btn-post" onclick="openPixCheckoutModal('plan-6months', 34.90)">6 Meses (R$ 34,90)</button>
+            </div>
+            <button class="cancel-btn" onclick="document.getElementById('paymentOptionsModal').style.display='none'">Cancelar</button>
+        </div>
+    </div>
+
+
+                                                <!-- Modal para Checkout de Pagamento PIX -->
+    <div id="pixCheckoutModal" class="modal">
+        <div class="modal-card">
+            <button class="close-btn" onclick="closePixCheckoutModal()">&times;</button>
+            <h3 style="color:var(--primary); margin:0 0 20px 0;">Finalizar Pagamento via PIX</h3>
+
+            <div class="pix-qr-container">
+                <p>Escaneie o QR Code para pagar:</p>
+                <img id="qrCodeImage" src="https://via.placeholder.com/200?text=Gerando+QR..." alt="QR Code PIX" style="width:200px; height:200px; margin: 15px auto; display: block; border: 1px solid #333;">
+            </div>
+
+            <p style="text-align: center; margin-top: 20px;">Ou utilize o código "Copia e Cola":</p>
+            <div class="flex-row gap-2" style="margin-top: 10px;">
+                <input type="text" id="pixCopiaColaInput" value="Gerando código..." readonly style="flex-grow: 1;">
+                <button class="btn-post" onclick="copyPixCode()" style="width: 100px; flex-shrink: 0;">Copiar</button>
+            </div>
+
+            <div class="pix-status-info" style="margin-top: 20px; text-align: center;">
+                <span id="paymentStatusBadge" class="status-badge pending">Aguardando pagamento</span>
+                <p id="paymentStatusMessage" style="font-size: 0.9em; color: #aaa; margin-top: 10px;">Seu pagamento será verificado automaticamente.</p>
+            </div>
+            
+            <button class="btn-post" id="verifyPaymentButton" onclick="checkPaymentStatusManual()" style="margin-top: 20px; background-color: #007bff;">Verificar agora</button>
+            <button class="cancel-btn" onclick="closePixCheckoutModal()" style="margin-top: 15px;">Cancelar Pagamento</button>
+        </div>
+    </div>
+
+
 </main>
 
 <!-- Scripts Firebase e Lógica da Aplicação -->
