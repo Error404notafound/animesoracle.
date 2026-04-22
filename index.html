@@ -2371,10 +2371,13 @@
                 return;
             }
 
-            // Aumenta a contagem de visualizações da série
-            await db.collection("series").doc(serieId).update({
-                visualizacoes: firebase.firestore.FieldValue.increment(1)
-            });
+                        // Aumenta a contagem de visualizações da série SOMENTE SE O USUÁRIO ESTIVER LOGADO
+            if (auth.currentUser) { // <-- ADICIONADO: SÓ TENTA ATUALIZAR SE TIVER LOGIN
+                await db.collection("series").doc(serieId).update({
+                    visualizacoes: firebase.firestore.FieldValue.increment(1)
+                });
+            }
+
 
             // Busca o primeiro episódio da série
             const firstEpisodeSnapshot = await db.collection("series").doc(serieId).collection("episodios")
