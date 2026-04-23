@@ -12,7 +12,8 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <!-- Para autenticação de usuários (e-mail/senha) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <!-- Para Firebase Storage para foto de perfil -->
+
+    <!-- Adicionar Firebase Storage para foto de perfil -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 
     <style>
@@ -164,11 +165,11 @@
             overflow-x: auto; /* Permite rolagem horizontal */
             -webkit-overflow-scrolling: touch; /* Melhora o scroll em iOS */
             justify-content: flex-start; /* Alinha o conteúdo à esquerda */
-            padding: 5px 15px; /* Reduz padding */
+            padding: 10px 15px;
             background: var(--bg);
             border-bottom: 1px solid #333;
             z-index: 998;
-            gap: 2px; /* Espaçamento entre as letras */
+            gap: 5px; /* Espaçamento entre as letras */
         }
         #azCatalog::-webkit-scrollbar {
             height: 5px; /* Altura da barra de rolagem */
@@ -184,9 +185,9 @@
         #azCatalog span {
             color: var(--primary); /* Letras roxas */
             font-weight: bold;
-            font-size: 0.9em; /* Reduz tamanho da fonte */
+            font-size: 1.1em;
             cursor: pointer;
-            padding: 2px 5px; /* Reduz padding */
+            padding: 4px 8px;
             transition: background-color 0.2s, color 0.2s;
             border-radius: 4px;
             flex-shrink: 0; /* Impede que as letras encolham */
@@ -239,7 +240,7 @@
             background-color: var(--primary-light);
         }
 
-                /* Grid de Animes (Padrão) */
+        /* Grid de Animes (Padrão) */
         .anime-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
@@ -250,12 +251,10 @@
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
             padding-bottom: 10px; /* Espaço para a barra de scroll */
-            scroll-snap-type: x mandatory; /* Para rolagem suave e com "snap" */
         }
         .anime-grid.scrollable .anime-card {
             flex-shrink: 0; /* Impede que os cards encolham */
             width: 150px; /* Largura fixa para cards em scroll horizontal */
-            scroll-snap-align: start; /* Alinha o início do card ao início da rolagem */
         }
         .anime-grid.scrollable::-webkit-scrollbar {
             height: 5px;
@@ -267,59 +266,6 @@
         .anime-grid.scrollable::-webkit-scrollbar-thumb {
             background: var(--primary);
             border-radius: 10px;
-        }
-
-        /* Para Adicionados Recentemente, que terá cards de episódio horizontais */
-        .episode-card {
-            background: var(--card);
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid #333;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            transition: transform 0.2s, box-shadow 0.2s;
-            position: relative;
-            cursor: pointer;
-            display: flex; /* Para layout horizontal */
-            align-items: center;
-            width: 300px; /* Largura fixa para cards de episódio em scroll horizontal */
-            height: 100px; /* Altura fixa */
-            scroll-snap-align: start;
-        }
-        .episode-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-        .episode-card img {
-            width: 150px; /* Metade do card para a imagem */
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-        .episode-card-info {
-            flex-grow: 1;
-            padding: 8px;
-            font-size: 13px;
-            font-weight: bold;
-            color: var(--text);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-start;
-            overflow: hidden;
-        }
-        .episode-card-info .episode-title {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            width: 100%;
-        }
-        .episode-card-info .serie-name {
-            font-size: 0.8em;
-            color: var(--text-secondary);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            width: 100%;
         }
 
         .anime-card { 
@@ -360,13 +306,12 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-        /* Destaque para "Hero Slider" e "Mais Votados & Assistidos" */
+        /* Destaque para "Mais Votados & Assistidos" */
         .anime-card.highlighted {
             box-shadow: var(--highlight-glow);
             border-color: var(--primary);
         }
-        /* Remove o badge "DESTAQUE" e o rank-overlay dos cards destacados */
-        /* .anime-card.highlighted::before {
+        .anime-card.highlighted::before {
             content: 'DESTAQUE';
             position: absolute;
             top: 0;
@@ -378,8 +323,8 @@
             font-weight: bold;
             border-radius: 8px 0 8px 0;
             z-index: 10;
-        } */
-        /* .anime-card .rank-overlay {
+        }
+        .anime-card .rank-overlay {
             position: absolute;
             top: 0;
             left: 0;
@@ -390,7 +335,7 @@
             padding: 5px 10px;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
             z-index: 5;
-        } */
+        }
         .anime-card .rating-badge {
             position: absolute;
             bottom: 45px; /* Acima do nome */
@@ -405,12 +350,12 @@
         }
 
         /* Conteúdo Adulto - Desfoque */
-        .anime-card.adult-content-blurred, .episode-card.adult-content-blurred {
+        .anime-card.adult-content-blurred {
             filter: blur(var(--blur-strength));
             pointer-events: none; /* Impede clique */
             position: relative;
         }
-        .anime-card.adult-content-blurred::after, .episode-card.adult-content-blurred::after {
+        .anime-card.adult-content-blurred::after {
             content: "Conteúdo +18";
             position: absolute;
             top: 0;
@@ -428,12 +373,12 @@
             z-index: 10;
             filter: none; /* Remove blur do texto */
         }
-        .anime-card.adult-content-blurred:hover, .episode-card.adult-content-blurred:hover {
+        .anime-card.adult-content-blurred:hover {
             transform: none; /* Desabilita o efeito hover */
             box-shadow: none;
         }
 
-        /* Estilos Comuns para Modais (pop-ups) */
+                /* Estilos Comuns para Modais (pop-ups) */
         .modal { 
             display: none; 
             position: fixed; 
@@ -458,20 +403,6 @@
             overflow-y: auto; /* Permite scroll em modals longos */
             max-height: 90vh; /* Limita altura do modal para telas pequenas */
         }
-        /* Modais Fixo (Postagem e Autenticação) */
-        #postarModal, #authModal {
-            align-items: flex-start; /* Alinha o modal card ao topo */
-        }
-        #postarModal .modal-card, #authModal .modal-card {
-            width: 100%;
-            max-width: none; /* Ocupa toda a largura disponível */
-            height: 100vh; /* Ocupa 100% da altura da viewport */
-            max-height: 100vh; /* Garante que não exceda a altura */
-            border-radius: 0; /* Sem bordas arredondadas para ocupar toda a tela */
-            padding-top: 60px; /* Espaço para o header */
-        }
-
-
         input, select, textarea { 
             width: 100%; 
             padding: 12px; 
@@ -522,14 +453,12 @@
             align-items: stretch; 
             background: rgba(0,0,0,0.7); 
             transition: all 0.3s ease-in-out;
-            /* opacity: 0; */ /* Removido para controlar visibilidade com display */
-            /* pointer-events: none; */ /* Removido */
-            display: none; /* Controlado via JS com toggle */
+            opacity: 0;
+            pointer-events: none; /* Desabilita cliques quando escondido */
         }
         #userMenu.open { /* Classe para abrir o menu */
-            /* opacity: 1; */
-            /* pointer-events: all; */
-            display: flex;
+            opacity: 1;
+            pointer-events: all;
         }
         #userMenu .modal-card {
             width: 280px; 
@@ -590,7 +519,7 @@
             color: var(--success); /* Verde quando ativo */
         }
         
-                /* Status Pílulas */
+        /* Status Pílulas */
         .user-status-badge {
             display: inline-flex;
             align-items: center;
@@ -783,20 +712,6 @@
             background-color: var(--primary);
             border-color: var(--primary);
         }
-        .player-options #btnModoCinema { /* Estilo específico para o botão de lâmpada */
-            background-color: var(--primary); /* Cor da lâmpada */
-            border-color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .player-options #btnModoCinema.active {
-            background-color: var(--primary-light);
-            border-color: var(--primary-light);
-        }
-        .player-options #btnModoCinema svg {
-            fill: white; /* Ícone branco no botão roxo */
-        }
         .player-details-section {
             margin-top: 30px;
             text-align: left;
@@ -863,7 +778,6 @@
         .comment-item {
             border-bottom: 1px solid #333;
             padding: 15px 0;
-            position: relative;
         }
         .comment-item:last-child {
             border-bottom: none;
@@ -876,17 +790,13 @@
             margin-top: 5px;
             color: #ccc;
         }
-        .comment-actions {
-            margin-top: 10px;
-            display: flex;
-            gap: 10px;
-        }
         .comment-actions button {
             background: none;
             border: none;
             color: var(--primary);
             cursor: pointer;
             font-size: 0.9em;
+            margin-right: 10px;
             transition: color 0.2s;
         }
         .comment-actions button:hover {
@@ -901,24 +811,6 @@
         .comment-form textarea {
             min-height: 80px;
             resize: vertical;
-        }
-        /* Botão de exclusão de comentário */
-        .delete-comment-btn {
-            position: absolute;
-            top: 15px;
-            right: 0;
-            background: none;
-            border: none;
-            color: var(--danger);
-            font-size: 1.2em;
-            cursor: pointer;
-            padding: 0;
-            line-height: 1;
-            opacity: 0.7;
-            transition: opacity 0.2s;
-        }
-        .delete-comment-btn:hover {
-            opacity: 1;
         }
 
         /* Estilos para o formulário de Postar Anime/Episódio */
@@ -947,7 +839,7 @@
             min-height: 100px;
             resize: vertical;
         }
-                /* Estilos para upload de imagem de perfil */
+        /* Estilos para upload de imagem de perfil */
         .profile-pic-upload-area {
             display: flex;
             flex-direction: column;
@@ -1233,29 +1125,6 @@
         </div>
     </section>
 
-    <!-- Hero Slider - Topo da página -->
-    <section class="content-section hero-slider-section">
-        <div class="hero-slider" id="heroSlider">
-            <div class="hero-slider-inner" id="heroSliderInner">
-                <!-- Itens do slider serão carregados aqui pelo JS -->
-            </div>
-            <div class="slider-dots" id="heroSliderDots">
-                <!-- Pontos de paginação serão carregados aqui pelo JS -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Nova Seção: Adicionados Recentemente (Episódios Horizontais) -->
-    <section class="content-section">
-        <div class="section-header">
-            <h2>ADICIONADOS RECENTEMENTE</h2>
-            <a href="#" class="see-more-btn">VER MAIS</a>
-        </div>
-        <div class="anime-grid scrollable" id="recentEpisodesGrid">
-            <!-- Episódios adicionados recentemente serão carregados aqui -->
-        </div>
-    </section>
-
     <section class="content-section">
         <div class="section-header">
             <h2>MAIS VOTADOS & ASSISTIDOS</h2>
@@ -1266,7 +1135,7 @@
         </div>
     </section>
 
-        <!-- Nova Seção: Seu Histórico -->
+    <!-- Nova Seção: Seu Histórico -->
     <section class="content-section" id="watchedAnimesSection" style="display:none;">
         <div class="section-header">
             <h2>SEU HISTÓRICO</h2>
@@ -1278,67 +1147,42 @@
         </div>
     </section>
 
-    <!-- Nova Seção: +18 Mais Recentes (Séries Horizontais com Blur) -->
     <section class="content-section">
         <div class="section-header">
-            <h2>+18 MAIS RECENTES</h2>
+            <h2>ADICIONADOS RECENTEMENTE</h2>
             <a href="#" class="see-more-btn">VER MAIS</a>
         </div>
-        <div class="anime-grid scrollable" id="adultRecentAnimesGrid">
-            <!-- Animes +18 mais recentes serão carregados aqui -->
+        <div class="anime-grid" id="recentAnimesGrid">
+            <!-- Animes adicionados recentemente serão carregados aqui -->
         </div>
     </section>
-
-    <!-- Nova Seção: Mais Recentes (Séries Verticais) -->
-    <section class="content-section">
-        <div class="section-header">
-            <h2>MAIS RECENTES</h2>
-            <a href="#" class="see-more-btn">VER MAIS</a>
-        </div>
-        <div class="anime-grid scrollable" id="allRecentAnimesGrid">
-            <!-- Todas as séries mais recentes serão carregadas aqui -->
-        </div>
-    </section>
-
 
             <!-- Modal para Postar Anime (Nova estrutura para Série) -->
     <div id="postarModal" class="modal">
         <div class="modal-card">
-            <h3 style="color:var(--primary); margin:0 0 10px 0;">Postar Nova Série / Adicionar Episódio</h3>
-            
-            <!-- Campo para pesquisar série existente -->
+            <h3 style="color:var(--primary); margin:0 0 10px 0;">Postar Nova Série de Anime</h3>
             <div class="form-group">
-                <label for="searchSerieToAddEpisode">Adicionar episódio a uma série existente?</label>
-                <input type="text" id="searchSerieToAddEpisode" placeholder="Pesquisar nome da série..." oninput="searchExistingSeries()">
-                <div id="searchResults" style="border: 1px solid #333; max-height: 150px; overflow-y: auto; display: none;"></div>
+                <label for="pAnimeNome">Nome da Série:</label>
+                <input type="text" id="pAnimeNome" placeholder="Ex: Naruto Shippuden">
             </div>
-
-            <div id="serieFormFields">
-                <h4 style="color:var(--primary); margin:20px 0 10px 0;">Dados da Nova Série (Opcional se adicionar a existente)</h4>
-                <div class="form-group">
-                    <label for="pAnimeNome">Nome da Série:</label>
-                    <input type="text" id="pAnimeNome" placeholder="Ex: Naruto Shippuden">
-                </div>
-                <div class="form-group">
-                    <label for="pCapaSerie">Capa da Série (URL da Imagem Principal):</label>
-                    <input type="text" id="pCapaSerie" placeholder="URL da imagem da série">
-                </div>
-                <div class="form-group">
-                    <label for="pBiografia">Biografia/Sinopse:</label>
-                    <textarea id="pBiografia" placeholder="Uma breve descrição sobre a série..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="pGeneros">Gêneros (separados por vírgula):</label>
-                    <input type="text" id="pGeneros" placeholder="Ex: Ação, Aventura, Fantasia">
-                </div>
-                <div class="form-group">
-                    <label for="pIsAdultSerie" style="display:flex; align-items:center;">
-                        <input type="checkbox" id="pIsAdultSerie"> É +18 (Ecchi/Hentai)?
-                    </label>
-                </div>
+            <div class="form-group">
+                <label for="pCapaSerie">Capa da Série (URL da Imagem Principal):</label>
+                <input type="text" id="pCapaSerie" placeholder="URL da imagem da série">
             </div>
-
-            <h4 style="color:var(--primary); margin:20px 0 10px 0;" id="episodeFormTitle">Dados do Episódio</h4>
+            <div class="form-group">
+                <label for="pBiografia">Biografia/Sinopse:</label>
+                <textarea id="pBiografia" placeholder="Uma breve descrição sobre a série..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="pGeneros">Gêneros (separados por vírgula):</label>
+                <input type="text" id="pGeneros" placeholder="Ex: Ação, Aventura, Fantasia">
+            </div>
+            <div class="form-group">
+                <label for="pIsAdultSerie" style="display:flex; align-items:center;">
+                    <input type="checkbox" id="pIsAdultSerie"> É +18 (Ecchi/Hentai)?
+                </label>
+            </div>
+            <h4 style="color:var(--primary); margin:20px 0 10px 0;">Primeiro Episódio</h4>
             <div class="form-group">
                 <label for="pNomeEpisodio">Nome do Episodio (Ex: Episodio 1 - O Inicio):</label>
                 <input type="text" id="pNomeEpisodio" placeholder="Ex: Episodio 1 - O Início">
@@ -1358,14 +1202,12 @@
                     <option value="dublado">Dublado</option>
                 </select>
             </div>
-            <button class="btn-post" onclick="postarConteudo()">PUBLICAR</button>
+            <button class="btn-post" onclick="postarNovaSerie()">PUBLICAR SÉRIE E EPISÓDIO</button>
             <button class="cancel-btn" onclick="document.getElementById('postarModal').style.display='none'">Cancelar</button>
         </div>
     </div>
 
     <!-- Modal para Adicionar Episodio a Série Existente -->
-    <!-- ESTE MODAL SERÁ REMOVIDO, SUA LÓGICA INCORPORADA NO #postarModal -->
-    <!--
     <div id="addEpisodeModal" class="modal">
         <div class="modal-card">
             <h3 style="color:var(--primary); margin:0 0 10px 0;">Adicionar Episódio</h3>
@@ -1393,7 +1235,6 @@
             <button class="cancel-btn" onclick="document.getElementById('addEpisodeModal').style.display='none'">Cancelar</button>
         </div>
     </div>
-    -->
 
     <!-- Modal de Autenticação (Login/Cadastro) -->
     <div id="authModal" class="modal">
@@ -1418,7 +1259,7 @@
         </div>
     </div>
 
-                <!-- Modal de Compartilhamento -->
+        <!-- Modal de Compartilhamento -->
     <div id="shareModal" class="modal">
         <div class="modal-card">
             <h3 style="color:var(--primary); margin:0 0 20px 0;">Compartilhar Anime</h3>
@@ -1436,17 +1277,8 @@
                     Whatsapp
                 </button>
                 <button class="share-btn telegram" onclick="shareSocial('telegram')">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.6-3.803-1.6-5.836 0-6.627 5.373-12 12-12s12 5.373 12 12-5.373 12-12 12c-1.936 0-3.882-.589-5.636-1.583l-6.264 1.638zm11.943-3.5h-.001c-1.428 0-2.812-.41-4.04-1.189l-2.946.772.788-2.883c-1.053-1.123-1.621-2.5-1.621-3.957 0-4.685 3.805-8.491 8.491-8.491 4.685 0 8.491 3.805 8.491 8.491s-3.806 8.491-8.491 8.491zm4.848-6.848c-.22-.11-.476-.239-.731-.367-.255-.127-1.503-.739-1.734-.82s-.4-.128-.57-.064c-.171.064-.653.82-.796.989-.143.169-.286.192-.534.128-.249-.064-1.056-.389-2.012-1.24-.746-.662-1.248-1.481-1.39-1.734-.142-.255-.015-.4-.015-.57s-.11-.255.239-.636c.29-.384.653-.92.885-1.24.233-.324.29-.255.4-.424.11-.168.055-.319-.03-.448-.088-.129-.796-1.921-1.09-2.63-.294-.71-.6-.614-.82-.869c-.22-.255-.476-.324-.731-.312-.255.012-.448.064-.636.064-.171 0-.476-.052-.731-.052s-.68.18-.94.448c-.255.255-1.056 1.029-1.056 2.509 0 1.48.973 2.909 1.102 3.102.128.192 1.968 3.007 4.757 4.298.665.319 1.188.513 1.597.641.676.21 1.293.18 1.78.115.49-.064.22-.39-.064-.535-.289-.128-.68-.255-1.293-.548z"/></svg>
-                                        Telegram
-                </button>
-            </div>
-            <div class="share-link-container">
-                <input type="text" id="shareLink" value="" readonly>
-                <button onclick="copyShareLink()">Copiar</button>
-            </div>
-            <button class="cancel-btn" onclick="document.getElementById('shareModal').style.display='none'">Fechar</button>
-        </div>
-    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M18.3 5.3l-1.8 1.3c-.6.4-1.3.6-2.1.6-1 0-1.9-.3-2.6-.9-.8-.6-1.3-1.4-1.6-2.4-.3-.9-.4-1.9-.3-2.8 0-.1 0-.2.1-.3s.2-.1.3-.1h.2c.5 0 .9.2 1.2.6.4.4.6.9.7 1.5.1.5.2 1 .3 1.5.2.5.4.9.7 1.3.3.4.7.7 1.1.9.4.2.8.3 1.3.3.6 0 1-.2 1.4-.6.4-.4.6-.9.6-1.4 0-.5-.2-1-.6-1.4s-.9-.6-1.4-.6h-2.1c-.2 0-.4.1-.5.3s-.2.4-.1.6c.1.2.3.3.5.3h.7c.3 0 .6.1.8.3.2.2.3.4.3.7 0 .3-.1.5-.3.7s-.4.3-.7.3h-.7c-.2 0-.4.1-.5.3s-.2.4-.1.6c.1.2.3.3.5.3h.7c.3 0 .6.1.8.3.2.2.3.4.3.7 0 .3-.1.5-.3.7s-.4.3-.7.3h-.7c-.2 0-.4.1-.5.3s-.2.4-.1.6c.1.2.3.3.5.3h.7c.3 0 .6.1.8.3.2.2.3.4.3.7 0 .3-.1.5-.3.7s-.4.3-.7.3h-.7c-.2 0-.4.1-.5.3s-.2.4-.1.6c.1.2.3.3.5.3h.7c.3 0 .6.1.8.3.2.2.3.4.3.7 0 .3-.1.5-.3.7s-.4.3-.7.3h-.7c-.2 0-.4.1-.5.3s-.2.4-.1.6c.1.2.3.3.5.3h.7c.3 0 .6.1.8.3.2.2.3.4.3.7 0 .3-.1.5-.3.7s-.4.3-.7.3h-.7c-.2 0-.4.1-.5.3s-.2.4-.1.6c.1.2.3.3.5.3h.7c.3 0 .6.1.8.3.2.2.3.4.3.7 0 .3-.1.5-.3.7s-.4.3-.7.3h-.7c-.2 0-.4.1-.5.3s-.2.4-.1.6c.1.2.3.3.5.3h.7c.3 0 .6.1.8.3.2.2.3.4.3.7 0 .3-.1.5-.3.7s-.4.3-.7.3h-.7c-.2 0-.4.1-.5.3s-.2.4-.1.6c.1.2.3.3.5.3h.7c.3 0 .6.1.8.3.2.2.3.4.3.7 0 .3-.1.5-.3.7s-.4.3-.7.3h-.7c-.2 0-.4.1-.5.3s-.2.4-.1.6c.1.2.3.3.5.3h.7c.3 0 .6.1.8.3.2.2.3.4.3.7 0 .3-.1.5-.3.7s-.4.3-.7.3h-.7c-.2 0-.4.1-.5.3s-.2.4-.1.6c.1.2.3.3.5.3h.7c.3 0 .6.1.8.3.2.2.3.4.3.7 0 .3-.1.5-.3.7s-.4.3-.7.3h-.7c-.2 0-.4.1-.5.3s-.2.4-.1.6c.1.2.3.3.5.3h.7c.3 0 .6.1.8.3.2.2.3.4.3.7 0 .3-.1.5-.3.7s-.4.3-.7.3h-.7c-.2 0-.4.1-.5.3s-.2.4-.1.6c.1.2.3.3.5.3h.7c.3 0 .6.1.8.3.2.2.3.4.3.7 0 .3-.1.5-.3.7s-.4.3-.7.3h-.7c-.2 0-.4.1-.5.3s-.2.4-.1.6c.1.2.3.3.5.3h.7c.3 0 .6.1.8.3.2.2.3.4.3.7 0 .3-.1.5-.3.7s-.4.3-.7.3h-.7c-.2 0-.4.1-.5.3s-.2.4-.1.6c.1.2.3.3.5.3h.7c.3 0 .6.1.8.3.2.2.3.4.3.7 0 .3-.1.5-.3.7s-.4.3-.7.3h-.7c-.2 0-.4.1-.5.3s-.2.4-.1.6c.1.2.3.3.5.3h.7c.3 0 .6.1.8.3.2.2.3.4.3.7 0 .3-.1.5-.3.7s-.4.3-.7.3h-.7c-.2 0-.4.1-.5.3s-.2.4-.1.6c.1.2.3.3.5.3h.7c.3 0 .6.1.8.3.2.2.3.4.3.7 0 .3-.1.5-.3.7s-.4.3-.7.3h-.7c-.2 0-.4.1-.5.3s-.2.4-.1.6c.1.2.3.3.5.3h.7c.3 0 .6.1.8.3.2.2.3.4.3.7 0 .3-.1.5-.3.7s-.4.3-.7.3h-.7c-.2 0-.4.1-.5.3s-.2.4-.1.6c.1.2.3.3.5.3h.7c.3 0 .6.1.8.3.2.2.3.4.3.7 0 .3-.1.5-.3.7s-.4.3-.7.3h-.7c-.2 0-.4.1-.5.3s-.2.4-.1.6c.1.2.3.3.5.3h.7c.3 0 .6.1.8.3.2.2.3.4.3.7 0 .3-.1.5-.3.7s-.4.3-.7.3h-.7c-.2 0-.4.1-.5.3s-.2.4-.1.6c.1.2.3.3.5.3h.7c.3 0 .6.1.8.3.2.2.3.4.3.7 0 .3-.1.5-.3.7s-.4.3-.7.3h-.7c-.2 0-.4.1-.5.3s-.2.4-.1.6c.1.2.3.3.5.3h.7c.3 0 .6.1.8.3.2.2.3.4.3.7 0 .3-.1.5-.3.7s-.4.3-.7.3h-.7c-.2 0-.4.1-."/></svg>
+
 
     <!-- Menu do Usuário (Sidebar) -->
     <div id="userMenu" class="modal">
@@ -1490,9 +1322,9 @@
                 <div class="player-options">
                     <button id="playerOptionDublado" onclick="switchPlayerType('dublado')">Dublado</button>
                     <button id="playerOptionLegendado" onclick="switchPlayerType('legendado')">Legendado</button>
-                    <!-- Botão Modo Cinema (Lâmpada) -->
+                    <!-- Botão Modo Cinema -->
                     <button id="btnModoCinema" onclick="toggleModoCinema()">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="var(--text)"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.95 2 7 3.95 7 7v7c0 1.66 1.34 3 3 3h4c1.66 0 3-1.34 3-3V7c0-3.05-1.95-5-5-5zM9 7c0-1.66 1.34-3 3-3s3 1.34 3 3v7c0 .55-.45 1-1 1H10c-.55 0-1-.45-1-1V7z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="var(--text)"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M20 5H4c-1.1 0-1.99.9-1.99 2L2 17c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-1 12H5V7h14v10zm-9-1c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z"/></svg>
                         Modo Cinema
                     </button>
                 </div>
@@ -1537,7 +1369,7 @@
                     </div>
                 </div>
 
-                                <!-- Botões de Ação do Usuário Logado (Salvar, Reportar) -->
+                <!-- Botões de Ação do Usuário Logado (Salvar, Reportar) -->
                 <div class="flex-row justify-center gap-4" style="margin-top: 20px;">
                     <button class="btn-post" id="btnSalvarAnime" onclick="toggleSalvarAnime()" style="flex: 1;">Salvar Anime</button>
                     <button class="btn-post" id="btnReportarErro" onclick="reportarErro()" style="flex: 1; background-color: var(--danger);">Reportar Erro</button>
@@ -1618,17 +1450,6 @@
     const auth = firebase.auth(); 
     const storage = firebase.storage(); // Inicializa o Firebase Storage
 
-    // Persistência de Login - Adicionado para manter o usuário logado
-    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-        .then(() => {
-            console.log("Firebase Auth persistence set to LOCAL.");
-        })
-        .catch((error) => {
-            console.error("Error setting persistence:", error);
-            // Handle errors here.
-        });
-
-
     let currentUserData = null; // Para armazenar os dados do usuário logado e seus settings
     let currentFilter = 'recentes'; // Filtro de animes atual (recentes, legendados, dublados, salvos)
     let currentPlayingSerie = null; // Armazena a ID da série atualmente no player
@@ -1653,12 +1474,6 @@
         // Ajusta o brilho do body (ou de um container principal)
         // 100% é normal, 50% mais escuro, 150% mais claro
         body.style.filter = `brightness(${value}%)`;
-
-        if (auth.currentUser && currentUserData) {
-            db.collection("users").doc(auth.currentUser.uid).update({ luminosidade: parseInt(value) })
-                .catch(error => console.error("Erro ao salvar luminosidade:", error));
-            currentUserData.luminosidade = parseInt(value); // Atualiza o dado local
-        }
     }
 
         // Funções para a barra de pesquisa
@@ -1670,7 +1485,7 @@
             document.getElementById('searchBar').value = ''; // Limpa a busca ao fechar
             // Recarrega os animes se a barra de pesquisa for fechada
             if (currentFilter === 'search') {
-                carregarAnimes(); // Volta para o estado inicial/normal
+                carregarAnimes('recentes'); // Volta para recentes se estava buscando
             }
         } else {
             searchContainer.style.display = 'flex';
@@ -1684,9 +1499,9 @@
         document.getElementById('searchBar').value = '';
         document.getElementById('searchBar').classList.remove('focused');
         searchBarVisible = false;
-        // Se a barra de pesquisa for fechada, volta a exibir os animes normalmente
+        // Se a barra de pesquisa for fechada, recarrega os animes para o filtro anterior
         if (currentFilter === 'search') {
-            carregarAnimes();
+            carregarAnimes('recentes');
         }
     }
 
@@ -1694,30 +1509,14 @@
     async function filterAnimes() {
         const searchTerm = document.getElementById('searchBar').value.toLowerCase();
         const highlightedGrid = document.getElementById('highlightedAnimesGrid');
-        const recentEpisodesGrid = document.getElementById('recentEpisodesGrid');
-        const adultRecentAnimesGrid = document.getElementById('adultRecentAnimesGrid');
-        const allRecentAnimesGrid = document.getElementById('allRecentAnimesGrid');
-        const watchedAnimesGrid = document.getElementById('watchedAnimesGrid');
-        const heroSlider = document.getElementById('heroSlider');
+        const recentGrid = document.getElementById('recentAnimesGrid');
 
-
-        // Limpa os grids existentes e esconde seções que não são de busca
-        highlightedGrid.innerHTML = '';
-        recentEpisodesGrid.innerHTML = '';
-        adultRecentAnimesGrid.innerHTML = '';
-        allRecentAnimesGrid.innerHTML = '';
-        watchedAnimesGrid.innerHTML = '';
-        heroSlider.style.display = 'none'; // Esconde o Hero Slider durante a busca
-
-        document.getElementById('watchedAnimesSection').style.display = 'none'; // Esconde seção de histórico
-        document.getElementById('inProgressSection').style.display = 'none'; // Esconde em progresso
-        document.querySelector('.hero-slider-section').style.display = 'none'; // Esconde Hero Slider
-        document.querySelector('#adultRecentAnimesGrid').parentElement.style.display = 'none'; // Esconde +18
+        highlightedGrid.innerHTML = ''; // Limpa os grids existentes
+        recentGrid.innerHTML = '';
 
         if (searchTerm.length > 0) {
             currentFilter = 'search';
-            document.getElementById('recentEpisodesGrid').parentElement.querySelector('h2').textContent = `Resultados da Busca para "${searchTerm}"`;
-            recentEpisodesGrid.innerHTML = '<h2>Buscando Animes...</h2>';
+            recentGrid.innerHTML = '<h2>Buscando Animes...</h2>';
 
             try {
                 // Busca por séries que contenham o termo de pesquisa no nome ou biografia
@@ -1726,32 +1525,32 @@
                                                 .where('nomeLowerCase', '<=', searchTerm + '\uf8ff')
                                                 .get();
                 
-                recentEpisodesGrid.innerHTML = ''; // Limpa a mensagem de busca
+                recentGrid.innerHTML = ''; // Limpa a mensagem de busca
 
                 if (seriesSnapshot.empty) {
-                    recentEpisodesGrid.innerHTML = '<p>Nenhuma série encontrada para sua busca.</p>';
+                    recentGrid.innerHTML = '<p>Nenhuma série encontrada para sua busca.</p>';
                     return;
                 }
 
                 seriesSnapshot.forEach(doc => {
                     const serie = { id: doc.id, ...doc.data() };
-                    // Usa displaySerieCard para exibir em um formato de grid vertical
-                    displaySerieCard(recentEpisodesGrid, serie);
+                    // Aplica a lógica de modo adulto para exibição
+                    if (serie.isAdult && (!auth.currentUser || !currentUserData || !currentUserData.modoAdulto)) {
+                        displaySerieCard(recentGrid, serie, false, true); // Último param true para aplicar blur
+                    } else {
+                        displaySerieCard(recentGrid, serie);
+                    }
                 });
 
             } catch (error) {
                 console.error("Erro ao buscar animes:", error);
-                recentEpisodesGrid.innerHTML = '<p>Erro ao buscar animes.</p>';
+                recentGrid.innerHTML = '<p>Erro ao buscar animes.</p>';
                 showMessage("Erro ao buscar animes: " + error.message);
             }
         } else {
-            // Se a busca estiver vazia, volta a exibir animes normais e mostra as seções
-            document.getElementById('inProgressSection').style.display = 'block';
-            document.querySelector('.hero-slider-section').style.display = 'block';
-            document.getElementById('watchedAnimesSection').style.display = 'block';
-            document.querySelector('#adultRecentAnimesGrid').parentElement.style.display = 'block';
-            heroSlider.style.display = 'block';
-            carregarAnimes(); // Volta para carregar todas as seções padrão
+            // Se a busca estiver vazia, volta a exibir animes recentes
+            currentFilter = 'recentes';
+            carregarAnimes('recentes');
         }
     }
 
@@ -1773,31 +1572,13 @@
         }
     }
 
-        // Função para filtrar animes por letra inicial
+    // Função para filtrar animes por letra inicial
     async function filterByLetter(letter) {
         currentFilter = 'letter';
         const highlightedGrid = document.getElementById('highlightedAnimesGrid');
-        const recentEpisodesGrid = document.getElementById('recentEpisodesGrid');
-        const adultRecentAnimesGrid = document.getElementById('adultRecentAnimesGrid');
-        const allRecentAnimesGrid = document.getElementById('allRecentAnimesGrid');
-        const watchedAnimesGrid = document.getElementById('watchedAnimesGrid');
-        const heroSlider = document.getElementById('heroSlider');
-
-        // Limpa os grids existentes e esconde seções que não são de busca
+        const recentGrid = document.getElementById('recentAnimesGrid');
         highlightedGrid.innerHTML = '';
-        recentEpisodesGrid.innerHTML = '';
-        adultRecentAnimesGrid.innerHTML = '';
-        allRecentAnimesGrid.innerHTML = '';
-        watchedAnimesGrid.innerHTML = '';
-        heroSlider.style.display = 'none'; // Esconde o Hero Slider durante a busca
-
-        document.getElementById('watchedAnimesSection').style.display = 'none'; // Esconde seção de histórico
-        document.getElementById('inProgressSection').style.display = 'none'; // Esconde em progresso
-        document.querySelector('.hero-slider-section').style.display = 'none'; // Esconde Hero Slider
-        document.querySelector('#adultRecentAnimesGrid').parentElement.style.display = 'none'; // Esconde +18
-
-        document.getElementById('recentEpisodesGrid').parentElement.querySelector('h2').textContent = `Animes começando com '${letter}'`;
-        recentEpisodesGrid.innerHTML = `<h2>Carregando Animes começando com '${letter}'...</h2>`;
+        recentGrid.innerHTML = `<h2>Animes começando com '${letter}'...</h2>`;
 
         try {
             const seriesSnapshot = await db.collection("series")
@@ -1805,135 +1586,28 @@
                                             .where('nomeLowerCase', '<=', letter.toLowerCase() + '\uf8ff')
                                             .get();
             
-            recentEpisodesGrid.innerHTML = ''; // Limpa a mensagem de carregamento
+            recentGrid.innerHTML = '';
 
             if (seriesSnapshot.empty) {
-                recentEpisodesGrid.innerHTML = `<p>Nenhum anime encontrado começando com '${letter}'.</p>`;
+                recentGrid.innerHTML = `<p>Nenhum anime encontrado começando com '${letter}'.</p>`;
                 return;
             }
 
             seriesSnapshot.forEach(doc => {
                 const serie = { id: doc.id, ...doc.data() };
-                // Usa displaySerieCard para exibir em um formato de grid vertical
-                displaySerieCard(recentEpisodesGrid, serie);
+                if (serie.isAdult && (!auth.currentUser || !currentUserData || !currentUserData.modoAdulto)) {
+                    displaySerieCard(recentGrid, serie, false, true);
+                } else {
+                    displaySerieCard(recentGrid, serie);
+                }
             });
 
         } catch (error) {
             console.error("Erro ao filtrar animes por letra:", error);
-            recentEpisodesGrid.innerHTML = '<p>Erro ao carregar animes por letra.</p>';
+            recentGrid.innerHTML = '<p>Erro ao carregar animes por letra.</p>';
             showMessage("Erro ao carregar animes por letra: " + error.message);
         }
     }
-
-    // Variáveis para o Hero Slider
-    let heroSliderCurrentIndex = 0;
-    let heroSliderInterval;
-    const HERO_SLIDER_AUTO_ADVANCE_TIME = 5000; // 5 segundos
-
-    // Função para carregar o Hero Slider
-    async function loadHeroSlider() {
-        const heroSliderInner = document.getElementById('heroSliderInner');
-        const heroSliderDots = document.getElementById('heroSliderDots');
-        heroSliderInner.innerHTML = '';
-        heroSliderDots.innerHTML = '';
-
-        try {
-            // Busca os animes com mais visualizações para o Hero Slider (top 5)
-            const snapshot = await db.collection("series")
-                                        .orderBy("visualizacoes", "desc")
-                                        .limit(5)
-                                        .get();
-            
-            if (snapshot.empty) {
-                document.querySelector('.hero-slider-section').style.display = 'none'; // Esconde a seção se não houver animes
-                return;
-            }
-
-            let slides = [];
-            snapshot.forEach(doc => {
-                const serie = { id: doc.id, ...doc.data() };
-                // Filtra conteúdo adulto se o modo adulto não estiver ativo
-                if (serie.isAdult && (!auth.currentUser || !currentUserData || !currentUserData.modoAdulto)) {
-                    // Não adiciona ao slider, pois o hero slider é um destaque principal
-                    return; 
-                }
-                slides.push(serie);
-            });
-
-            if (slides.length === 0) {
-                document.querySelector('.hero-slider-section').style.display = 'none'; // Esconde a seção se não houver animes válidos
-                return;
-            }
-
-            slides.forEach((serie, index) => {
-                const item = document.createElement('div');
-                item.className = 'hero-slider-item';
-                item.onclick = () => openSeriePage(serie.id);
-                item.innerHTML = `
-                    <img src="${serie.capa}" alt="${serie.nome}">
-                    <div class="hero-slider-content">
-                        <h2>${serie.nome}</h2>
-                        <p>${serie.biografia.substring(0, 150)}...</p>
-                    </div>
-                `;
-                heroSliderInner.appendChild(item);
-
-                const dot = document.createElement('span');
-                dot.className = 'dot';
-                dot.onclick = () => moveHeroSlider(index);
-                heroSliderDots.appendChild(dot);
-            });
-
-            document.querySelector('.hero-slider-section').style.display = 'block'; // Garante que a seção esteja visível
-            updateHeroSliderDots();
-            startHeroSliderAutoAdvance();
-
-        } catch (error) {
-            console.error("Erro ao carregar Hero Slider:", error);
-            document.querySelector('.hero-slider-section').style.display = 'none';
-        }
-    }
-
-    function moveHeroSlider(index) {
-        const heroSliderInner = document.getElementById('heroSliderInner');
-        const totalSlides = heroSliderInner.children.length;
-        if (index >= totalSlides) {
-            heroSliderCurrentIndex = 0;
-        } else if (index < 0) {
-            heroSliderCurrentIndex = totalSlides - 1;
-        } else {
-            heroSliderCurrentIndex = index;
-        }
-        heroSliderInner.style.transform = `translateX(${-heroSliderCurrentIndex * 100}%)`;
-        updateHeroSliderDots();
-        resetHeroSliderAutoAdvance();
-    }
-
-    function updateHeroSliderDots() {
-        const dots = document.querySelectorAll('.slider-dots .dot');
-        dots.forEach((dot, index) => {
-            if (index === heroSliderCurrentIndex) {
-                dot.classList.add('active');
-            } else {
-                dot.classList.remove('active');
-            }
-        });
-    }
-
-    function startHeroSliderAutoAdvance() {
-        clearInterval(heroSliderInterval);
-        heroSliderInterval = setInterval(() => {
-            const heroSliderInner = document.getElementById('heroSliderInner');
-            const totalSlides = heroSliderInner.children.length;
-            moveHeroSlider(heroSliderCurrentIndex + 1);
-        }, HERO_SLIDER_AUTO_ADVANCE_TIME);
-    }
-
-    function resetHeroSliderAutoAdvance() {
-        clearInterval(heroSliderInterval);
-        startHeroSliderAutoAdvance();
-    }
-
 
     // Função para alternar o menu de gêneros
     let generosMenuOpen = false;
@@ -1953,28 +1627,9 @@
         currentFilter = 'genero';
         toggleGenerosMenu(); // Fecha o menu de gêneros
         const highlightedGrid = document.getElementById('highlightedAnimesGrid');
-        const recentEpisodesGrid = document.getElementById('recentEpisodesGrid');
-        const adultRecentAnimesGrid = document.getElementById('adultRecentAnimesGrid');
-        const allRecentAnimesGrid = document.getElementById('allRecentAnimesGrid');
-        const watchedAnimesGrid = document.getElementById('watchedAnimesGrid');
-        const heroSlider = document.getElementById('heroSlider');
-
-        // Limpa os grids existentes e esconde seções que não são de busca
+        const recentGrid = document.getElementById('recentAnimesGrid');
         highlightedGrid.innerHTML = '';
-        recentEpisodesGrid.innerHTML = '';
-        adultRecentAnimesGrid.innerHTML = '';
-        allRecentAnimesGrid.innerHTML = '';
-        watchedAnimesGrid.innerHTML = '';
-        heroSlider.style.display = 'none'; // Esconde o Hero Slider durante a busca
-
-        document.getElementById('watchedAnimesSection').style.display = 'none'; // Esconde seção de histórico
-        document.getElementById('inProgressSection').style.display = 'none'; // Esconde em progresso
-        document.querySelector('.hero-slider-section').style.display = 'none'; // Esconde Hero Slider
-        document.querySelector('#adultRecentAnimesGrid').parentElement.style.display = 'none'; // Esconde +18
-
-
-        document.getElementById('recentEpisodesGrid').parentElement.querySelector('h2').textContent = `Animes do gênero: '${genero}'`;
-        recentEpisodesGrid.innerHTML = `<h2>Carregando Animes do gênero: '${genero}'...</h2>`;
+        recentGrid.innerHTML = `<h2>Animes do gênero: '${genero}'...</h2>`;
 
         try {
             // Busca séries onde o array de gêneros contém o gênero selecionado
@@ -1982,239 +1637,96 @@
                                             .where('generos', 'array-contains', genero)
                                             .get();
             
-            recentEpisodesGrid.innerHTML = '';
+            recentGrid.innerHTML = '';
 
             if (seriesSnapshot.empty) {
-                recentEpisodesGrid.innerHTML = `<p>Nenhum anime encontrado para o gênero '${genero}'.</p>`;
+                recentGrid.innerHTML = `<p>Nenhum anime encontrado para o gênero '${genero}'.</p>`;
                 return;
             }
 
             seriesSnapshot.forEach(doc => {
                 const serie = { id: doc.id, ...doc.data() };
-                // Usa displaySerieCard para exibir em um formato de grid vertical
-                displaySerieCard(recentEpisodesGrid, serie);
+                if (serie.isAdult && (!auth.currentUser || !currentUserData || !currentUserData.modoAdulto)) {
+                    displaySerieCard(recentGrid, serie, false, true);
+                } else {
+                    displaySerieCard(recentGrid, serie);
+                }
             });
 
         } catch (error) {
             console.error("Erro ao filtrar animes por gênero:", error);
-            recentEpisodesGrid.innerHTML = '<p>Erro ao carregar animes por gênero.</p>';
+            recentGrid.innerHTML = '<p>Erro ao carregar animes por gênero.</p>';
             showMessage("Erro ao carregar animes por gênero: " + error.message);
         }
     }
 
-    // Variável para armazenar o ID da série quando o usuário está adicionando um episódio a uma série existente
-    let selectedExistingSerieId = null; 
-    let selectedExistingSerieName = null;
-
-    // Função para abrir o modal de postar anime/episódio
+    // Função para abrir o modal de postar anime (nova série)
     function openPostAnimeModal() {
         if (!auth.currentUser) {
-            showMessage("Você precisa estar logado para postar animes ou episódios!");
+            showMessage("Você precisa estar logado para postar animes!");
             document.getElementById('authModal').style.display = 'flex';
             return;
         }
-        // Reseta os campos do formulário
-        document.getElementById('pAnimeNome').value = '';
-        document.getElementById('pCapaSerie').value = '';
-        document.getElementById('pBiografia').value = '';
-        document.getElementById('pGeneros').value = '';
-        document.getElementById('pIsAdultSerie').checked = false;
-        document.getElementById('pNomeEpisodio').value = '';
-        document.getElementById('pCapaEpisodio').value = '';
-        document.getElementById('pLinkEpisodio').value = '';
-        document.getElementById('pTypeEpisodio').value = 'legendado';
-        
-        // Exibe todos os campos da série por padrão
-        document.getElementById('serieFormFields').style.display = 'block';
-        document.getElementById('pAnimeNome').required = true;
-        document.getElementById('pCapaSerie').required = true;
-        document.getElementById('pBiografia').required = true;
-        document.getElementById('pGeneros').required = true;
-
-        // Limpa e esconde resultados de pesquisa
-        document.getElementById('searchSerieToAddEpisode').value = '';
-        document.getElementById('searchResults').innerHTML = '';
-        document.getElementById('searchResults').style.display = 'none';
-
-        selectedExistingSerieId = null; // Reseta a série existente selecionada
-        selectedExistingSerieName = null;
-        updatePostModalForSelectedSerie(); // Ajusta a UI
-        
         document.getElementById('postarModal').style.display = 'flex';
     }
 
-        // Função para pesquisar séries existentes no Firestore
-    async function searchExistingSeries() {
-        const searchTerm = document.getElementById('searchSerieToAddEpisode').value.toLowerCase();
-        const searchResultsDiv = document.getElementById('searchResults');
-        searchResultsDiv.innerHTML = '';
-
-        if (searchTerm.length < 3) { // Começa a buscar com pelo menos 3 caracteres
-            searchResultsDiv.style.display = 'none';
-            return;
-        }
-
-        try {
-            const snapshot = await db.collection("series")
-                                        .where('nomeLowerCase', '>=', searchTerm)
-                                        .where('nomeLowerCase', '<=', searchTerm + '\uf8ff')
-                                        .limit(5)
-                                        .get();
-            
-            if (snapshot.empty) {
-                searchResultsDiv.innerHTML = '<p style="padding: 10px;">Nenhuma série encontrada.</p>';
-            } else {
-                snapshot.forEach(doc => {
-                    const serie = { id: doc.id, ...doc.data() };
-                    const resultItem = document.createElement('div');
-                    resultItem.style.padding = '10px';
-                    resultItem.style.borderBottom = '1px solid #444';
-                    resultItem.style.cursor = 'pointer';
-                    resultItem.textContent = serie.nome;
-                    resultItem.onclick = () => selectExistingSerie(serie.id, serie.nome);
-                    searchResultsDiv.appendChild(resultItem);
-                });
-            }
-            searchResultsDiv.style.display = 'block';
-
-        } catch (error) {
-            console.error("Erro ao pesquisar séries:", error);
-            searchResultsDiv.innerHTML = '<p style="padding: 10px;">Erro ao buscar séries.</p>';
-            searchResultsDiv.style.display = 'block';
-        }
-    }
-
-    // Função para selecionar uma série existente para adicionar episódio
-    function selectExistingSerie(serieId, serieName) {
-        selectedExistingSerieId = serieId;
-        selectedExistingSerieName = serieName;
-        document.getElementById('searchSerieToAddEpisode').value = serieName;
-        document.getElementById('searchResults').style.display = 'none'; // Esconde resultados
-        updatePostModalForSelectedSerie();
-    }
-
-    // Função para ajustar o modal de postagem com base na seleção de série existente
-    function updatePostModalForSelectedSerie() {
-        const serieFormFields = document.getElementById('serieFormFields');
-        const pAnimeNome = document.getElementById('pAnimeNome');
-        const pCapaSerie = document.getElementById('pCapaSerie');
-        const pBiografia = document.getElementById('pBiografia');
-        const pGeneros = document.getElementById('pGeneros');
-        const pIsAdultSerie = document.getElementById('pIsAdultSerie');
-        const episodeFormTitle = document.getElementById('episodeFormTitle');
-
-        if (selectedExistingSerieId) {
-            serieFormFields.style.display = 'none'; // Esconde campos da série
-            pAnimeNome.required = false;
-            pCapaSerie.required = false;
-            pBiografia.required = false;
-            pGeneros.required = false;
-            episodeFormTitle.textContent = `Adicionar Episódio a "${selectedExistingSerieName}"`;
-        } else {
-            serieFormFields.style.display = 'block'; // Mostra campos da série
-            pAnimeNome.required = true;
-            pCapaSerie.required = true;
-            pBiografia.required = true;
-            pGeneros.required = true;
-            episodeFormTitle.textContent = `Dados do Episódio (para nova série)`;
-        }
-    }
-
-    // Função para postar uma nova série ou adicionar um episódio
-    async function postarConteudo() {
-        if (!auth.currentUser) {
-            showMessage("Você precisa estar logado para postar!");
-            return;
-        }
+    // Função para postar uma nova série e seu primeiro episódio
+    async function postarNovaSerie() {
+        const animeNome = document.getElementById('pAnimeNome').value;
+        const capaSerie = document.getElementById('pCapaSerie').value;
+        const biografia = document.getElementById('pBiografia').value;
+        const generosInput = document.getElementById('pGeneros').value;
+        const isAdultSerie = document.getElementById('pIsAdultSerie').checked;
 
         const nomeEpisodio = document.getElementById('pNomeEpisodio').value;
         const capaEpisodio = document.getElementById('pCapaEpisodio').value;
         const linkEpisodio = document.getElementById('pLinkEpisodio').value;
         const typeEpisodio = document.getElementById('pTypeEpisodio').value;
 
-        if (!nomeEpisodio || !capaEpisodio || !linkEpisodio) {
-            showMessage("Por favor, preencha todos os campos do episódio.");
+        if (!animeNome || !capaSerie || !biografia || !generosInput || !nomeEpisodio || !capaEpisodio || !linkEpisodio) {
+            showMessage("Por favor, preencha todos os campos da série e do primeiro episódio.");
             return;
         }
 
-        let serieIdToUse = selectedExistingSerieId;
-        let serieIsAdult = false; // Padrão
+        const generosArray = generosInput.split(',').map(g => g.trim()).filter(g => g !== '');
+
+        // Validação de gêneros - certifica que são gêneros pré-definidos
+        if (generosArray.some(g => !allGeneros.includes(g))) {
+            showMessage("Um ou mais gêneros informados não são válidos. Por favor, use os gêneros pré-definidos.");
+            return;
+        }
 
         try {
-            if (serieIdToUse) {
-                // Adicionar episódio a uma série existente
-                const serieDoc = await db.collection("series").doc(serieIdToUse).get();
-                if (!serieDoc.exists) {
-                    showMessage("A série selecionada não foi encontrada. Tente novamente.");
-                    return;
-                }
-                const serieData = serieDoc.data();
-                serieIsAdult = serieData.isAdult || false; // Herda o status adulto da série
-
-            } else {
-                // Criar nova série e adicionar o primeiro episódio
-                const animeNome = document.getElementById('pAnimeNome').value;
-                const capaSerie = document.getElementById('pCapaSerie').value;
-                const biografia = document.getElementById('pBiografia').value;
-                const generosInput = document.getElementById('pGeneros').value;
-                const isAdultSerie = document.getElementById('pIsAdultSerie').checked;
-
-                if (!animeNome || !capaSerie || !biografia || !generosInput) {
-                    showMessage("Por favor, preencha todos os campos da nova série.");
-                    return;
-                }
-
-                const generosArray = generosInput.split(',').map(g => g.trim()).filter(g => g !== '');
-
-                if (generosArray.some(g => !allGeneros.includes(g))) {
-                    showMessage("Um ou mais gêneros informados não são válidos. Por favor, use os gêneros pré-definidos.");
-                    return;
-                }
-
-                const newSerieRef = await db.collection("series").add({
-                    nome: animeNome,
-                    nomeLowerCase: animeNome.toLowerCase(), // Para busca
-                    capa: capaSerie,
-                    biografia: biografia,
-                    generos: generosArray,
-                    isAdult: isAdultSerie,
-                    postedBy: auth.currentUser.uid,
-                    dataCriacao: firebase.firestore.FieldValue.serverTimestamp(),
-                    mediaAvaliacao: 0,
-                    totalAvaliacoes: 0,
-                    visualizacoes: 0,
-                    likes: 0,
-                    dislikes: 0,
-                    usersWhoLiked: [],
-                    usersWhoDisliked: [],
-                });
-                serieIdToUse = newSerieRef.id;
-                serieIsAdult = isAdultSerie;
-                showMessage("Nova série criada com sucesso!");
-            }
-
-            // Adiciona o episódio (seja para nova série ou série existente)
-            // Primeiro, precisamos descobrir o próximo número de episódio
-            const episodiosSnapshot = await db.collection("series").doc(serieIdToUse).collection("episodios")
-                                                .orderBy("numero", "desc")
-                                                .limit(1)
-                                                .get();
-            let proximoNumero = 1;
-            if (!episodiosSnapshot.empty) {
-                proximoNumero = episodiosSnapshot.docs[0].data().numero + 1;
-            }
-
-            await db.collection("series").doc(serieIdToUse).collection("episodios").add({
-                numero: proximoNumero,
-                nome: nomeEpisodio,
-                capa: capaEpisodio,
-                links: [{ url: linkEpisodio, type: typeEpisodio }],
-                dataPostagem: firebase.firestore.FieldValue.serverTimestamp(),
+            const newSerieRef = await db.collection("series").add({
+                nome: animeNome,
+                nomeLowerCase: animeNome.toLowerCase(), // Para busca
+                capa: capaSerie,
+                biografia: biografia,
+                generos: generosArray,
+                isAdult: isAdultSerie,
                 postedBy: auth.currentUser.uid,
-                isAdult: serieIsAdult, // Herda do anime, ou usa o que foi definido para a nova série
+                dataCriacao: firebase.firestore.FieldValue.serverTimestamp(),
+                mediaAvaliacao: 0, // Inicia com 0
+                totalAvaliacoes: 0,
+                visualizacoes: 0,
+                likes: 0, // Novo campo para likes
+                dislikes: 0, // Novo campo para dislikes
+                usersWhoLiked: [], // Array para armazenar UIDs de quem curtiu
+                usersWhoDisliked: [], // Array para armazenar UIDs de quem descurtiu
             });
 
-            showMessage("Episódio postado com sucesso!");
+            // Adiciona o primeiro episódio como uma subcoleção da série
+            await newSerieRef.collection("episodios").add({
+                numero: 1, // Assumindo que este é o primeiro episódio
+                nome: nomeEpisodio,
+                capa: capaEpisodio,
+                links: [{ url: linkEpisodio, type: typeEpisodio }], // Pode ter múltiplos links para o mesmo episódio (player 1, player 2)
+                dataPostagem: firebase.firestore.FieldValue.serverTimestamp(),
+                postedBy: auth.currentUser.uid,
+                isAdult: isAdultSerie, // Herda do anime, mas pode ser sobrescrito se necessário
+            });
+
+            showMessage("Série e primeiro episódio postados com sucesso!");
             document.getElementById('postarModal').style.display = 'none';
             // Limpa formulário
             document.getElementById('pAnimeNome').value = '';
@@ -2226,16 +1738,80 @@
             document.getElementById('pCapaEpisodio').value = '';
             document.getElementById('pLinkEpisodio').value = '';
             document.getElementById('pTypeEpisodio').value = 'legendado';
-            
-            selectedExistingSerieId = null; // Reseta a seleção
-            selectedExistingSerieName = null;
-            updatePostModalForSelectedSerie(); // Reseta a UI do modal
-            document.getElementById('searchSerieToAddEpisode').value = ''; // Limpa o campo de busca
 
-            carregarAnimes(); // Recarrega para mostrar as novas adições
+            carregarAnimes('recentes'); // Recarrega para mostrar a nova série
+        } catch (e) {
+            console.error("Erro ao postar nova série:", e); 
+            showMessage("Erro do Firebase: " + e.message + "\n\nVerifique as 'Regras' no Firebase e os dados inseridos!");
+        }
+    }
+
+    // Função para abrir o modal de adicionar episódio
+    function openAddEpisodeModal(serieId, serieTitle) {
+        if (!auth.currentUser) {
+            showMessage("Você precisa estar logado para adicionar episódios!");
+            document.getElementById('authModal').style.display = 'flex';
+            return;
+        }
+        document.getElementById('addEpisodeSerieTitle').textContent = `Adicionar Episódio para: ${serieTitle}`;
+        document.getElementById('addEpisodeModal').dataset.serieId = serieId; // Guarda o ID da série
+        document.getElementById('addEpisodeModal').style.display = 'flex';
+    }
+
+    // Função para adicionar um episódio a uma série existente
+    async function addEpisodeToSerie() {
+        const serieId = document.getElementById('addEpisodeModal').dataset.serieId;
+        const nomeEpisodio = document.getElementById('addEpNome').value;
+        const capaEpisodio = document.getElementById('addEpCapa').value;
+        const linkEpisodio = document.getElementById('addEpLink').value;
+        const typeEpisodio = document.getElementById('addEpType').value;
+
+        if (!nomeEpisodio || !capaEpisodio || !linkEpisodio) {
+            showMessage("Por favor, preencha todos os campos do episódio.");
+            return;
+        }
+
+        try {
+            // Primeiro, precisamos descobrir o próximo número de episódio
+            const episodiosSnapshot = await db.collection("series").doc(serieId).collection("episodios")
+                                                .orderBy("numero", "desc")
+                                                .limit(1)
+                                                .get();
+            let proximoNumero = 1;
+            if (!episodiosSnapshot.empty) {
+                proximoNumero = episodiosSnapshot.docs[0].data().numero + 1;
+            }
+
+            // Busca os dados da série para herdar o isAdult
+            const serieDoc = await db.collection("series").doc(serieId).get();
+            const serieData = serieDoc.data();
+            const isAdultSerie = serieData ? serieData.isAdult : false; // Pega o isAdult da série ou false como padrão
+
+            await db.collection("series").doc(serieId).collection("episodios").add({
+                numero: proximoNumero,
+                nome: nomeEpisodio,
+                capa: capaEpisodio,
+                links: [{ url: linkEpisodio, type: typeEpisodio }],
+                dataPostagem: firebase.firestore.FieldValue.serverTimestamp(),
+                postedBy: auth.currentUser.uid,
+                isAdult: isAdultSerie,
+            });
+
+            showMessage(`Episódio ${proximoNumero} adicionado à série com sucesso!`);
+            document.getElementById('addEpisodeModal').style.display = 'none';
+            // Limpa formulário
+            document.getElementById('addEpNome').value = '';
+            document.getElementById('addEpCapa').value = '';
+            document.getElementById('addEpLink').value = '';
+            document.getElementById('addEpType').value = 'legendado';
+
+            // Opcional: recarregar a lista de episódios se o modal do player estiver aberto
+            if (currentPlayingSerie && currentPlayingSerie.id === serieId) {
+                loadSerieDetailsAndEpisodes(serieId);
+            }
 
         } catch (e) {
-            console.error("Erro ao postar conteúdo:", e); 
+            console.error("Erro ao adicionar episódio:", e);
             showMessage("Erro do Firebase: " + e.message + "\n\nVerifique as 'Regras' no Firebase e os dados inseridos!");
         }
     }
@@ -2279,7 +1855,7 @@
         }
     }
 
-                // 4. LÓGICA DE AUTENTICAÇÃO (LOGIN/CADASTRO/LOGOUT)
+        // 4. LÓGICA DE AUTENTICAÇÃO (LOGIN/CADASTRO/LOGOUT)
     async function cadastrarUsuario() {
         const email = document.getElementById('authEmail').value;
         const password = document.getElementById('authPassword').value;
@@ -2337,18 +1913,15 @@
         try {
             await auth.signOut();
             showMessage("Você foi desconectado.");
-            // Corrigido: usa display: none para esconder o menu
-            const userMenu = document.getElementById('userMenu');
-            userMenu.classList.remove('open'); // Garante que a classe 'open' é removida
-            userMenu.style.display = 'none'; // Esconde o menu
-            
+            document.getElementById('userMenu').classList.remove('open');
+            // Limpa a exibição do usuário
+            document.getElementById('userInfoDisplay').innerHTML = '';
             currentUserData = null; // Limpa os dados do usuário
             // Se o modo adulto estava ativo, ele será desativado ao deslogar
             aplicarTema('dark'); // Volta para o tema padrão (escuro)
             document.getElementById('luminosityRange').value = 100; // Reseta luminosidade
             ajustarLuminosidade(100); // Aplica luminosidade padrão
-            document.getElementById('userInfoDisplay').innerHTML = ''; // Limpa info do usuário
-            carregarAnimes(); // Mostra animes normalmente (sem filtro de usuário)
+            carregarAnimes('recentes'); // Mostra animes recentes (sem filtro de usuário)
             // Esconde/mostra o formulário de comentário
             document.getElementById('commentForm').style.display = 'none';
             document.getElementById('commentLoginPrompt').style.display = 'block';
@@ -2485,11 +2058,9 @@
     // Abre o menu do usuário, verificando o status de login
     async function toggleUserMenu() {
         const userMenu = document.getElementById('userMenu');
-        // Usamos display 'flex' para mostrar e 'none' para esconder.
-        // A classe 'open' pode ser usada para transições ou outros estilos.
-        if (userMenu.style.display === 'flex') {
-            userMenu.style.display = 'none';
+        if (userMenu.classList.contains('open')) {
             userMenu.classList.remove('open');
+            userMenu.style.display = 'none'; // Esconde para não capturar eventos
         } else {
             const user = auth.currentUser;
             if (user) {
@@ -2502,7 +2073,7 @@
         }
     }
 
-            // Função para alternar o tema (noite/dia)
+        // Função para alternar o tema (noite/dia)
     async function toggleModoNoite() {
         const newTheme = document.body.classList.contains('light-mode') ? 'dark' : 'light';
         aplicarTema(newTheme);
@@ -2543,7 +2114,7 @@
                 modoAdultoMenuItem.textContent = newModoAdultoState ? "Modo Adulto (+18) Ativo" : "Modo Adulto (+18)";
             }
             showMessage(`Modo Adulto: ${newModoAdultoState ? 'Ativado' : 'Desativado'}.`, 'info');
-            carregarAnimes(); // Recarrega os animes com a nova configuração
+            carregarAnimes(currentFilter); // Recarrega os animes com a nova configuração
             if (currentPlayingSerie && currentPlayingSerie.isAdult && !newModoAdultoState) {
                  // Se desativar o modo adulto e estiver vendo algo +18, fecha o player
                 fecharVideoModal();
@@ -2558,151 +2129,96 @@
     // Função para exibir animes com base no filtro (agora para séries)
     async function filterAnimesByStatus(filtro) { // 'legendado', 'dublado', 'assistidos', 'salvos'
         currentFilter = filtro;
-        document.getElementById('userMenu').style.display = 'none'; // Fecha o menu
-        document.getElementById('userMenu').classList.remove('open'); // Garante que a classe 'open' é removida
+        document.getElementById('userMenu').classList.remove('open'); // Fecha o menu
+        document.getElementById('userMenu').style.display = 'none';
 
-        // Esconde todas as seções principais que não são o Hero Slider ou as de busca/filtro
-        document.getElementById('inProgressSection').style.display = 'none';
-        document.querySelector('.hero-slider-section').style.display = 'none';
-        
-        const highlightedGridParent = document.getElementById('highlightedAnimesGrid').parentElement.parentElement;
-        highlightedGridParent.style.display = 'none'; // Seção "Mais Votados & Assistidos"
-
-        const recentEpisodesGridParent = document.getElementById('recentEpisodesGrid').parentElement.parentElement;
-        recentEpisodesGridParent.style.display = 'block'; // Usar esta para exibir os resultados do filtro
-        
-        const adultRecentAnimesGridParent = document.getElementById('adultRecentAnimesGrid').parentElement.parentElement;
-        adultRecentAnimesGridParent.style.display = 'none'; // Seção "+18 Mais Recentes"
-
-        const allRecentAnimesGridParent = document.getElementById('allRecentAnimesGrid').parentElement.parentElement;
-        allRecentAnimesGridParent.style.display = 'none'; // Seção "Mais Recentes"
-
-        document.getElementById('watchedAnimesSection').style.display = 'none'; // Seção "Seu Histórico"
-
-        const targetGrid = document.getElementById('recentEpisodesGrid'); // Usaremos este grid para exibir os resultados
-        targetGrid.innerHTML = `<h2>Carregando Animes ${filtro}...</h2>`;
+        const highlightedGrid = document.getElementById('highlightedAnimesGrid');
+        const recentGrid = document.getElementById('recentAnimesGrid');
+        highlightedGrid.innerHTML = ''; // Limpa os grids principais
+        recentGrid.innerHTML = `<h2>Carregando Animes ${filtro}...</h2>`;
 
         let seriesQuery = db.collection("series");
         let seriesToDisplay = [];
 
         try {
             if (filtro === 'legendado' || filtro === 'dublado') {
+                // Para filtrar por tipo, precisamos olhar os episódios ou ter um campo na série
+                // Por simplicidade, vamos buscar todas as séries e filtrar localmente os que têm o tipo.
                 const allSeriesSnapshot = await seriesQuery.get();
                 for (const doc of allSeriesSnapshot.docs) {
                     const serie = { id: doc.id, ...doc.data() };
-                    // Verifica se a série possui episódios do tipo desejado
                     const episodesSnapshot = await db.collection("series").doc(serie.id).collection("episodios")
-                                                        .where('links', 'array-contains-any', [{ type: filtro }]) 
+                                                        .where('links', 'array-contains-any', [{ type: filtro }, { type: filtro.charAt(0).toUpperCase() + filtro.slice(1) }]) // Procura por tipo no array de links
                                                         .limit(1)
                                                         .get();
                     if (!episodiosSnapshot.empty) {
                         seriesToDisplay.push(serie);
                     }
                 }
-                document.getElementById('recentEpisodesGrid').parentElement.querySelector('h2').textContent = `Animes ${filtro.charAt(0).toUpperCase() + filtro.slice(1)}`;
-
             } else if (filtro === 'salvos') {
                 if (!auth.currentUser || !currentUserData || !currentUserData.animesSalvos || currentUserData.animesSalvos.length === 0) {
-                    targetGrid.innerHTML = '<p>Você não possui animes salvos ou não está logado.</p>';
+                    recentGrid.innerHTML = '<p>Você não possui animes salvos ou não está logado.</p>';
                     return;
                 }
-                document.getElementById('recentEpisodesGrid').parentElement.querySelector('h2').textContent = `Minha Lista`;
-
                 const savedSeriesPromises = currentUserData.animesSalvos.map(serieId => db.collection("series").doc(serieId).get());
                 const savedSeriesSnapshots = await Promise.all(savedSeriesPromises);
                 savedSeriesSnapshots.forEach(doc => {
                     if (doc.exists) seriesToDisplay.push({ id: doc.id, ...doc.data() });
                 });
             } else if (filtro === 'assistidos') {
-                 // Esta seção agora é carregada separadamente por loadWatchedAnimes e tem seu próprio display
-                document.getElementById('watchedAnimesSection').style.display = 'block';
-                document.getElementById('recentEpisodesGrid').parentElement.querySelector('h2').textContent = `Seu Histórico`; // Ajusta o título para consistência
-                loadWatchedAnimes();
-                return; // Já foi tratado por loadWatchedAnimes
+                if (!auth.currentUser || !currentUserData || !currentUserData.animesAssistidos || currentUserData.animesAssistidos.length === 0) {
+                    recentGrid.innerHTML = '<p>Você não possui animes assistidos ou não está logado.</p>';
+                    return;
+                }
+                // animesAssistidos armazena { serieId, episodeId, timestamp }
+                // Precisamos extrair apenas os serieId únicos e buscar as séries
+                const uniqueSerieIds = [...new Set(currentUserData.animesAssistidos.map(item => item.serieId))];
+                const watchedSeriesPromises = uniqueSerieIds.map(serieId => db.collection("series").doc(serieId).get());
+                const watchedSeriesSnapshots = await Promise.all(watchedSeriesPromises);
+                watchedSeriesSnapshots.forEach(doc => {
+                    if (doc.exists) seriesToDisplay.push({ id: doc.id, ...doc.data() });
+                });
             } else {
-                 // Este caso não deve acontecer se os filtros são 'legendado', 'dublado', 'salvos', 'assistidos'
-                 // Mas se acontecer, retorna para o estado normal ou mostra um erro.
-                 carregarAnimes();
-                 return;
+                 const snapshot = await seriesQuery.orderBy("dataCriacao", "desc").get();
+                 snapshot.forEach(doc => seriesToDisplay.push({ id: doc.id, ...doc.data() }));
             }
             
-            targetGrid.innerHTML = ''; // Limpa a mensagem de carregamento
+            recentGrid.innerHTML = ''; // Limpa a mensagem de carregamento
 
             if (seriesToDisplay.length === 0) {
-                targetGrid.innerHTML = `<p>Nenhuma série encontrada para o filtro '${filtro}'.</p>`;
+                recentGrid.innerHTML = `<p>Nenhuma série encontrada para o filtro '${filtro}'.</p>`;
                 return;
             }
 
             seriesToDisplay.forEach(serie => {
-                // Ao filtrar, o modo adulto é aplicado dinamicamente
-                displaySerieCard(targetGrid, serie);
+                if (serie.isAdult && (!auth.currentUser || !currentUserData || !currentUserData.modoAdulto)) {
+                    displaySerieCard(recentGrid, serie, false, true); 
+                } else {
+                    displaySerieCard(recentGrid, serie);
+                }
             });
 
         } catch (error) {
             console.error("Erro ao carregar séries:", error);
-            targetGrid.innerHTML = '<p>Erro ao carregar séries.</p>';
+            recentGrid.innerHTML = '<p>Erro ao carregar séries.</p>';
             showMessage("Erro ao carregar séries: " + error.message);
         }
     }
 
-    // Função principal para carregar e exibir animes (todas as seções)
-    async function carregarAnimes() {
-        // Restaura a visibilidade de todas as seções antes de carregar
-        document.getElementById('inProgressSection').style.display = 'block';
-        document.querySelector('.hero-slider-section').style.display = 'block';
-        document.getElementById('watchedAnimesSection').style.display = 'block';
-        document.getElementById('adultRecentAnimesGrid').parentElement.parentElement.style.display = 'block';
-        document.getElementById('allRecentAnimesGrid').parentElement.parentElement.style.display = 'block';
-        document.getElementById('highlightedAnimesGrid').parentElement.parentElement.style.display = 'block';
-        document.getElementById('recentEpisodesGrid').parentElement.parentElement.style.display = 'block'; // Garante que Adicionados Recentemente (episódios) esteja visível
-
-        // Carrega o Hero Slider
-        await loadHeroSlider();
-
-        // Carrega Adicionados Recentemente (Episódios)
-        const recentEpisodesGrid = document.getElementById('recentEpisodesGrid');
-        recentEpisodesGrid.innerHTML = '<h2>Carregando Episódios Recentes...</h2>';
-        document.getElementById('recentEpisodesGrid').parentElement.querySelector('h2').textContent = 'ADICIONADOS RECENTEMENTE';
-
-
-        try {
-            const episodesSnapshot = await db.collectionGroup("episodios") // Coleção de grupo para todos os episódios
-                                                .orderBy("dataPostagem", "desc")
-                                                .limit(10)
-                                                .get();
-            recentEpisodesGrid.innerHTML = ''; // Limpa a mensagem de carregamento
-
-            if (episodesSnapshot.empty) {
-                recentEpisodesGrid.innerHTML = '<p>Nenhum episódio adicionado recentemente.</p>';
-            } else {
-                recentEpisodesGrid.classList.add('scrollable'); // Torna a seção scrollable
-                for (const doc of episodesSnapshot.docs) {
-                    const episode = { id: doc.id, ...doc.data() };
-                    // Obtém a série pai para pegar o nome da série e verificar o modo adulto
-                    const serieRef = doc.ref.parent.parent;
-                    if (serieRef) {
-                        const serieDoc = await serieRef.get();
-                        if (serieDoc.exists) {
-                            const serie = { id: serieDoc.id, ...serieDoc.data() };
-                            displayEpisodeCard(recentEpisodesGrid, episode, serie);
-                        }
-                    }
-                }
-            }
-        } catch (error) {
-            console.error("Erro ao carregar episódios recentes:", error);
-            recentEpisodesGrid.innerHTML = '<p>Erro ao carregar episódios recentes.</p>';
-        }
-
-        // Carrega Animes Mais Votados & Assistidos (Séries)
+    // Função principal para carregar e exibir animes (agora séries)
+    async function carregarAnimes(tipo = 'recentes') { // 'recentes', 'mais_votados'
         const highlightedAnimesGrid = document.getElementById('highlightedAnimesGrid');
-        highlightedAnimesGrid.innerHTML = '<h2>Carregando Séries Mais Votadas...</h2>';
-        document.getElementById('highlightedAnimesGrid').parentElement.querySelector('h2').textContent = 'MAIS VOTADOS & ASSISTIDOS';
-        highlightedAnimesGrid.classList.remove('scrollable'); // Garante que não seja scrollable
+        const recentAnimesGrid = document.getElementById('recentAnimesGrid');
+        const watchedAnimesGrid = document.getElementById('watchedAnimesGrid');
 
+        highlightedAnimesGrid.innerHTML = '';
+        recentAnimesGrid.innerHTML = '<h2>Carregando Séries...</h2>';
+        watchedAnimesGrid.innerHTML = '';
+
+        // Carrega Animes Mais Votados/Assistidos
         try {
             const highlightedSnapshot = await db.collection("series")
-                                                .orderBy("visualizacoes", "desc") 
+                                                .orderBy("visualizacoes", "desc") // Ou um cálculo combinado de votos/visualizações
                                                 .limit(5) // Top 5
                                                 .get();
             highlightedAnimesGrid.innerHTML = ''; // Limpa antes de adicionar
@@ -2710,9 +2226,15 @@
             if (highlightedSnapshot.empty) {
                 highlightedAnimesGrid.innerHTML = '<p>Nenhum anime destacado encontrado.</p>';
             } else {
+                let rank = 1;
                 highlightedSnapshot.forEach(doc => {
                     const serie = { id: doc.id, ...doc.data() };
-                    displaySerieCard(highlightedAnimesGrid, serie); // Sem rank explícito nos cards agora
+                    if (serie.isAdult && (!auth.currentUser || !currentUserData || !currentUserData.modoAdulto)) {
+                        displaySerieCard(highlightedAnimesGrid, serie, true, true, rank); // Aplica blur para adultos
+                    } else {
+                        displaySerieCard(highlightedAnimesGrid, serie, true, false, rank); // O 'true' indica destaque
+                    }
+                    rank++;
                 });
             }
 
@@ -2721,91 +2243,66 @@
             highlightedAnimesGrid.innerHTML = '<p>Erro ao carregar animes destacados.</p>';
         }
 
-        // Carrega o histórico de animes assistidos se o usuário estiver logado
+        // Carrega Animes Recentemente Adicionados
+        try {
+            const recentSnapshot = await db.collection("series")
+                                            .orderBy("dataCriacao", "desc")
+                                            .limit(20) // Quantidade de animes recentes
+                                            .get();
+            recentAnimesGrid.innerHTML = ''; // Limpa a mensagem de carregamento
+
+            if (recentSnapshot.empty) {
+                recentAnimesGrid.innerHTML = '<p>Nenhuma série adicionada recentemente.</p>';
+                return;
+            }
+
+            recentSnapshot.forEach(doc => {
+                const serie = { id: doc.id, ...doc.data() };
+                if (serie.isAdult && (!auth.currentUser || !currentUserData || !currentUserData.modoAdulto)) {
+                    displaySerieCard(recentAnimesGrid, serie, false, true);
+                } else {
+                    displaySerieCard(recentAnimesGrid, serie);
+                }
+            });
+
+        } catch (error) {
+            console.error("Erro ao carregar animes recentes:", error);
+            recentAnimesGrid.innerHTML = '<p>Erro ao carregar animes recentes.</p>';
+            showMessage("Erro ao carregar animes recentes: " + error.message);
+        }
+
+                // Carrega o histórico de animes assistidos se o usuário estiver logado
         if (auth.currentUser && currentUserData) {
             loadWatchedAnimes();
         } else {
-            document.getElementById('watchedAnimesSection').style.display = 'block'; 
+            document.getElementById('watchedAnimesSection').style.display = 'block'; // Mostra a seção mesmo deslogado para exibir a mensagem
             document.getElementById('watchedAnimesGrid').innerHTML = '<p style="padding: 10px;">Faça login para ver seu histórico de animes assistidos.</p>';
-        }
-
-                // Carrega +18 Mais Recentes (Séries Horizontais com Blur)
-        const adultRecentAnimesGrid = document.getElementById('adultRecentAnimesGrid');
-        adultRecentAnimesGrid.innerHTML = '<h2>Carregando +18 Mais Recentes...</h2>';
-        document.getElementById('adultRecentAnimesGrid').parentElement.querySelector('h2').textContent = '+18 MAIS RECENTES';
-        adultRecentAnimesGrid.classList.add('scrollable');
-
-        try {
-            const adultSnapshot = await db.collection("series")
-                                            .where("isAdult", "==", true)
-                                            .orderBy("dataCriacao", "desc")
-                                            .limit(10)
-                                            .get();
-            adultRecentAnimesGrid.innerHTML = '';
-
-            if (adultSnapshot.empty) {
-                adultRecentAnimesGrid.innerHTML = '<p>Nenhum anime +18 recente encontrado.</p>';
-            } else {
-                adultSnapshot.forEach(doc => {
-                    const serie = { id: doc.id, ...doc.data() };
-                    // Sempre aplica o blur, a menos que o modo adulto esteja ativo
-                    const blurAdult = !auth.currentUser || !currentUserData || !currentUserData.modoAdulto;
-                    displaySerieCard(adultRecentAnimesGrid, serie, false, blurAdult);
-                });
-            }
-        } catch (error) {
-            console.error("Erro ao carregar animes +18 recentes:", error);
-            adultRecentAnimesGrid.innerHTML = '<p>Erro ao carregar animes +18 recentes.</p>';
-        }
-
-        // Carrega Mais Recentes (Todas as Séries, Verticais)
-        const allRecentAnimesGrid = document.getElementById('allRecentAnimesGrid');
-        allRecentAnimesGrid.innerHTML = '<h2>Carregando Séries Recentes...</h2>';
-        document.getElementById('allRecentAnimesGrid').parentElement.querySelector('h2').textContent = 'MAIS RECENTES';
-        allRecentAnimesGrid.classList.add('scrollable'); // Mantém como scrollable
-
-        try {
-            const allSeriesSnapshot = await db.collection("series")
-                                                .orderBy("dataCriacao", "desc")
-                                                .limit(10)
-                                                .get();
-            allRecentAnimesGrid.innerHTML = '';
-
-            if (allSeriesSnapshot.empty) {
-                allRecentAnimesGrid.innerHTML = '<p>Nenhuma série encontrada.</p>';
-            } else {
-                allSeriesSnapshot.forEach(doc => {
-                    const serie = { id: doc.id, ...doc.data() };
-                    displaySerieCard(allRecentAnimesGrid, serie); // Não aplica blur por padrão, apenas se for +18
-                });
-            }
-
-        } catch (error) {
-            console.error("Erro ao carregar todas as séries recentes:", error);
-            allRecentAnimesGrid.innerHTML = '<p>Erro ao carregar todas as séries recentes.</p>';
         }
     }
 
-    // Função para exibir um único card de série (vertical)
-    function displaySerieCard(gridElement, serie, isHighlighted = false, isAdultBlurred = false) {
+    // Função para exibir um único card de série
+    function displaySerieCard(gridElement, serie, isHighlighted = false, isAdultBlurred = false, rank = 0) {
         const card = document.createElement('div');
         card.className = 'anime-card';
         if (isHighlighted) {
             card.classList.add('highlighted');
         }
-        // Verifica se é conteúdo adulto e se o modo adulto não está ativado OU se for explicitamente pedido para blur
-        const shouldBlur = serie.isAdult && (!auth.currentUser || !currentUserData || !currentUserData.modoAdulto) || isAdultBlurred;
-
-        if (shouldBlur) {
+        if (isAdultBlurred) {
             card.classList.add('adult-content-blurred');
             card.onclick = () => openAdultContentWarningModal(serie); // Abre o modal de aviso
         } else {
             card.onclick = () => openSeriePage(serie.id); // Abre a página da série/primeiro episódio
         }
         
+        let rankOverlay = '';
+        if (isHighlighted && rank > 0) {
+            rankOverlay = `<div class="rank-overlay">${rank}</div>`;
+        }
+
         const genresText = serie.generos && serie.generos.length > 0 ? serie.generos.join(', ') : '';
 
         card.innerHTML = `
+            ${rankOverlay}
             <img src="${serie.capa}" alt="${serie.nome}">
             <div class="anime-card-info">${serie.nome}</div>
             <div class="anime-genres">${genresText}</div>
@@ -2813,32 +2310,6 @@
         `;
         gridElement.appendChild(card);
     }
-
-    // Função para exibir um único card de episódio (horizontal)
-    function displayEpisodeCard(gridElement, episode, serie) {
-        const card = document.createElement('div');
-        card.className = 'episode-card';
-        
-        // Verifica se é conteúdo adulto e se o modo adulto não está ativado
-        const shouldBlur = serie.isAdult && (!auth.currentUser || !currentUserData || !currentUserData.modoAdulto);
-
-        if (shouldBlur) {
-            card.classList.add('adult-content-blurred');
-            card.onclick = () => openAdultContentWarningModal(serie); // Abre o modal de aviso com a série
-        } else {
-            card.onclick = () => abrirVideoModal(serie, episode); // Abre a página da série/primeiro episódio
-        }
-
-        card.innerHTML = `
-            <img src="${episode.capa}" alt="${episode.nome}">
-            <div class="episode-card-info">
-                <span class="episode-title">${episode.nome}</span>
-                <span class="serie-name">${serie.nome}</span>
-            </div>
-        `;
-        gridElement.appendChild(card);
-    }
-
 
     // Função para carregar e exibir o histórico de animes assistidos
     async function loadWatchedAnimes() {
@@ -2868,66 +2339,19 @@
         const watchedSeriesPromises = watchedSerieIds.map(serieId => db.collection("series").doc(serieId).get());
         const watchedSeriesSnapshots = await Promise.all(watchedSeriesPromises);
 
-        for (const doc of watchedSeriesSnapshots) {
+        watchedSeriesSnapshots.forEach(doc => {
             if (doc.exists) {
                 const serie = { id: doc.id, ...doc.data() };
                 if (serie.isAdult && (!auth.currentUser || !currentUserData.modoAdulto)) {
-                    // Se o modo adulto não estiver ativo, exibe o card borrado no histórico
-                    displaySerieCard(watchedAnimesGrid, serie, false, true); 
-                } else {
-                    const card = document.createElement('div');
-                    card.className = 'anime-card';
-                    card.onclick = () => openSeriePage(serie.id);
-                    const genresText = serie.generos && serie.generos.length > 0 ? serie.generos.join(', ') : '';
-
-                    card.innerHTML = `
-                        <img src="${serie.capa}" alt="${serie.nome}">
-                        <div class="anime-card-info">${serie.nome}</div>
-                        <div class="anime-genres">${genresText}</div>
-                        ${serie.mediaAvaliacao > 0 ? `<div class="rating-badge">${serie.mediaAvaliacao.toFixed(1)} ⭐</div>` : ''}
-                        <button class="delete-history-item" data-serie-id="${serie.id}" onclick="event.stopPropagation(); removeWatchedItem('${serie.id}')">×</button>
-                    `;
-                    watchedAnimesGrid.appendChild(card);
+                    // Não exibe conteúdo adulto borrado aqui no histórico, apenas esconde
+                    return; 
                 }
+                displaySerieCard(watchedAnimesGrid, serie);
             }
-        }
+        });
 
-        if (watchedAnimesGrid.innerHTML === '<p style="padding: 10px;">Você ainda não assistiu a nenhum anime.</p>') {
-             // Caso todos os animes do histórico sejam +18 e modo adulto esteja desativado
+        if (watchedAnimesGrid.innerHTML === '') {
             watchedAnimesGrid.innerHTML = '<p style="padding: 10px;">Nenhum anime assistido encontrado que corresponda às suas preferências.</p>';
-        }
-    }
-
-    // Função para remover um item do histórico de assistidos
-    async function removeWatchedItem(serieIdToRemove) {
-        if (!auth.currentUser || !currentUserData) {
-            showMessage("Você precisa estar logado para remover itens do histórico.");
-            return;
-        }
-
-        const userId = auth.currentUser.uid;
-        const userRef = db.collection("users").doc(userId);
-
-        try {
-            await db.runTransaction(async (transaction) => {
-                const userDoc = await transaction.get(userRef);
-                if (!userDoc.exists) {
-                    throw "Documento do usuário não existe!";
-                }
-                const currentAnimesAssistidos = userDoc.data().animesAssistidos || [];
-
-                const updatedAnimesAssistidos = currentAnimesAssistidos.filter(
-                    item => item.serieId !== serieIdToRemove
-                );
-
-                transaction.update(userRef, { animesAssistidos: updatedAnimesAssistidos });
-            });
-            currentUserData.animesAssistidos = currentUserData.animesAssistidos.filter(item => item.serieId !== serieIdToRemove);
-            showMessage("Item removido do histórico com sucesso!");
-            loadWatchedAnimes(); // Recarrega o histórico
-        } catch (e) {
-            console.error("Erro ao remover item do histórico:", e);
-            showMessage("Erro ao remover item do histórico: " + e.message);
         }
     }
 
@@ -2947,14 +2371,15 @@
                 return;
             }
 
-            // Aumenta a contagem de visualizações da série SOMENTE SE O USUÁRIO ESTIVER LOGADO
-            if (auth.currentUser) { 
+                        // Aumenta a contagem de visualizações da série SOMENTE SE O USUÁRIO ESTIVER LOGADO
+            if (auth.currentUser) { // <-- ADICIONADO: SÓ TENTA ATUALIZAR SE TIVER LOGIN
                 await db.collection("series").doc(serieId).update({
                     visualizacoes: firebase.firestore.FieldValue.increment(1)
                 });
             }
 
-                        // Busca o primeiro episódio da série
+
+            // Busca o primeiro episódio da série
             const firstEpisodeSnapshot = await db.collection("series").doc(serieId).collection("episodios")
                                                     .orderBy("numero")
                                                     .limit(1)
@@ -2978,7 +2403,6 @@
 
     // Marca um episódio como assistido no perfil do usuário
     async function marcarEpisodioComoAssistido(serieId, episodeId) {
-        // Agora, os usuários deslogados também podem assistir, mas só os logados terão histórico.
         if (!auth.currentUser || !currentUserData) return;
 
         const userId = auth.currentUser.uid;
@@ -3010,7 +2434,6 @@
                 transaction.update(userRef, { animesAssistidos: updatedAnimesAssistidos });
             });
             // Atualiza o currentUserData local
-            // O timestamp será um objeto Date do Firestore ou um objeto simples para o front-end
             currentUserData.animesAssistidos = [{ serieId, episodeId, timestamp: new Date() }, ...(currentUserData.animesAssistidos || [])];
             console.log("Episódio marcado como assistido!");
         } catch (e) {
@@ -3079,8 +2502,7 @@
             videoSkeleton.style.display = 'none';
             videoFrame.style.display = 'block';
             // Inicia autoplay se for permitido e se o vídeo não estiver fixo
-            // Adicionado: Não autoplay em mobile ou se o usuário não quiser
-            videoFrame.src = embedLink + (window.innerWidth > 768 ? "?autoplay=1" : "");
+            if (!isFixedPlayer) videoFrame.src += "?autoplay=1";
         };
 
         // Marca o episódio como assistido
@@ -3089,15 +2511,16 @@
         }
 
         // Atualiza o botão Salvar Anime
-        // Somente mostra os botões de ação para usuários logados
-        if (auth.currentUser && currentUserData) {
-            if (currentUserData.animesSalvos && currentUserData.animesSalvos.includes(serie.id)) {
-                btnSalvarAnime.textContent = "Remover da Lista";
-                btnSalvarAnime.classList.add('saved');
-            } else {
-                btnSalvarAnime.textContent = "Adicionar à Lista";
-                btnSalvarAnime.classList.remove('saved');
-            }
+        if (auth.currentUser && currentUserData && currentUserData.animesSalvos.includes(serie.id)) {
+            btnSalvarAnime.textContent = "Remover da Lista";
+            btnSalvarAnime.classList.add('saved');
+        } else {
+            btnSalvarAnime.textContent = "Adicionar à Lista";
+            btnSalvarAnime.classList.remove('saved');
+        }
+
+        // Visibilidade dos botões de ação e formulário de comentário
+        if (auth.currentUser) {
             btnSalvarAnime.style.display = 'block';
             btnReportarErro.style.display = 'block';
             commentForm.style.display = 'flex';
@@ -3149,10 +2572,9 @@
         const videoModal = document.getElementById('videoModal');
         const videoPlayerModal = document.getElementById('videoPlayerModal');
         const videoFrame = document.getElementById('videoFrame');
-        // Usar videoPlayerFixedContainer para determinar a posição de rolagem
         const videoPlayerFixedContainer = document.getElementById('videoPlayerFixedContainer');
 
-        if (videoPlayerModal.scrollTop > videoPlayerFixedContainer.offsetHeight) { // Se rolou mais do que a altura do container do vídeo
+        if (videoPlayerModal.scrollTop > videoFrame.offsetHeight) { // Se rolou mais do que a altura do vídeo
             videoModal.classList.add('fixed-player');
             isFixedPlayer = true;
         } else {
@@ -3179,7 +2601,7 @@
             embedLink = embedLink.replace("youtu.be/", "youtube.com/embed/");
         }
 
-                // Google Drive /view para /embed
+        // Google Drive /view para /embed
         if (embedLink.includes("drive.google.com/file/d/") && embedLink.includes("/view")) {
             const videoIdMatch = embedLink.match(/\/d\/([a-zA-Z0-9_-]+)\/view/);
             if (videoIdMatch && videoIdMatch[1]) {
@@ -3297,17 +2719,12 @@
         }
     }
 
-        // Função para atualizar os botões de navegação do player (próximo/anterior)
+    // Função para atualizar os botões de navegação do player (próximo/anterior)
     async function updatePlayerControls(serieId, currentEpisodeNumber) {
         const prevEpisodeLabel = document.getElementById('prevEpisodeLabel');
         const nextEpisodeLabel = document.getElementById('nextEpisodeLabel');
-        const prevEpisodeBtn = document.querySelector('.player-controls button:first-child');
-        const nextEpisodeBtn = document.querySelector('.player-controls button:last-child');
-
         prevEpisodeLabel.textContent = '';
         nextEpisodeLabel.textContent = '';
-        prevEpisodeBtn.disabled = true;
-        nextEpisodeBtn.disabled = true;
 
         try {
             const prevSnapshot = await db.collection("series").doc(serieId).collection("episodios")
@@ -3318,7 +2735,6 @@
             if (!prevSnapshot.empty) {
                 const prevEpisode = prevSnapshot.docs[0].data();
                 prevEpisodeLabel.textContent = `Ep. ${prevEpisode.numero}`;
-                prevEpisodeBtn.disabled = false;
             }
 
             const nextSnapshot = await db.collection("series").doc(serieId).collection("episodios")
@@ -3329,7 +2745,6 @@
             if (!nextSnapshot.empty) {
                 const nextEpisode = nextSnapshot.docs[0].data();
                 nextEpisodeLabel.textContent = `Ep. ${nextEpisode.numero}`;
-                nextEpisodeBtn.disabled = false;
             }
 
         } catch (error) {
@@ -3414,19 +2829,14 @@
             `;
             episodeListContent.appendChild(serieDetailsDiv);
 
-            // Adiciona a opção de postar novo episódio (para usuários logados)
-            if (auth.currentUser && auth.currentUser.uid === currentPlayingSerie.postedBy) { // Apenas o criador da série
+                        // Adiciona a opção de postar novo episódio (para usuários logados)
+            if (auth.currentUser) {
                 const addEpisodeBtn = document.createElement('button');
                 addEpisodeBtn.textContent = 'Adicionar Novo Episodio';
                 addEpisodeBtn.classList.add('btn-post');
                 addEpisodeBtn.onclick = () => {
                     document.getElementById('episodeListModal').style.display = 'none'; // Fecha o modal de lista
-                    // Preenche o campo de pesquisa com o nome da série atual e seleciona-a
-                    document.getElementById('searchSerieToAddEpisode').value = currentPlayingSerie.nome;
-                    selectedExistingSerieId = currentPlayingSerie.id;
-                    selectedExistingSerieName = currentPlayingSerie.nome;
-                    updatePostModalForSelectedSerie();
-                    openPostAnimeModal(); // Reutiliza a função de abrir modal de postagem
+                    openAddEpisodeModal(currentPlayingSerie.id, currentPlayingSerie.nome);
                 };
                 episodeListContent.appendChild(addEpisodeBtn);
                 const hr = document.createElement('hr');
@@ -3444,28 +2854,6 @@
                     episodeListModal.style.display = 'none'; // Fecha o modal após selecionar
                 };
                 episodeListContent.appendChild(episodeBtn);
-
-                // Botão de exclusão de episódio (apenas para o criador do episódio ou da série)
-                if (auth.currentUser && (auth.currentUser.uid === episodio.postedBy || auth.currentUser.uid === currentPlayingSerie.postedBy)) {
-                    const deleteEpisodeBtn = document.createElement('button');
-                    deleteEpisodeBtn.textContent = 'X';
-                    deleteEpisodeBtn.classList.add('delete-episode-btn');
-                    deleteEpisodeBtn.style.position = 'absolute';
-                    deleteEpisodeBtn.style.right = '10px';
-                    deleteEpisodeBtn.style.top = '50%';
-                    deleteEpisodeBtn.style.transform = 'translateY(-50%)';
-                    deleteEpisodeBtn.style.background = 'none';
-                    deleteEpisodeBtn.style.border = 'none';
-                    deleteEpisodeBtn.style.color = 'var(--danger)';
-                    deleteEpisodeBtn.style.fontSize = '1.2em';
-                    deleteEpisodeBtn.style.cursor = 'pointer';
-                    deleteEpisodeBtn.onclick = (e) => {
-                        e.stopPropagation(); // Evita que o clique no X abra o episódio
-                        deleteEpisode(currentPlayingSerie.id, episodio.id, currentPlayingSerie.postedBy);
-                    };
-                    episodeBtn.style.position = 'relative'; // Para posicionar o X corretamente
-                    episodeBtn.appendChild(deleteEpisodeBtn);
-                }
             });
 
             episodeListModal.style.display = 'flex';
@@ -3477,53 +2865,13 @@
         }
     }
 
-    // Função para deletar um episódio
-    async function deleteEpisode(serieId, episodeId, serieCreatorUid) {
-        if (!auth.currentUser || (auth.currentUser.uid !== serieCreatorUid && auth.currentUser.uid !== currentPlayingEpisode.postedBy)) {
-            showMessage("Você não tem permissão para excluir este episódio.");
-            return;
-        }
 
-        const confirmDelete = confirm("Tem certeza que deseja excluir este episódio?");
-        if (!confirmDelete) return;
-
-        try {
-            await db.collection("series").doc(serieId).collection("episodios").doc(episodeId).delete();
-            showMessage("Episódio excluído com sucesso!");
-            
-            // Verifica se a série ainda tem episódios
-            const remainingEpisodesSnapshot = await db.collection("series").doc(serieId).collection("episodios").limit(1).get();
-            if (remainingEpisodesSnapshot.empty && auth.currentUser.uid === serieCreatorUid) {
-                // Se não houver mais episódios e o usuário for o criador da série, pergunta se quer excluir a série
-                const confirmDeleteSerie = confirm("Este era o último episódio. Deseja excluir a série também?");
-                if (confirmDeleteSerie) {
-                    await db.collection("series").doc(serieId).delete();
-                    showMessage("Série excluída com sucesso!");
-                    fecharVideoModal();
-                    carregarAnimes();
-                    return;
-                }
-            }
-
-            openEpisodeListModal(); // Recarrega a lista de episódios
-            if (currentPlayingEpisode && currentPlayingEpisode.id === episodeId) {
-                fecharVideoModal(); // Se o episódio atual foi excluído, fecha o player
-                openSeriePage(serieId); // Tenta abrir a página da série novamente para o primeiro episódio disponível
-            }
-
-        } catch (error) {
-            console.error("Erro ao excluir episódio:", error);
-            showMessage("Erro ao excluir episódio: " + error.message);
-        }
-    }
-
-
-        // Função para salvar/remover anime da lista do usuário
+    // Função para salvar/remover anime da lista do usuário
     async function toggleSalvarAnime() {
         if (!auth.currentUser || !currentUserData) {
             showMessage("Você precisa estar logado para salvar animes!");
-            // Não fecha o player, apenas pede login
-            document.getElementById('authModal').style.display = 'flex'; 
+            document.getElementById('videoModal').style.display = 'none'; // Fecha o player
+            document.getElementById('authModal').style.display = 'flex'; // Abre o modal de login
             return;
         }
 
@@ -3661,17 +3009,15 @@
         document.getElementById('dislikeCount').textContent = serieData.dislikes || 0;
 
         // Limpa classes ativas
-        const likeButton = document.getElementById('likeButton');
-        const dislikeButton = document.getElementById('dislikeButton');
-        if (likeButton) likeButton.classList.remove('active');
-        if (dislikeButton) dislikeButton.classList.remove('active');
+        document.getElementById('likeButton').classList.remove('active');
+        document.getElementById('dislikeButton').classList.remove('active');
 
         if (auth.currentUser && currentUserData) {
             const userId = auth.currentUser.uid;
             if (serieData.usersWhoLiked && serieData.usersWhoLiked.includes(userId)) {
-                if (likeButton) likeButton.classList.add('active');
+                document.getElementById('likeButton').classList.add('active');
             } else if (serieData.usersWhoDisliked && serieData.usersWhoDisliked.includes(userId)) {
-                if (dislikeButton) dislikeButton.classList.add('active');
+                document.getElementById('dislikeButton').classList.add('active');
             }
         }
     }
@@ -3679,7 +3025,6 @@
     async function toggleLike(isLike) {
         if (!auth.currentUser) {
             showMessage("Você precisa estar logado para curtir/descurtir.");
-            document.getElementById('authModal').style.display = 'flex'; 
             return;
         }
         if (!currentPlayingSerie) return;
@@ -3713,7 +3058,7 @@
                         // Não curtiu, então adiciona o like
                         usersWhoLiked.push(userId);
                         currentLikes++;
-                                                // Se tinha dado dislike antes, remove o dislike
+                        // Se tinha dado dislike antes, remove o dislike
                         if (userAlreadyDisliked) {
                             usersWhoDisliked = usersWhoDisliked.filter(id => id !== userId);
                             currentDislikes--;
@@ -3826,8 +3171,7 @@
                 commentItem.innerHTML = `
                     <p class="comment-author">${comment.userName || 'Usuário Anônimo'}:</p>
                     <p class="comment-text">${comment.text}</p>
-                    ${auth.currentUser && auth.currentUser.uid === comment.userId ? `<div class="comment-actions"><button onclick="deleteComment('${serieId}', '${episodeId}', '${doc.id}')">Excluir</button></div>` : ''}
-                    ${auth.currentUser && auth.currentUser.uid !== comment.userId ? `<div class="comment-actions"><button onclick="replyToComment('${doc.id}', '${comment.userName || 'Usuário Anônimo'}')">Responder</button></div>` : ''}
+                    ${auth.currentUser ? `<div class="comment-actions"><button onclick="replyToComment('${doc.id}', '${comment.userName || 'Usuário Anônimo'}')">Responder</button></div>` : ''}
                 `;
                 commentsListDiv.appendChild(commentItem);
             });
@@ -3841,7 +3185,6 @@
     async function postComment() {
         if (!auth.currentUser || !currentUserData) {
             showMessage("Você precisa estar logado para comentar.");
-            document.getElementById('authModal').style.display = 'flex'; 
             return;
         }
         if (!currentPlayingSerie || !currentPlayingEpisode) {
@@ -3880,41 +3223,15 @@
         commentInput.focus();
     }
 
-    async function deleteComment(serieId, episodeId, commentId) {
-        if (!auth.currentUser) {
-            showMessage("Você precisa estar logado para excluir comentários.");
-            return;
-        }
-
-        const confirmDelete = confirm("Tem certeza que deseja excluir este comentário?");
-        if (!confirmDelete) return;
-
-        try {
-            const commentRef = db.collection("series").doc(serieId).collection("episodios").doc(episodeId).collection("comments").doc(commentId);
-            const commentDoc = await commentRef.get();
-
-            if (commentDoc.exists && commentDoc.data().userId === auth.currentUser.uid) {
-                await commentRef.delete();
-                showMessage("Comentário excluído com sucesso!");
-                loadComments(serieId, episodeId); // Recarrega os comentários
-            } else {
-                showMessage("Você não tem permissão para excluir este comentário.");
-            }
-        } catch (error) {
-            console.error("Erro ao excluir comentário:", error);
-            showMessage("Erro ao excluir comentário: " + error.message);
-        }
-    }
-
     // Monitorar o estado de autenticação para atualizar a UI
     auth.onAuthStateChanged(user => {
         if (user) {
             console.log("Usuário logado:", user.email);
             // Carrega os dados do usuário e aplica as preferências (tema, modo adulto, luminosidade)
             carregarDadosUsuario(user.uid).then(() => {
-                carregarAnimes(); // Recarrega animes com base nas preferências do usuário
+                carregarAnimes(currentFilter); // Recarrega animes com base nas preferências do usuário
             });
-            // Esconde/mostra o formulário de comentário
+                        // Esconde/mostra o formulário de comentário
             document.getElementById('commentForm').style.display = 'flex';
             document.getElementById('commentLoginPrompt').style.display = 'none';
         } else {
@@ -3926,7 +3243,7 @@
             document.getElementById('luminosityRange').value = 100; // Reseta luminosidade
             ajustarLuminosidade(100); // Aplica luminosidade padrão
             document.getElementById('userInfoDisplay').innerHTML = ''; // Limpa info do usuário
-            carregarAnimes(); // Mostra animes recentes (sem filtro de usuário)
+            carregarAnimes('recentes'); // Mostra animes recentes (sem filtro de usuário)
             // Esconde/mostra o formulário de comentário
             document.getElementById('commentForm').style.display = 'none';
             document.getElementById('commentLoginPrompt').style.display = 'block';
@@ -3940,9 +3257,9 @@
         // Se já estiver logado (sessão persistente), onAuthStateChanged cuidará da primeira carga
         // Caso contrário, carrega animes recentes como default
         if (!auth.currentUser) {
-            carregarAnimes();
+            carregarAnimes('recentes');
         }
-                // Aplica o tema padrão no carregamento inicial (será sobrescrito se houver preferência do usuário)
+        // Aplica o tema padrão no carregamento inicial (será sobrescrito se houver preferência do usuário)
         aplicarTema('dark');
         ajustarLuminosidade(100);
     });
@@ -3974,12 +3291,6 @@
 </script>
 </body>
 </html>
-
-
-
-
-
-
 
 
 
