@@ -2292,18 +2292,23 @@
         }
     }
 
-    // Função para controlar a visibilidade da seção de comentários
+        // Função para controlar a visibilidade da seção de comentários
     function toggleCommentSection(isLoggedIn) {
         const commentForm = document.getElementById('commentForm');
         const commentLoginPrompt = document.getElementById('commentLoginPrompt');
-        if (isLoggedIn) {
-            commentForm.style.display = 'flex';
-            commentLoginPrompt.style.display = 'none';
-        } else {
-            commentForm.style.display = 'none';
-            commentLoginPrompt.style.display = 'block';
+
+        // Adicione estas verificações para garantir que os elementos existem antes de manipulá-los
+        if (commentForm && commentLoginPrompt) {
+            if (isLoggedIn) {
+                commentForm.style.display = 'flex';
+                commentLoginPrompt.style.display = 'none';
+            } else {
+                commentForm.style.display = 'none';
+                commentLoginPrompt.style.display = 'block';
+            }
         }
     }
+
 
 
     // 5. LÓGICA DO MENU DO USUÁRIO E OUTRAS FUNCIONALIDADES
