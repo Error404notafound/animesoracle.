@@ -2602,7 +2602,7 @@
         }
     }
 
-    // Função para renderizar o conteúdo principal da página (home)
+        // Função para renderizar o conteúdo principal da página (home)
     function renderHomePageContent() {
         const mainContentArea = document.querySelector('main');
         mainContentArea.innerHTML = `
@@ -2611,22 +2611,20 @@
                     <h2>MAIS VOTADOS & ASSISTIDOS</h2>
                 </div>
                 <div class="anime-grid scrollable" id="topRatedAnimesGrid">
-                    <!-- Animes mais votados e assistidos serão carregados aqui -->
+                    
                 </div>
             </section>
 
-            <!-- Nova Seção: Adicionados Recentemente (Episódios) -->
             <section class="content-section">
                 <div class="section-header">
                     <h2>ADICIONADOS RECENTEMENTE</h2>
                     <a href="#" class="see-more-btn" onclick="filterAnimesByStatus('recentes_episodios')">VER MAIS</a>
                 </div>
                 <div class="added-episodes-grid" id="addedEpisodesGrid">
-                    <!-- Episódios adicionados recentemente serão carregados aqui -->
+                    
                 </div>
             </section>
 
-            <!-- Nova Seção: Seu Histórico -->
             <section class="content-section" id="watchedAnimesSection">
                 <div class="section-header">
                     <h2>SEU HISTÓRICO</h2>
@@ -2637,7 +2635,6 @@
                 </div>
             </section>
 
-            <!-- Nova Seção: +18 Mais Recentes -->
             <section class="content-section" id="adultRecentAnimesSection">
                 <div class="section-header">
                     <h2>+18 MAIS RECENTES</h2>
@@ -2648,21 +2645,20 @@
                 </div>
             </section>
 
-            <!-- Seção: Mais Recentes (Séries) -->
             <section class="content-section">
                 <div class="section-header">
                     <h2>MAIS RECENTES</h2>
                     <a href="#" class="see-more-btn" onclick="filterAnimesByStatus('recentes_series')">VER MAIS</a>
                 </div>
                 <div class="anime-grid" id="recentAnimesGrid">
-                    <!-- Animes adicionados recentemente serão carregados aqui -->
+                    
                 </div>
             </section>
         `;
-    }
         // Após renderizar o HTML, recarrega o conteúdo dinâmico
         carregarAnimes(currentFilter);
     }
+
 
     // Função principal para carregar e exibir animes (agora séries e episódios)
     async function carregarAnimes(tipo = 'recentes') { // 'recentes', 'mais_votados' etc.
