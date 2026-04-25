@@ -1371,10 +1371,10 @@
         </div>
     </section>
 
-    <!-- Modal para Postar Nova Série / Adicionar Episódio -->
-    <div id="postarModal" class="modal fixed-fullscreen">
+        <!-- Modal para Postar Nova Série / Adicionar Episódio -->
+    <div id="postarModal" class="modal" style="display: none;"> <!-- ADICIONADO style="display: none;" AQUI -->
         <div class="modal-card">
-            <button class="close-btn" onclick="document.getElementById('postarModal').style.display='none'">&times;</button>
+            <button class="close-btn" onclick="closePostAnimeModal()">&times;</button>
             <div class="modal-content-wrapper">
                 <h3 style="color:var(--primary); margin:0 0 20px 0;">Publicar Conteúdo</h3>
 
@@ -1383,6 +1383,7 @@
             </div>
         </div>
     </div>
+
 
     <!-- Modal para Formulário de Nova Série -->
     <div id="newSerieFormModal" class="modal fixed-fullscreen">
@@ -1952,31 +1953,40 @@
         }
     }
 
-    // Funções para os modais de postagem
+        // Funções para os modais de postagem
     function openPostAnimeModal() {
         // Não verifica login aqui, pois o usuário pode escolher adicionar episódio sem ser o criador
-        document.getElementById('postarModal').style.display = 'flex';
+        const modal = document.getElementById('postarModal');
+        modal.classList.add('fixed-fullscreen'); // Adiciona a classe para aplicar os estilos fullscreen
+        modal.style.display = 'flex'; // Define o display para 'flex' para torná-lo visível
+    }
+
+    // Nova função para fechar o modal de postagem
+    function closePostAnimeModal() {
+        const modal = document.getElementById('postarModal');
+        modal.classList.remove('fixed-fullscreen'); // Remove a classe para remover os estilos fullscreen
+        modal.style.display = 'none'; // Define o display para 'none' para escondê-lo
     }
 
     function openNewSerieForm() {
         if (!auth.currentUser) {
             showMessage("Você precisa estar logado para postar uma nova série!");
-            document.getElementById('postarModal').style.display = 'none';
+            closePostAnimeModal(); // Fecha o modal de escolha
             document.getElementById('authModal').style.display = 'flex';
             return;
         }
-        document.getElementById('postarModal').style.display = 'none'; // Fecha o modal de escolha
+        closePostAnimeModal(); // Fecha o modal de escolha
         document.getElementById('newSerieFormModal').style.display = 'flex';
     }
 
     async function openAddEpisodeToExistingSerieForm() {
         if (!auth.currentUser) {
             showMessage("Você precisa estar logado para adicionar episódios!");
-            document.getElementById('postarModal').style.display = 'none';
+            closePostAnimeModal(); // Fecha o modal de escolha
             document.getElementById('authModal').style.display = 'flex';
             return;
         }
-        document.getElementById('postarModal').style.display = 'none'; // Fecha o modal de escolha
+        closePostAnimeModal(); // Fecha o modal de escolha
         document.getElementById('addEpisodeModal').style.display = 'flex';
         document.getElementById('addEpisodeTargetSerieId').value = ''; // Limpa a série alvo
         document.getElementById('addEpisodeSerieTitle').textContent = 'Selecione uma série acima...';
@@ -1984,6 +1994,7 @@
         document.getElementById('searchExistingSeriesResults').innerHTML = '';
         document.getElementById('searchExistingSeriesResults').style.display = 'none';
     }
+
 
         // Função para pesquisar séries existentes para adicionar episódio
     async function searchExistingSeries(searchTerm) {
