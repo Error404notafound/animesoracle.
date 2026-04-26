@@ -3385,27 +3385,31 @@
             inProgressBanner.style.display = 'none';
         }
 
-        // Carrega a lista de players para o episódio (se houver)
+                // Carrega a lista de players para o episódio (se houver)
         updatePlayerOptions(episodio.links, playerIndex);
 
         // Processa o link do embed
         let embedLink = episodio.links[playerIndex] ? episodio.links[playerIndex].url : '';
         embedLink = formatEmbedLink(embedLink);
 
+        // Adiciona ?autoplay=1 AQUI, ANTES de definir o src do iframe
+        if (!isFixedPlayer) { // Aplica autoplay apenas se o player não estiver fixo
+            if (!embedLink.includes('autoplay=')) { // Verifica se autoplay já não está na URL
+                // Adiciona o parâmetro de autoplay corretamente
+                // Se a URL já tiver um '?', usa '&'. Se não tiver, usa '?'.
+                embedLink += (embedLink.includes('?') ? '&' : '?') + 'autoplay=1';
+            }
+        }
+        
         videoFrame.src = embedLink;
 
         // Quando o iframe carregar, esconde o skeleton
+        // REMOVEMOS AQUI A LÓGICA QUE MODIFICAVA videoFrame.src NOVAMENTE
         videoFrame.onload = () => {
             videoSkeleton.style.display = 'none';
             videoFrame.style.display = 'block';
-            // Inicia autoplay se for permitido e se o vídeo não estiver fixo
-            if (!isFixedPlayer) {
-                // Adiciona ?autoplay=1 apenas se não for um player que já adiciona automaticamente
-                if (!embedLink.includes('autoplay=')) {
-                     videoFrame.src += "?autoplay=1";
-                }
-            }
         };
+
 
         // Marca o episódio como assistido (se não for convidado)
         if (auth.currentUser) {
