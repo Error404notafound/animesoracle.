@@ -164,22 +164,24 @@
             z-index: 1001; /* Garante que fique acima da barra de busca */
         }
 
-        /* Catálogo A-Z */
+                /* Catálogo A-Z */
         #azCatalog {
             display: flex;
             flex-wrap: nowrap; 
             overflow-x: auto; 
             -webkit-overflow-scrolling: touch; 
             justify-content: flex-start; 
-            padding: 5px 15px; 
+            padding: 5px 15px; /* Revertido para o valor original */
             background: var(--bg);
             border-bottom: 1px solid #333;
             z-index: 998;
             gap: 2px; 
             font-size: 0.9em; 
-            position: sticky; /* Sticky para se manter visível abaixo da searchbar/header */
-            top: 110px; /* Altura do header (60px) + searchbar (50px aprox) */
+            position: sticky; 
+            top: 110px;
         }
+        /* ... o restante do CSS permanece igual ... */
+
                 /* Ajuste do top para quando a searchbar estiver escondida */
         #azCatalog.top-60 {
             top: 60px;
