@@ -165,6 +165,7 @@
         }
 
                 /* Catálogo A-Z */
+        #azCatal        /* Catálogo A-Z */
         #azCatalog {
             display: flex;
             flex-wrap: nowrap; 
@@ -175,12 +176,15 @@
             background: var(--bg);
             border-bottom: 1px solid #333;
             z-index: 998;
-            gap: 2px; 
+            gap: 2px; /* Revertido para o valor original */
             font-size: 0.9em; 
-            position: sticky; 
-            top: 110px;
+            /* REMOVA as linhas abaixo se elas existirem: */
+            /* position: sticky; */
+            /* top: 110px; */
+            /* top: 60px; */
         }
-        /* ... o restante do CSS permanece igual ... */
+        /* As classes .top-60 também não serão mais necessárias se a posição não for sticky */
+
 
                 /* Ajuste do top para quando a searchbar estiver escondida */
         #azCatalog.top-60 {
