@@ -165,25 +165,19 @@
         }
 
                 /* Catálogo A-Z */
-        #azCatal        /* Catálogo A-Z */
         #azCatalog {
             display: flex;
-            flex-wrap: nowrap; 
-            overflow-x: auto; 
-            -webkit-overflow-scrolling: touch; 
-            justify-content: flex-start; 
-            padding: 5px 15px; /* Revertido para o valor original */
+            flex-wrap: nowrap; /* Impede quebras de linha */
+            overflow-x: auto; /* Permite rolagem horizontal */
+            -webkit-overflow-scrolling: touch; /* Melhora o scroll em iOS */
+            justify-content: flex-start; /* Alinha o conteúdo à esquerda */
+            padding: 5px 15px; /* Reduz padding */
             background: var(--bg);
             border-bottom: 1px solid #333;
             z-index: 998;
-            gap: 2px; /* Revertido para o valor original */
-            font-size: 0.9em; 
-            /* REMOVA as linhas abaixo se elas existirem: */
-            /* position: sticky; */
-            /* top: 110px; */
-            /* top: 60px; */
+            gap: 2px; /* Reduz espaçamento entre as letras */
+            font-size: 0.9em; /* Reduz tamanho da fonte */
         }
-        /* As classes .top-60 também não serão mais necessárias se a posição não for sticky */
 
 
                 /* Ajuste do top para quando a searchbar estiver escondida */
